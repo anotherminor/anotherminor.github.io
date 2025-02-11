@@ -1,10 +1,11 @@
 @charset "utf-8";
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+@import url("//cdn.jsdelivr.net/gh/wan2land/d2coding/d2coding-full.css");
 
 * {
   margin: 0;
   padding: 0;
-  font-family: Pretendard, monospace, system-ui, sans-serif;
+  font-family: Pretendard, system-ui, sans-serif;
 }
 
 html,
@@ -12,9 +13,13 @@ body {
   height: 100%;
 }
 
+code {
+  font-family: 'D2Coding', monospace;
+}
+
 a {
   text-decoration: none;
-  color: #000;
+  color: #004F8F;
 }
 
 a:hover {
