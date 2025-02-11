@@ -182,4 +182,5 @@ ko:
   post_tags: "태그: "
   post_previous: "이전 글: "
   post_next: "다음 글: "
+  post_author: ""
   category_title: "카테고리"
