@@ -1,9 +1,11 @@
 <div class="container-posts">
   {% for post in paginator.posts %}
   <div class="posts-list-item">
-    <span class="posts-list-item-name float-left">
-        <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
-    </span>
+    <a href="{{ site.baseurl }}{{ post.url }}">
+      <span class="posts-list-item-name float-left">  
+        {{ post.title }}
+      </span> 
+    </a>
     <span class="posts-list-item-date float-right">
       {{ post.date | date: '%Y-%m-%d' }}
     </span>
