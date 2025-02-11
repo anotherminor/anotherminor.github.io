@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "Work In Progress"
-date:   2025-02-12
+title: "Work In Progress"
+date: 2025-02-12
 last_modified_at: 2025-02-12
 categories: [wip]
 ---
