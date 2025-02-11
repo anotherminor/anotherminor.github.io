@@ -4,5 +4,5 @@
 - default: menu_category
   url: 'categories'
 
-- title: "정보"
+- title: '정보'
   url: 'about'
