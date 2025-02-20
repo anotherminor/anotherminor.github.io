@@ -13,7 +13,7 @@ categories: [test]
 
 〈만달로리안 & 그로구〉는 《스타워즈》 최초의 실사 TV 시리즈를 [스크린으로 옮기는 작품](https://www.inverse.com/entertainment/mandalorian-and-grogu-movie)으로, 이는 몇 가지 [큰 변화](https://www.inverse.com/entertainment/jeremy-allen-white-star-wars-rotta-the-hutt)를 의미한다. 하지만 우리가 그동안 다가올 내용에 대한 힌트를 얻었음에도 불구하고, 이 영화의 줄거리가 정확히 무엇일지는 여전히 알 수 없다. 많은 〈만달로리안〉 에피소드가 ‘주간 퀘스트’ 형식의 이야기로 진행되지만, 이러한 단편적인 모험이 블록버스터 영화로서 충분할까? 다행히도, 출연 배우 중 한 명이 이번 영화가 기존 시리즈의 형식과 크게 다르지 않을 것임을 암시했다.
 
-[GamesRadar](https://www.gamesradar.com/entertainment/star-wars-movies/sigourney-weaver-was-delighted-to-join-the-star-wars-franchise-but-says-grogu-was-the-whole-reason-she-signed-on-for-the-mandalorian-and-grogu-hes-a-little-badass/)와의 인터뷰에서, 〈만달로리안 & 그로구〉에 출연하는 배우 시고니 위버는 자신의 캐릭터를 “권위를 가진 인물”이라고 설명하며, 이어서 “그리고 내가 만달로리안을 바깥 은하계로 임무를 보내야 한다. 거기에는 온갖 나쁜 일들이 일어난다”고 말했다.
+[GamesRadar](https://www.gamesradar.com/entertainment/star-wars-movies/sigourney-weaver-was-delighted-to-join-the-star-wars-franchise-but-says-grogu-was-the-whole-reason-she-signed-on-for-the-mandalorian-and-grogu-hes-a-little-badass/)와의 인터뷰에서, 〈만달로리안 & 그로구〉에 출연하는 배우 시고니 위버는 자신의 캐릭터를 “권위를 가진 인물”이라고 설명하며, 이어서 “내가 만달로리안을 바깥 은하계로 임무를 보내야 한다. 거기에는 온갖 나쁜 일들이 일어난다”고 말했다.
 
 위버의 역할은 〈만달로리안 & 그로구〉가 기존 형식을 유지할 것임을 시사한다.
 
