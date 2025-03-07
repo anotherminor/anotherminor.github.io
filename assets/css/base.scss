@@ -230,6 +230,13 @@ a.reversefootnote {
   margin-bottom: 0.75rem; /* 12px */
   word-break: keep-all; /* 한국어 단어 단위 줄바꿈 */
   line-height: 1.5rem; /* 24px */
+  min-height: 1.5rem; /* 공백 줄도 같은 높이 유지 */
+}
+
+/* 내용이 없는 <p> 요소도 줄바꿈 간격 유지 */
+.post-content p:empty {
+  display: block;
+  min-height: 1.5rem;
 }
 
 .post-content img {
