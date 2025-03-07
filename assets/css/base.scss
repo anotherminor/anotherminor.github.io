@@ -140,10 +140,12 @@ a.reversefootnote {
   font-weight: bold;
   color: #000;
   margin-right: 0.3125rem; /* 5px */
+  word-break: keep-all; /* 한국어 단어 단위 줄바꿈 */
 }
 
 .header-info-desc {
   font-size: 0.9em;
+  word-break: keep-all; /* 한국어 단어 단위 줄바꿈 */
 }
 
 .header-main-nav {
@@ -227,11 +229,12 @@ a.reversefootnote {
   margin-top: 0.75rem; /* 12px */
   margin-bottom: 0.75rem; /* 12px */
   word-break: keep-all; /* 한국어 단어 단위 줄바꿈 */
+  line-height: 1.5rem; /* 24px */
 }
 
 .post-content img {
   display: block;
-  align: left;
+  float: left;
   margin: 0.625rem auto; /* 10px */
 }
 
