@@ -3,7 +3,7 @@ layout: post
 title: "〈만달로리안 & 그로구〉, 시리즈의 성공 공식은 그대로 유지될 것"
 date: 2025-02-11
 last_modified_at: 2025-02-15
-categories: [test]
+categories: [제작 소식]
 ---
 
 [원문 읽기](http://www.inverse.com/entertainment/mandalorian-grogu-signourney-weaver-character)
