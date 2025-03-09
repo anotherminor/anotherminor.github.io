@@ -15,7 +15,7 @@ categories: [wip]
 {% include instagram.html id="DG3icC4SlGH" %}
 
 # Twitter(X) 트윗 임베드
-{% include twitter.html user="elonmusk" id="1701024032835098624" %}
+{% include twitter.html user="munbaOBOK" id="311496885070352385" %}
 
 # Threads 게시물 임베드
 {% include threads.html user="mosseri" id="DGD12NZPjwb" %}
