@@ -52,6 +52,8 @@ h2 {
 /* 수평선 스타일 */
 hr {
   margin-right: 0.625rem; /* 10px */
+  margin-top: 0.75rem; /* 12px */
+  margin-bottom: 0.75rem; /* 12px */
   border: 0.0625rem solid #aaaaaa; /* 1px */
   text-align: left;
 }
@@ -286,7 +288,7 @@ pre.highlight {
   font-size: 0.875rem; /* 14px */
   text-indent: 0px;
   background-color: #eee;
-  font-family: 'D2Coding', monospace; /* Ensure code blocks use the same font */
+  font-family: 'D2Coding', monospace !important; /* Ensure code blocks use the same font */
 }
 
 /* 하이라이터 스타일 */
