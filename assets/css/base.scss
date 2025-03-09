@@ -410,6 +410,20 @@ table,
 @media (prefers-color-scheme: dark) {
   body {
     background-color: #170c5d;
+  }
+
+  body, 
+  h1, h2, h3, h4, h5, h6, 
+  p, 
+  ul, ol, 
+  table, 
+  .container-wrapper, .container-header, .container-main, .container-footer, 
+  .header-info, .header-info-name, .header-info-desc, .header-main-nav, .header-main-nav-item, 
+  .footer-copyright, .footer-copyright-text, 
+  .page-title, .page-author, .page-content, .posts-list-item, .posts-list-item-name, 
+  .list-pagination, .post-title, .post-created-date, .post-content, .post-author, .post-info, 
+  .post-category, .post-tag, 
+  .task-list-item, .task-list-item-checkbox {
     color: #ffdb49;
   }
 
