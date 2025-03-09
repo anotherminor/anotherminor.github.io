@@ -299,19 +299,6 @@ pre.highlight {
   background-color: #eee;
 }
 
-/* LaTeX math formula styles */
-.katex {
-  font-family: 'KaTeX_Main', 'Times New Roman', serif;
-  font-size: 1em;
-  line-height: 1.2;
-}
-
-.katex-display {
-  display: block;
-  margin: 1em 0;
-  text-align: left;
-}
-
 @media screen and (max-width: 768px) {
   /* reset default styles */
   img {
