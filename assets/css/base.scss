@@ -51,9 +51,9 @@ h2 {
 
 /* 수평선 스타일 */
 hr {
-  margin: 0.625rem; /* 10px */
+  margin-right: 0.625rem; /* 10px */
   border: 0.0625rem solid #aaaaaa; /* 1px */
-  text-align: left
+  text-align: left;
 }
 
 /* 이미지 최대 너비 설정 */
@@ -64,7 +64,7 @@ img {
 /* 순서 있는 목록과 순서 없는 목록 스타일 */
 ol,
 ul {
-  margin-left: 0.9375rem; /* 15px */
+  margin-left: 1.5rem; /* 24px */
   margin-bottom: 0.3125rem; /* 5px */
   line-height: 1.25rem; /* 20px */
 }
