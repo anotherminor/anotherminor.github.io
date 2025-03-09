@@ -15,8 +15,10 @@ body {
   height: 100%;
 }
 
-code {
-  font-family: 'D2Coding', monospace;
+code,
+.highlight > pre,
+pre.highlight {
+  font-family: 'D2Coding', monospace !important; /* Ensure all code uses the same font */
 }
 
 a {
@@ -52,8 +54,8 @@ h2 {
 /* 수평선 스타일 */
 hr {
   margin-right: 0.625rem; /* 10px */
-  margin-top: 0.75rem; /* 12px */
-  margin-bottom: 0.75rem; /* 12px */
+  margin-top: 1.5rem; /* 24px */
+  margin-bottom: 1.5rem; /* 24px */
   border: 0.0625rem solid #aaaaaa; /* 1px */
   text-align: left;
 }
@@ -67,8 +69,8 @@ img {
 ol,
 ul {
   margin-left: 1.5rem; /* 24px */
-  margin-bottom: 0.3125rem; /* 5px */
-  line-height: 1.25rem; /* 20px */
+  margin-bottom: 0.75rem; /* 12px */
+  line-height: 1.5rem; /* 24px */
 }
 
 /* 단락 스타일 */
@@ -295,6 +297,19 @@ pre.highlight {
 .highlighter-rouge {
   font-size: 0.875rem; /* 14px */
   background-color: #eee;
+}
+
+/* LaTeX math formula styles */
+.katex {
+  font-family: 'KaTeX_Main', 'Times New Roman', serif;
+  font-size: 1em;
+  line-height: 1.2;
+}
+
+.katex-display {
+  display: block;
+  margin: 1em 0;
+  text-align: left;
 }
 
 @media screen and (max-width: 768px) {
