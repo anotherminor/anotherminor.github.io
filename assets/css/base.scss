@@ -406,3 +406,43 @@ table,
 .task-list-item, .task-list-item-checkbox {
   color: #0000ff;
 }
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #170c5d;
+    color: #ffdb49;
+  }
+
+  a {
+    color: #1e90ff;
+  }
+
+  a:hover {
+    color: #bbb;
+  }
+
+  blockquote {
+    border-left-color: #555;
+  }
+
+  hr {
+    border-color: #555;
+  }
+
+  table {
+    background-color: #333;
+  }
+
+  th, td {
+    border-bottom-color: #444;
+  }
+
+  .container-header, .container-footer {
+    border-color: #555;
+  }
+
+  .highlight > pre, pre.highlight, .highlighter-rouge {
+    background-color: #333;
+  }
+}
+
