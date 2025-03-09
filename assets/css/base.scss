@@ -69,8 +69,6 @@ img {
 ol,
 ul {
   margin-left: 1.5rem; /* 24px */
-  margin-bottom: 0.75rem; /* 12px */
-  line-height: 1.5rem; /* 24px */
 }
 
 /* 단락 스타일 */
@@ -295,6 +293,7 @@ pre.highlight {
 
 /* 하이라이터 스타일 */
 .highlighter-rouge {
+  font-family: 'D2Coding', monospace !important; /* Ensure code blocks use the same font */
   font-size: 0.875rem; /* 14px */
   background-color: #eee;
 }
@@ -303,7 +302,6 @@ pre.highlight {
   /* reset default styles */
   img {
     width: 100%;
-    max-width: 18.75rem; /* 300px */
   }
 
   /* Posts list */
