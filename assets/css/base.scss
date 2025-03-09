@@ -362,6 +362,9 @@ pre.highlight {
   width: 100%;
   margin: 1rem auto;
   text-align: left;
+  code {
+    display: inline;
+  }
 }
 .task-list-item {
   list-style: none;
