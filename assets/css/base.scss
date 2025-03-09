@@ -284,7 +284,7 @@ a.reversefootnote {
 pre.highlight {
   line-height: 1.125rem; /* 18px */
   margin: 0.625rem 0; /* 10px */
-  padding-left: 0.1875rem; /* 3px */
+  padding: 0.3125rem; /* 5px */
   overflow-x: auto;
   font-size: 0.875rem; /* 14px */
   text-indent: 0px;
@@ -351,6 +351,16 @@ pre.highlight {
     word-wrap: break-word;
     white-space: pre-wrap;
   }
+}
+
+.youtube-embed,
+.tiktok-embed,
+.instagram-media,
+.twitter-tweet,
+.threads-embed {
+  max-width: 35rem;
+  width: 100%;
+  margin: 1rem auto;
 }
 .task-list-item {
   list-style: none;
