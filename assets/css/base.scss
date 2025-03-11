@@ -17,7 +17,6 @@
 
 html,
 body {
-  background-color: #ffff00;
   height: 100%;
 }
 
@@ -407,9 +406,16 @@ table,
   color: #0000ff;
 }
 
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: #ffff00;
+    height: 100%;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   body {
-    background-color: #170c5d;
+    background-color: #0d0b18;
     height: 100%;
   }
 
@@ -425,7 +431,7 @@ table,
   .list-pagination, .post-title, .post-created-date, .post-content, .post-author, .post-info, 
   .post-category, .post-tag, 
   .task-list-item, .task-list-item-checkbox {
-    color: #ffdb49;
+    color: #f8f15f;
   }
 
   a {
