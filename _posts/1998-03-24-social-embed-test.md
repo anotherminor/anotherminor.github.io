@@ -1,7 +1,7 @@
 ---
 layout: post
-title: ""
-date: 2025-03-09
+title: "[테스트] 소셜 미디어 게시글 임베드 출력"
+date: 1998-03-24
 categories: [wip]
 ---
 

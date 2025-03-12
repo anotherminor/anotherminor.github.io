@@ -216,6 +216,8 @@ a.reversefootnote {
 .posts-list-item {
   display: block;
   position: relative;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   line-height: 1.5rem; /* 24px */
   margin: 0.3125rem 0; /* 5px */
   overflow: hidden;
@@ -233,6 +235,8 @@ a.reversefootnote {
 
 .post-title {
   text-align: left;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   margin-top: 1rem; /* 16px */
   margin-bottom: 1rem; /* 16px */
 }
@@ -403,19 +407,19 @@ table,
 .list-pagination, .post-title, .post-created-date, .post-content, .post-author, .post-info, 
 .post-category, .post-tag, 
 .task-list-item, .task-list-item-checkbox {
-  color: #0000ff;
+  color: #00468A;
 }
 
 @media (prefers-color-scheme: light) {
   body {
-    background-color: #ffff00;
+    background-color: #F9D541;
     height: 100%;
   }
 }
 
 @media (prefers-color-scheme: dark) {
   body {
-    background-color: #0d0b18;
+    background-color: #0D0B18;
     height: 100%;
   }
 
@@ -431,7 +435,7 @@ table,
   .list-pagination, .post-title, .post-created-date, .post-content, .post-author, .post-info, 
   .post-category, .post-tag, 
   .task-list-item, .task-list-item-checkbox {
-    color: #f8f15f;
+    color: #FFE81F;
   }
 
   a {

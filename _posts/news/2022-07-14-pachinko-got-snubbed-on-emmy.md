@@ -8,7 +8,7 @@ categories: [소식]
 
 ## 엔터테인먼트 위클리
 
-[기사 원문](https://ew.com/awards/emmys/emmy-nominations-2022-snubs-surprises/#:~:text=Pachinko%20(Apple%20TV+))
+[ew.com](https://ew.com/awards/emmys/emmy-nominations-2022-snubs-surprises/#:~:text=Pachinko%20(Apple%20TV+))
 
 > ### 짜증나고 가슴아픈 외면(snub)
 > 
@@ -16,7 +16,7 @@ categories: [소식]
 
 ## 인디와이어
 
-[기사 원문](https://www.indiewire.com/gallery/emmys-snubs-pachinko-atlanta-surprise-inventing-anna/pachinko-6/)
+[indiewire.com](https://www.indiewire.com/gallery/emmys-snubs-pachinko-atlanta-surprise-inventing-anna/pachinko-6/)
 
 > ### 외면(Snubs): 최우수 드라마 시리즈
 > 

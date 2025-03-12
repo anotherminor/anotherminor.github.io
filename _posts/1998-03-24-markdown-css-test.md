@@ -1,7 +1,7 @@
 ---
 layout: post
-title: ""
-date: 2025-03-09
+title: "[테스트] 마크다운 서식 출력"
+date: 1998-03-24
 categories: [wip]
 ---
 
