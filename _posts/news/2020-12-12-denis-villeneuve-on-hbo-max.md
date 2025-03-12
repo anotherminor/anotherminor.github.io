@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "'듄' 드니 빌뇌브 감독, 워너 OTT 공개 강력 비판 "극장에서 봐야""
+title: "'듄' 드니 빌뇌브 감독, 워너 OTT 공개 강력 비판"
 date: 2020-12-12
 last_modified_at: 2025-03-11
 categories: [소식]
