@@ -1,5 +1,5 @@
 ---
-layout: post
+ 
 title: "나 다시 만들기"
 date: 2021-09-12
 last_modified_at: 2025-03-11

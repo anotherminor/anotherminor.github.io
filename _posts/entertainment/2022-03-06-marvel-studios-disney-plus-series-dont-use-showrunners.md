@@ -1,5 +1,5 @@
 ---
-layout: post
+ 
 title: "마블 스튜디오의 디즈니+ 시리즈, 쇼러너 없이 제작… 일부 TV 작가들 우려"
 date: 2022-03-16
 last_modified_at: 2025-03-11

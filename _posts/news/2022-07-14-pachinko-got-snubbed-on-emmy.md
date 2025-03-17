@@ -1,5 +1,5 @@
 ---
-layout: post
+ 
 title: "2022 에미상: 〈파친코〉의 외면(snub)"
 date: 2022-07-14
 last_modified_at: 2025-03-11

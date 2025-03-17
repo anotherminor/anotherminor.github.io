@@ -1,5 +1,5 @@
 ---
-layout: post
+ 
 title: "수면제를 먹었는데 왜 동 트는 걸 봐야 하지?"
 date: 2020-06-26
 last_modified_at: 2025-03-11

@@ -1,5 +1,5 @@
 ---
-layout: post
+ 
 title: "4년 전 오늘"
 date: 2021-06-02
 last_modified_at: 2025-03-11

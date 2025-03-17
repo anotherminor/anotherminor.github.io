@@ -1,5 +1,5 @@
 ---
-layout: post
+ 
 title: "그래도 혼자 앓는 게"
 date: 2022-02-27
 last_modified_at: 2025-03-11

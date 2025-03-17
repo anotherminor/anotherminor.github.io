@@ -1,5 +1,5 @@
 ---
-layout: post
+ 
 title: "원장님과 짤막 상담."
 date: 2020-06-03
 last_modified_at: 2025-03-11
