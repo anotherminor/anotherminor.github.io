@@ -122,6 +122,12 @@ author:
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
       # url: "mailto:anotherminor.kr@gmail.com"
+    - label: "Instagram"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/anotherminor"
+    - label: "YouTube"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://www.youtube.com/@anotherminor"
     - label: "Website"
       icon: "fas fa-fw fa-link"
       # url: "https://your-website.com"
@@ -134,9 +140,6 @@ author:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       # url: "https://github.com/"
-    - label: "Instagram"
-      icon: "fab fa-fw fa-instagram"
-      url: "https://instagram.com/anotherminor"
 
 # Site Footer
 footer:
@@ -320,6 +323,6 @@ defaults:
       layout: single
       author_profile: true
       read_time: false
-      comments: # true
-      share: true
+      comments: true
+      share: false
       related: true
