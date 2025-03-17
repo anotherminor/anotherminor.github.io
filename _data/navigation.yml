@@ -1,5 +1,7 @@
 # main links
 main:
+  - title: "전체 글"
+    url: /posts
   - title: "모아보기"
     url: /categories/
   - title: "태그"
