@@ -1,8 +1,8 @@
 ---
-layout: post
 title: "[테스트] 마크다운 서식 출력"
 date: 1998-03-24
-categories: [wip]
+categories: 
+  - wip
 ---
 
 # 📝 마크다운 테스트 문서

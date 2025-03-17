@@ -126,7 +126,7 @@ author:
       icon: "fab fa-fw fa-instagram"
       url: "https://instagram.com/anotherminor"
     - label: "YouTube"
-      icon: "fab fa-fw fa-instagram"
+      icon: "fab fa-fw fa-youtube"
       url: "https://www.youtube.com/@anotherminor"
     - label: "Website"
       icon: "fas fa-fw fa-link"
