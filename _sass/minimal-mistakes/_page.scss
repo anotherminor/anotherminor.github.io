@@ -84,6 +84,7 @@ body {
 }
 
 .page__content {
+  font-size: $type-size-3;
 	h1, h2, h3, h4, h5, h6 {
 		.header-link {
 			position: relative;
@@ -237,7 +238,7 @@ body {
   padding: 2px 5px;
   color: #fff;
   font-family: $caption-font-family;
-  font-size: $type-size-7;
+  font-size: $type-size-5;
   background: #000;
   text-align: end;
   z-index: 5;
