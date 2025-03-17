@@ -116,7 +116,7 @@ author:
   name             : "anotherminor"
   avatar           : # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
   bio              : "부끄러운 민낯의 정수."
-  location         : "Somewhere"
+  location         : # "Somewhere"
   email            :
   links:
     - label: "Email"
