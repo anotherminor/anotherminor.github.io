@@ -17,7 +17,7 @@ minimal_mistakes_skin    : "default" # "air", "aqua", "contrast", "dark", "dirt"
 # Site Settings
 locale                   : "ko-KR"
 rtl                      : # true, false (default) # turns direction of the page into right to left for RTL languages
-title                    : "anoterminor의 블로그"
+title                    : "anotherminor의 블로그"
 title_separator          : " | "
 subtitle                 : # site tagline that appears below site title in masthead
 name                     : "anotherminor"
@@ -67,7 +67,7 @@ reCaptcha:
   secret                 :
 atom_feed:
   path                   : # blank (default) uses feed.xml
-  hide                   : # true, false (default)
+  hide                   : true # true, false (default)
 search                   : # true, false (default)
 search_full_content      : # true, false (default)
 search_provider          : # lunr (default), algolia, google
@@ -114,14 +114,14 @@ analytics:
 # Site Author
 author:
   name             : "anotherminor"
-  avatar           : # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
+  avatar           : "/assets/images/bio-photo.jpg"
   bio              : "부끄러운 민낯의 정수."
   location         : # "Somewhere"
-  email            :
+  email            : anotherminor.kr@gmail.com
   links:
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
-      url: "mailto:anotherminor.kr@gmail.com"
+      # url: "mailto:anotherminor.kr@gmail.com"
     - label: "Website"
       icon: "fas fa-fw fa-link"
       # url: "https://your-website.com"
@@ -158,7 +158,7 @@ footer:
       # url:
     - label: "Instagram"
       icon: "fab fa-fw fa-instagram"
-      url: "https://instagram.com/anotherminor"
+      # url: "https://instagram.com/anotherminor"
 
 
 # Reading Files
