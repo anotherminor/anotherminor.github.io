@@ -59,13 +59,13 @@ categories:
 ## 5. 코드 블록
 
 ### 인라인 코드
-`console.log('Hello, world!');`
+`console.log('Hello, world! 안녕하세요!');`
 
 ### 블록 코드
 
 ```python
 def hello():
-    print("Hello, world!")
+    print("Hello, world! 안녕하세요!")
 ```
 
 ```javascript
