@@ -5,13 +5,13 @@ search: false
 
 @charset "utf-8";
 
-# 직접 지정한 테마(다크모드 여부 판정)
+/* 직접 지정한 테마(다크모드 여부 판정) */
 @import "minimal-mistakes/skins/dirt"; // 기본 라이트 모드 스타일
 
 @media (prefers-color-scheme: dark) {
   @import "minimal-mistakes/skins/neon"; // 다크 모드일 경우 자동 적용
 }
-# 직접 지정 끝
+/* 직접 지정 끝 */
 
 @import "minimal-mistakes"; // main partials
 
