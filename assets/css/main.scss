@@ -6,10 +6,12 @@ search: false
 @charset "utf-8";
 
 /* 직접 지정한 테마(다크모드 여부 판정) */
-@import "minimal-mistakes/skins/dirt"; // 기본 라이트 모드 스타일
+[data-theme="light"] {
+  @import "dirt";
+}
 
-@media (prefers-color-scheme: dark) {
-  @import "minimal-mistakes/skins/neon"; // 다크 모드 감지 스타일
+[data-theme="dark"] {
+  @import "neon";
 }
 /* 직접 지정 끝 */
 

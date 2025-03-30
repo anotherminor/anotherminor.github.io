@@ -1,6 +1,13 @@
 /* ==========================================================================
    jQuery plugin settings and other scripts
-   ========================================================================== */
+========================================================================== */
+
+  // dark mode
+(function () {
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+const theme = prefersDark ? 'dark' : 'light';
+document.documentElement.setAttribute('data-theme', theme);
+})();
 
 $(document).ready(function () {
   // FitVids init
