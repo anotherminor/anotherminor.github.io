@@ -6,6 +6,8 @@ main:
     url: /categories/
   - title: "태그"
     url: /tags/
+  - title: "연도"
+    url: /years/
   
   # - title: "About"
   #   url: https://mmistakes.github.io/minimal-mistakes/about/

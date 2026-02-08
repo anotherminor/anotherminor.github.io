@@ -34,9 +34,9 @@ enable_copy_code_button  : # true, false (default)
 copyright                : # "copyright" name, defaults to site.title
 copyright_url            : # "copyright" URL, defaults to site.url
 comments:
-  provider               : # false (default), "disqus", "discourse", "facebook", "staticman", "staticman_v2", "utterances", "giscus", "custom"
+  provider               : "disqus" # false (default), "disqus", "discourse", "facebook", "staticman", "staticman_v2", "utterances", "giscus", "custom"
   disqus:
-    shortname            : # https://help.disqus.com/customer/portal/articles/466208-what-s-a-shortname-
+    shortname            : anotherminor
   discourse:
     server               : # https://meta.discourse.org/t/embedding-discourse-comments-via-javascript/31963 , e.g.: meta.discourse.org
   facebook:
@@ -171,6 +171,8 @@ include:
 exclude:
   - "*.sublime-project"
   - "*.sublime-workspace"
+  - "MWebLibrary"
+  - "_posts/**/*_[WIP].md"
   - vendor
   - .asset-cache
   - .bundle
@@ -320,7 +322,7 @@ defaults:
       path: ""
       type: posts
     values:
-      layout: single
+      layout: post
       show_date: true
       author_profile: true
       read_time: false

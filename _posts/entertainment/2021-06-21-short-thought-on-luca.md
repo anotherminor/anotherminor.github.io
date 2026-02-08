@@ -4,6 +4,7 @@ title: "〈루카〉 짧은 후기"
 date: 2021-06-21
 last_modified_at: 2025-03-11
 categories: [즐길거리]
+tags: [즐길거리, luca]
 ---
 
 ### 물 밖으로, 더 넓은 세상으로.

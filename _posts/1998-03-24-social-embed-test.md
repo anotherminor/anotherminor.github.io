@@ -3,6 +3,7 @@
 title: "[테스트] 소셜 미디어 게시글 임베드 출력"
 date: 1998-03-24
 categories: [wip]
+tags: [wip]
 ---
 
 # YouTube 영상 임베드

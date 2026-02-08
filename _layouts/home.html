@@ -1,20 +1,50 @@
 ---
-layout: archive
+layout: default
 ---
 
-{{ content }}
+<section class="intro">
+  <h1>{{ site.title }}</h1>
+  {% if site.description %}
+    <p>{{ site.description }}</p>
+  {% endif %}
+</section>
 
-<h3 class="archive__subtitle">{{ site.data.ui-text[site.locale].recent_posts | default: "Recent Posts" }}</h3>
-
-{% if paginator %}
-  {% assign posts = paginator.posts %}
-{% else %}
-  {% assign posts = site.posts %}
+{% if content and content != "" %}
+  <div class="page">{{ content }}</div>
 {% endif %}
 
-{% assign entries_layout = page.entries_layout | default: 'list' %}
-<div class="entries-{{ entries_layout }}">
-  {% include documents-collection.html entries=posts type=entries_layout %}
-</div>
+<section class="post-list" aria-label="최근 글 목록">
+  {% if paginator.posts %}
+    {% assign list = paginator.posts %}
+  {% else %}
+    {% assign list = site.posts %}
+  {% endif %}
 
-{% include paginator.html %}
+  {% for post in list %}
+    <article class="post-card">
+      <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+      <div class="meta">
+        {{ post.date | date: "%Y-%m-%d" }}
+        {% if post.categories %}
+          · {{ post.categories | join: ", " }}
+        {% endif %}
+      </div>
+      {% if post.excerpt %}
+        <p>{{ post.excerpt | strip_html | truncate: 160 }}</p>
+      {% endif %}
+    </article>
+  {% endfor %}
+</section>
+
+{% if paginator.total_pages and paginator.total_pages > 1 %}
+  <nav class="pagination" aria-label="페이지 이동">
+    {% if paginator.previous_page %}
+      <a href="{{ paginator.previous_page_path | relative_url }}">← 이전</a>
+    {% else %}
+      <span></span>
+    {% endif %}
+    {% if paginator.next_page %}
+      <a href="{{ paginator.next_page_path | relative_url }}">다음 →</a>
+    {% endif %}
+  </nav>
+{% endif %}

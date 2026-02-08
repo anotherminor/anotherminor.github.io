@@ -1,0 +1,15 @@
+---
+layout: default
+---
+
+<section class="page">
+  <header>
+    <h1>{{ page.title }}</h1>
+    {% if page.show_date and page.date %}
+      <div class="meta">{{ page.date | date: "%Y-%m-%d" }}</div>
+    {% endif %}
+  </header>
+  <div class="post-content">
+    {{ content }}
+  </div>
+</section>

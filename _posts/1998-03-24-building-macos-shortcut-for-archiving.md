@@ -3,6 +3,7 @@ title: "스크린샷 아카이브 포스트 전환용 macOS 단축어 설계"
 date: 1998-03-24
 categories: 
   - wip
+tags: [wip]
 ---
 
 ChatGPT 캔버스 기능으로 작업함.

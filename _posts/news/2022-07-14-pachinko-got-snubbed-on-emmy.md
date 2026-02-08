@@ -4,6 +4,7 @@ title: "2022 에미상: 〈파친코〉의 외면(snub)"
 date: 2022-07-14
 last_modified_at: 2025-03-11
 categories: [소식]
+tags: [소식, pachinko, emmy]
 ---
 
 ## 엔터테인먼트 위클리
