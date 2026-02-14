@@ -8,7 +8,11 @@
   <link href="{% if site.atom_feed.path %}{{ site.atom_feed.path }}{% else %}{{ '/feed.xml' | relative_url }}{% endif %}" type="application/atom+xml" rel="alternate" title="{{ site.title }} Feed">
 {% endunless %}
 
-<link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+{% assign css_version = site.time | date: "%s" %}
+{% if site.github and site.github.build_revision %}
+  {% assign css_version = site.github.build_revision %}
+{% endif %}
+<link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}?v={{ css_version }}">
 
 {% if site.head_scripts %}
   {% for script in site.head_scripts %}
