@@ -8,6 +8,8 @@ main:
     url: /tags/
   - title: "연도"
     url: /years/
+  - title: "시리즈"
+    url: /series/
   
   # - title: "Sample Posts"
   #   url: /year-archive/

@@ -1,0 +1,37 @@
+---
+layout: default
+---
+
+<section class="page">
+  <header>
+    <h1>{{ page.title | default: "시리즈 정주행" }}</h1>
+  </header>
+
+  {% assign series_groups = site.posts | where_exp: "post", "post.series" | group_by: "series" %}
+
+  {% if series_groups.size == 0 %}
+    <p>아직 등록된 시리즈가 없습니다.</p>
+  {% else %}
+    <ul class="tag-list">
+      {% for series in series_groups %}
+        <li><a href="#{{ series.name | slugify }}">{{ series.name }} ({{ series.items | size }})</a></li>
+      {% endfor %}
+    </ul>
+
+    {% for series in series_groups %}
+      {% assign ordered_posts = series.items | sort: "date" | reverse %}
+      <h2 id="{{ series.name | slugify }}">{{ series.name }}</h2>
+      <div class="post-list">
+        {% for post in ordered_posts %}
+          <article class="post-card">
+            <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+            <div class="meta">{{ post.date | date: "%Y-%m-%d" }}</div>
+            {% if post.excerpt %}
+              <p>{{ post.excerpt | strip_html | truncate: 160 }}</p>
+            {% endif %}
+          </article>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  {% endif %}
+</section>

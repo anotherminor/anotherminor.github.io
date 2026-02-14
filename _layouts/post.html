@@ -2,25 +2,50 @@
 layout: default
 ---
 
-<article class="page">
-  <header>
-    <h1>{{ page.title }}</h1>
-    <div class="meta">
-      {{ page.date | date: "%Y-%m-%d" }}
-      {% if page.categories %}
-        · {{ page.categories | join: ", " }}
-      {% endif %}
-      {% if page.tags %}
-        · #{{ page.tags | join: " #" }}
-      {% endif %}
+{% assign journal_nav = "rambling:단상,entertainment:문화,tech:테크" | split: "," %}
+
+<section class="post-shell">
+  <aside class="post-shell__nav" aria-label="글 분류">
+    <h2 class="post-shell__nav-title">분류</h2>
+    <ul class="post-shell__nav-list">
+      {% for item in journal_nav %}
+        {% assign pair = item | split: ":" %}
+        {% assign key = pair[0] %}
+        {% assign label = pair[1] %}
+        {% assign is_active = false %}
+        {% if page.categories contains key %}
+          {% assign is_active = true %}
+        {% endif %}
+        <li>
+          <a href="{{ '/categories/#' | append: key | relative_url }}"{% if is_active %} class="is-active"{% endif %}>{{ label }}</a>
+        </li>
+      {% endfor %}
+      <li><a href="{{ '/tags/' | relative_url }}">태그</a></li>
+      <li><a href="{{ '/years/' | relative_url }}">연도</a></li>
+      <li><a href="{{ '/series/' | relative_url }}">시리즈</a></li>
+    </ul>
+  </aside>
+
+  <article class="page post-shell__content">
+    <header>
+      <h1>{{ page.title }}</h1>
+      <div class="meta">
+        {{ page.date | date: "%Y-%m-%d" }}
+        {% if page.categories %}
+          · {{ page.categories | join: ", " }}
+        {% endif %}
+        {% if page.tags %}
+          · #{{ page.tags | join: " #" }}
+        {% endif %}
+      </div>
+    </header>
+
+    <div class="post-content">
+      {{ content }}
     </div>
-  </header>
 
-  <div class="post-content">
-    {{ content }}
-  </div>
-
-  {% if page.comments %}
-    {% include comments.html %}
-  {% endif %}
-</article>
+    {% if page.comments %}
+      {% include comments.html %}
+    {% endif %}
+  </article>
+</section>

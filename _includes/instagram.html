@@ -1,4 +1,11 @@
+{% assign post_url = include.url | default: "" %}
+{% if post_url == "" and include.id %}
+  {% assign post_url = "https://www.instagram.com/p/" | append: include.id | append: "/" %}
+{% endif %}
+
+{% if post_url != "" %}
 <div class="embed">
-  <blockquote class="instagram-media" data-instgrm-permalink="{{ include.url }}" data-instgrm-version="14"></blockquote>
+  <blockquote class="instagram-media" data-instgrm-permalink="{{ post_url }}" data-instgrm-version="14"></blockquote>
   <script async src="https://www.instagram.com/embed.js"></script>
 </div>
+{% endif %}

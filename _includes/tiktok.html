@@ -1,4 +1,20 @@
+{% assign video_id = include.id | default: "" %}
+{% assign source_url = include.url | default: "" %}
+
+{% if video_id == "" and source_url != "" %}
+  {% if source_url contains "video/" %}
+    {% assign video_id = source_url | split: "video/" | last | split: "?" | first | split: "/" | first %}
+  {% endif %}
+{% endif %}
+
+{% if video_id != "" %}
 <div class="embed">
-  <blockquote class="tiktok-embed" cite="{{ include.url }}" data-video-id="{{ include.id }}" style="max-width: 605px; min-width: 325px;"></blockquote>
-  <script async src="https://www.tiktok.com/embed.js"></script>
+  <iframe
+    src="https://www.tiktok.com/embed/v2/{{ video_id }}"
+    title="TikTok video"
+    frameborder="0"
+    allow="autoplay; encrypted-media; picture-in-picture; web-share"
+    allowfullscreen
+  ></iframe>
 </div>
+{% endif %}

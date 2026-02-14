@@ -1,9 +1,24 @@
+{% assign video_id = include.id | default: "" %}
+{% assign source_url = include.url | default: "" %}
+
+{% if video_id == "" and source_url != "" %}
+  {% if source_url contains "youtu.be/" %}
+    {% assign video_id = source_url | split: "youtu.be/" | last | split: "?" | first | split: "&" | first | split: "/" | first %}
+  {% elsif source_url contains "/shorts/" %}
+    {% assign video_id = source_url | split: "/shorts/" | last | split: "?" | first | split: "&" | first | split: "/" | first %}
+  {% elsif source_url contains "watch?v=" %}
+    {% assign video_id = source_url | split: "watch?v=" | last | split: "&" | first %}
+  {% endif %}
+{% endif %}
+
+{% if video_id != "" %}
 <div class="embed">
   <iframe
-    src="https://www.youtube.com/embed/{{ include.id }}"
+    src="https://www.youtube.com/embed/{{ video_id }}"
     title="YouTube video"
     frameborder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     allowfullscreen
   ></iframe>
 </div>
+{% endif %}

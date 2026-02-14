@@ -1,0 +1,22 @@
+{% assign video_id = include.id | default: "" %}
+{% assign source_url = include.url | default: "" %}
+
+{% if video_id == "" and source_url != "" %}
+  {% if source_url contains "player.vimeo.com/video/" %}
+    {% assign video_id = source_url | split: "player.vimeo.com/video/" | last | split: "?" | first | split: "/" | first %}
+  {% elsif source_url contains "vimeo.com/" %}
+    {% assign video_id = source_url | split: "vimeo.com/" | last | split: "?" | first | split: "/" | first %}
+  {% endif %}
+{% endif %}
+
+{% if video_id != "" %}
+<div class="embed">
+  <iframe
+    src="https://player.vimeo.com/video/{{ video_id }}"
+    title="Vimeo video"
+    frameborder="0"
+    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+    allowfullscreen
+  ></iframe>
+</div>
+{% endif %}

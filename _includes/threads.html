@@ -1,7 +1,17 @@
-<blockquote class="instagram-media"
-  data-instgrm-permalink="https://www.threads.net/@{{ include.user }}/post/{{ include.id }}/"
-  data-instgrm-version="14"
-  style="max-width: 35rem; margin: auto;">
-  <a href="https://www.threads.net/@{{ include.user }}/post/{{ include.id }}/"> </a>
-</blockquote>
-<script async src="https://www.instagram.com/embed.js"></script>
+{% assign post_url = include.url | default: "" %}
+{% if post_url == "" and include.user and include.id %}
+  {% assign post_url = "https://www.threads.net/@" | append: include.user | append: "/post/" | append: include.id | append: "/" %}
+{% endif %}
+
+{% if post_url != "" %}
+<div class="embed">
+  <blockquote
+    class="instagram-media"
+    data-instgrm-permalink="{{ post_url }}"
+    data-instgrm-version="14"
+    style="max-width: 35rem; margin: auto;">
+    <a href="{{ post_url }}"></a>
+  </blockquote>
+  <script async src="https://www.instagram.com/embed.js"></script>
+</div>
+{% endif %}
