@@ -2,36 +2,40 @@
 layout: default
 ---
 
-<section class="page">
-  <header>
-    <h1>{{ page.title | default: "시리즈 정주행" }}</h1>
-  </header>
+<section class="panel">
+  <h1 class="panel__title">{{ page.title | default: "시리즈 정주행" }}</h1>
+</section>
 
-  {% assign series_groups = site.posts | where_exp: "post", "post.series" | group_by: "series" %}
+{% assign series_groups = site.posts | where_exp: "post", "post.series" | group_by: "series" %}
 
-  {% if series_groups.size == 0 %}
+{% if series_groups.size == 0 %}
+  <section class="stream-year">
     <p>아직 등록된 시리즈가 없습니다.</p>
-  {% else %}
-    <ul class="tag-list">
+  </section>
+{% else %}
+  <section class="panel">
+    <ul class="anchor-cloud" aria-label="시리즈 바로가기">
       {% for series in series_groups %}
         <li><a href="#{{ series.name | slugify }}">{{ series.name }} ({{ series.items | size }})</a></li>
       {% endfor %}
     </ul>
+  </section>
 
-    {% for series in series_groups %}
-      {% assign ordered_posts = series.items | sort: "date" | reverse %}
+  {% for series in series_groups %}
+    {% assign ordered_posts = series.items | sort: "date" | reverse %}
+    <section class="stream-year" aria-label="{{ series.name }} 시리즈 글 목록">
       <h2 id="{{ series.name | slugify }}">{{ series.name }}</h2>
-      <div class="post-list">
+      <ul class="stream-list">
         {% for post in ordered_posts %}
-          <article class="post-card">
-            <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
-            <div class="meta">{{ post.date | date: "%Y-%m-%d" }}</div>
-            {% if post.excerpt %}
-              <p>{{ post.excerpt | strip_html | truncate: 160 }}</p>
+          <li class="stream-item">
+            <time class="stream-item__date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%y-%m-%d" }}</time>
+            <a class="stream-item__title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
+            {% if post.categories and post.categories[0] %}
+              <span class="stream-item__meta">{{ post.categories[0] }}</span>
             {% endif %}
-          </article>
+          </li>
         {% endfor %}
-      </div>
-    {% endfor %}
-  {% endif %}
-</section>
+      </ul>
+    </section>
+  {% endfor %}
+{% endif %}

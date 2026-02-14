@@ -2,19 +2,25 @@
 layout: default
 ---
 
-<section class="page">
-  <header>
-    <h1>{{ page.title | default: "Posts" }}</h1>
-  </header>
-  <div class="post-list">
-    {% for post in site.posts %}
-      <article class="post-card">
-        <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
-        <div class="meta">{{ post.date | date: "%Y-%m-%d" }}</div>
-        {% if post.excerpt %}
-          <p>{{ post.excerpt | strip_html | truncate: 160 }}</p>
-        {% endif %}
-      </article>
-    {% endfor %}
-  </div>
+<section class="panel">
+  <h1 class="panel__title">{{ page.title | default: "전체 글" }}</h1>
 </section>
+
+{% assign yearly_posts = site.posts | group_by_exp: "post", "post.date | date: '%Y'" %}
+
+{% for year in yearly_posts %}
+  <section class="stream-year" aria-label="{{ year.name }}년 글 목록">
+    <h2>{{ year.name }}</h2>
+    <ul class="stream-list">
+      {% for post in year.items %}
+        <li class="stream-item">
+          <time class="stream-item__date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%m-%d" }}</time>
+          <a class="stream-item__title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          {% if post.categories and post.categories[0] %}
+            <span class="stream-item__meta">{{ post.categories[0] }}</span>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endfor %}

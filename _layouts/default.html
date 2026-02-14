@@ -5,39 +5,44 @@
   </head>
   <body>
     <a class="skip-link" href="#content">본문으로 건너뛰기</a>
-    <header class="site-header">
-      <div class="site-header__inner">
-        <a class="site-title" href="{{ '/' | relative_url }}">
-          {{ site.title }}
+
+    <div class="frame">
+      <aside class="frame__sidebar" aria-label="사이트 정보">
+        <a class="brand" href="{{ '/' | relative_url }}">
+          <span class="brand__title">{{ site.title }}</span>
           {% if site.description %}
-            <span>{{ site.description }}</span>
+            <span class="brand__tag">{{ site.description }}</span>
           {% endif %}
         </a>
-        <nav class="site-nav" aria-label="주요 메뉴">
+
+        <nav class="sidebar-nav" aria-label="주요 메뉴">
           {% if site.data.navigation.main %}
-            {% for item in site.data.navigation.main %}
-              <a href="{{ item.url | relative_url }}">{{ item.title }}</a>
-            {% endfor %}
+            <ul>
+              {% for item in site.data.navigation.main %}
+                <li><a href="{{ item.url | relative_url }}">{{ item.title }}</a></li>
+              {% endfor %}
+            </ul>
           {% endif %}
         </nav>
-      </div>
-    </header>
 
-    <main id="content" class="site-main">
-      {{ content }}
-    </main>
+        {% if site.author.links %}
+          <ul class="sidebar-links" aria-label="소셜 링크">
+            {% for link in site.author.links %}
+              {% if link.url %}
+                <li><a href="{{ link.url }}" rel="noopener noreferrer" target="_blank">{{ link.label }}</a></li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </aside>
+
+      <main id="content" class="frame__content">
+        {{ content }}
+      </main>
+    </div>
 
     <footer class="site-footer">
       <div>{{ site.author.name | default: site.title }}</div>
-      {% if site.author.links %}
-        <div>
-          {% for link in site.author.links %}
-            {% if link.url %}
-              <a href="{{ link.url }}">{{ link.label }}</a>
-            {% endif %}
-          {% endfor %}
-        </div>
-      {% endif %}
     </footer>
 
     {% include comments-providers/scripts.html %}

@@ -2,30 +2,33 @@
 layout: default
 ---
 
-<section class="page">
-  <header>
-    <h1>{{ page.title | default: "Categories" }}</h1>
-  </header>
+<section class="panel">
+  <h1 class="panel__title">{{ page.title | default: "주제별로 모아보기" }}</h1>
 
   {% assign category_names = site.categories | sort %}
-  <ul class="category-list">
+  <ul class="anchor-cloud" aria-label="카테고리 바로가기">
     {% for category in category_names %}
       {% assign category_name = category[0] %}
       <li><a href="#{{ category_name | slugify }}">{{ category_name }}</a></li>
     {% endfor %}
   </ul>
-
-  {% for category in category_names %}
-    {% assign category_name = category[0] %}
-    {% assign category_posts = category[1] %}
-    <h2 id="{{ category_name | slugify }}">{{ category_name }}</h2>
-    <div class="post-list">
-      {% for post in category_posts %}
-        <article class="post-card">
-          <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
-          <div class="meta">{{ post.date | date: "%Y-%m-%d" }}</div>
-        </article>
-      {% endfor %}
-    </div>
-  {% endfor %}
 </section>
+
+{% for category in category_names %}
+  {% assign category_name = category[0] %}
+  {% assign category_posts = category[1] | sort: "date" | reverse %}
+  <section class="stream-year" aria-label="{{ category_name }} 카테고리 글 목록">
+    <h2 id="{{ category_name | slugify }}">{{ category_name }}</h2>
+    <ul class="stream-list">
+      {% for post in category_posts %}
+        <li class="stream-item">
+          <time class="stream-item__date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%y-%m-%d" }}</time>
+          <a class="stream-item__title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          {% if post.tags and post.tags[0] %}
+            <span class="stream-item__meta">#{{ post.tags[0] }}</span>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endfor %}

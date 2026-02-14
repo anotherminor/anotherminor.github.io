@@ -2,46 +2,47 @@
 layout: default
 ---
 
-<section class="intro">
-  <h1>{{ site.title }}</h1>
+<section class="panel panel--hero">
+  <h1 class="panel__title">Latest Writing</h1>
   {% if site.description %}
-    <p>{{ site.description }}</p>
+    <p class="panel__lead">{{ site.description }}</p>
+  {% endif %}
+  {% if content and content != "" %}
+    <div class="panel__body">{{ content }}</div>
   {% endif %}
 </section>
 
-{% if content and content != "" %}
-  <div class="page">{{ content }}</div>
+{% if paginator.posts %}
+  {% assign list = paginator.posts %}
+{% else %}
+  {% assign list = site.posts %}
 {% endif %}
 
-<section class="post-list" aria-label="최근 글 목록">
-  {% if paginator.posts %}
-    {% assign list = paginator.posts %}
-  {% else %}
-    {% assign list = site.posts %}
-  {% endif %}
+{% assign yearly_posts = list | group_by_exp: "post", "post.date | date: '%Y'" %}
 
-  {% for post in list %}
-    <article class="post-card">
-      <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
-      <div class="meta">
-        {{ post.date | date: "%Y-%m-%d" }}
-        {% if post.categories %}
-          · {{ post.categories | join: ", " }}
-        {% endif %}
-      </div>
-      {% if post.excerpt %}
-        <p>{{ post.excerpt | strip_html | truncate: 160 }}</p>
-      {% endif %}
-    </article>
-  {% endfor %}
-</section>
+{% for year in yearly_posts %}
+  <section class="stream-year" aria-label="{{ year.name }}년 글 목록">
+    <h2>{{ year.name }}</h2>
+    <ul class="stream-list">
+      {% for post in year.items %}
+        <li class="stream-item">
+          <time class="stream-item__date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%m-%d" }}</time>
+          <a class="stream-item__title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          {% if post.categories and post.categories[0] %}
+            <span class="stream-item__meta">{{ post.categories[0] }}</span>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endfor %}
 
 {% if paginator.total_pages and paginator.total_pages > 1 %}
   <nav class="pagination" aria-label="페이지 이동">
     {% if paginator.previous_page %}
       <a href="{{ paginator.previous_page_path | relative_url }}">← 이전</a>
     {% else %}
-      <span></span>
+      <span aria-hidden="true"></span>
     {% endif %}
     {% if paginator.next_page %}
       <a href="{{ paginator.next_page_path | relative_url }}">다음 →</a>
