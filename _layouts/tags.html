@@ -9,14 +9,18 @@ layout: default
   <ul class="anchor-cloud" aria-label="태그 바로가기">
     {% for tag in tag_names %}
       {% assign tag_name = tag[0] %}
-      <li><a href="#{{ tag_name | slugify }}">#{{ tag_name }}</a></li>
+      {% assign tag_posts = tag[1] | where_exp: "post", "post.hidden != true and post.hidden != 'true'" %}
+      {% if tag_posts.size > 0 %}
+        <li><a href="#{{ tag_name | slugify }}">#{{ tag_name }}</a></li>
+      {% endif %}
     {% endfor %}
   </ul>
 </section>
 
 {% for tag in tag_names %}
   {% assign tag_name = tag[0] %}
-  {% assign tag_posts = tag[1] | sort: "date" | reverse %}
+  {% assign tag_posts = tag[1] | where_exp: "post", "post.hidden != true and post.hidden != 'true'" | sort: "date" | reverse %}
+  {% if tag_posts.size > 0 %}
   <section class="stream-year" aria-label="{{ tag_name }} 태그 글 목록">
     <h2 id="{{ tag_name | slugify }}">#{{ tag_name }}</h2>
     <ul class="stream-list">
@@ -31,4 +35,5 @@ layout: default
       {% endfor %}
     </ul>
   </section>
+  {% endif %}
 {% endfor %}

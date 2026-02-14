@@ -44,6 +44,25 @@ layout: default
       {{ content }}
     </div>
 
+    {% assign rendered_content = content | default: "" %}
+    {% assign raw_content = page.content | default: "" %}
+    {% assign needs_instagram_embed = false %}
+    {% assign needs_twitter_embed = false %}
+
+    {% if rendered_content contains 'instagram-media' or raw_content contains 'instagram.html' or raw_content contains 'threads.html' %}
+      {% assign needs_instagram_embed = true %}
+    {% endif %}
+    {% if rendered_content contains 'twitter-tweet' or raw_content contains 'twitter.html' %}
+      {% assign needs_twitter_embed = true %}
+    {% endif %}
+
+    {% if needs_instagram_embed %}
+      <script async src="https://www.instagram.com/embed.js"></script>
+    {% endif %}
+    {% if needs_twitter_embed %}
+      <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    {% endif %}
+
     {% if page.comments %}
       {% include comments.html %}
     {% endif %}

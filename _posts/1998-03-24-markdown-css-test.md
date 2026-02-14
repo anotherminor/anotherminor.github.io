@@ -4,6 +4,8 @@ date: 1998-03-24
 categories: 
   - wip
 tags: [wip]
+hidden: true
+comments: false
 ---
 
 # 📝 마크다운 테스트 문서

@@ -6,7 +6,7 @@ layout: default
   <h1 class="panel__title">{{ page.title | default: "시리즈 정주행" }}</h1>
 </section>
 
-{% assign series_groups = site.posts | where_exp: "post", "post.series" | group_by: "series" %}
+{% assign series_groups = site.posts | where_exp: "post", "post.series and post.hidden != true and post.hidden != 'true'" | group_by: "series" %}
 
 {% if series_groups.size == 0 %}
   <section class="stream-year">

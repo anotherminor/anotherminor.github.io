@@ -21,6 +21,8 @@ include:
 exclude:
   - "*.sublime-project"
   - "*.sublime-workspace"
+  - AGENTS.md
+  - .MWebMetaData
   - .bundle
   - .jekyll-cache
   - .sass-cache

@@ -9,14 +9,18 @@ layout: default
   <ul class="anchor-cloud" aria-label="카테고리 바로가기">
     {% for category in category_names %}
       {% assign category_name = category[0] %}
-      <li><a href="#{{ category_name | slugify }}">{{ category_name }}</a></li>
+      {% assign category_posts = category[1] | where_exp: "post", "post.hidden != true and post.hidden != 'true'" %}
+      {% if category_posts.size > 0 %}
+        <li><a href="#{{ category_name | slugify }}">{{ category_name }}</a></li>
+      {% endif %}
     {% endfor %}
   </ul>
 </section>
 
 {% for category in category_names %}
   {% assign category_name = category[0] %}
-  {% assign category_posts = category[1] | sort: "date" | reverse %}
+  {% assign category_posts = category[1] | where_exp: "post", "post.hidden != true and post.hidden != 'true'" | sort: "date" | reverse %}
+  {% if category_posts.size > 0 %}
   <section class="stream-year" aria-label="{{ category_name }} 카테고리 글 목록">
     <h2 id="{{ category_name | slugify }}">{{ category_name }}</h2>
     <ul class="stream-list">
@@ -31,4 +35,5 @@ layout: default
       {% endfor %}
     </ul>
   </section>
+  {% endif %}
 {% endfor %}

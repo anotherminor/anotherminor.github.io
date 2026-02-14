@@ -4,6 +4,8 @@ date: 1998-03-24
 categories: 
   - wip
 tags: [wip]
+hidden: true
+comments: false
 ---
 
 ChatGPT 캔버스 기능으로 작업함.

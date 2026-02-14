@@ -5,22 +5,18 @@ layout: default
 <section class="panel">
   <h1 class="panel__title">{{ page.title | default: "전체 글" }}</h1>
 </section>
+{% assign visible_posts = site.posts | where_exp: "item", "item.hidden != true and item.hidden != 'true'" %}
 
-{% assign yearly_posts = site.posts | group_by_exp: "post", "post.date | date: '%Y'" %}
-
-{% for year in yearly_posts %}
-  <section class="stream-year" aria-label="{{ year.name }}년 글 목록">
-    <h2>{{ year.name }}</h2>
-    <ul class="stream-list">
-      {% for post in year.items %}
-        <li class="stream-item">
-          <time class="stream-item__date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%m-%d" }}</time>
-          <a class="stream-item__title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
-          {% if post.categories and post.categories[0] %}
-            <span class="stream-item__meta">{{ post.categories[0] }}</span>
-          {% endif %}
-        </li>
-      {% endfor %}
-    </ul>
-  </section>
-{% endfor %}
+<section class="stream-year" aria-label="전체 글 목록">
+  <ul class="stream-list">
+    {% for post in visible_posts %}
+      <li class="stream-item">
+        <time class="stream-item__date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%y-%m-%d" }}</time>
+        <a class="stream-item__title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        {% if post.categories and post.categories[0] %}
+          <span class="stream-item__meta">{{ post.categories[0] }}</span>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</section>
