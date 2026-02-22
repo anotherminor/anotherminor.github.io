@@ -128,6 +128,23 @@ front matter는 YAML로 통일한다.
 - Hugo 설정:
   - `permalinks.posts: /posts/:year/:month/:slug/`
 
+### 6.1.1 사이트 루트 URL 정책 (GitHub Pages 기준)
+
+GitHub Pages에서 사이트의 루트 URL은 저장소 유형에 따라 달라진다.
+
+- 프로젝트 사이트(repo가 일반 이름): `https://<user>.github.io/<repo>/`
+- 사용자 사이트(repo 이름이 `<user>.github.io`): `https://<user>.github.io/`
+- 커스텀 도메인 사용 시: `https://<custom-domain>/`
+
+현재 저장소(`anotherminor.pages.dev`)는 프로젝트 사이트이므로 기본 URL은 다음 형태다.
+
+- `https://anotherminor.github.io/anotherminor.pages.dev/`
+
+장기 운영 권장안:
+- 기본 운영은 프로젝트 사이트 URL로 가능
+- 링크 안정성과 브랜딩을 위해 커스텀 도메인 연결을 권장
+- 루트 경로(`/`) 운영이 필요하면 사용자 사이트 repo 전략을 별도로 검토
+
 ### 6.2 taxonomy / term 정책 (v3 보정 반영)
 
 Hugo taxonomy 사용 시 기본적으로 taxonomy list(`/tags/`)와 term page(`/tags/foo/`)가 모두 생성되지만, 본 프로젝트는 아래처럼 운영한다.
@@ -183,6 +200,11 @@ Hugo taxonomy 사용 시 기본적으로 taxonomy list(`/tags/`)와 term page(`/
 
 배포 방식(최종):
 
+- GitHub Actions에서 빌드 후 `public/`를 GitHub Pages에 배포
+- 워크플로우 파일: `.github/workflows/deploy-github-pages.yml`
+
+빌드 단계(개념):
+
 ```sh
 npm ci
 hugo --gc --minify --baseURL "${BASE_URL}"
@@ -195,15 +217,18 @@ npx --no-install pagefind --site public --glob "posts/**/*.html"
 public
 ```
 
-GitHub Actions 워크플로우에서 `actions/configure-pages` 출력값을 `BASE_URL`로 사용해 Hugo `baseURL`을 주입한다.
-
 ### 7.3 GitHub Pages 배포 계약 (워크플로우)
 
 - GitHub Actions로 빌드/배포한다 (`.github/workflows/deploy-github-pages.yml`)
 - Hugo 버전은 워크플로우에서 핀 (`0.156.0`)
 - Node 버전은 워크플로우에서 핀 (`20`)
-- `BASE_URL`은 `actions/configure-pages`의 `base_url` 출력값 사용
-- 커스텀 도메인은 GitHub Pages 설정(또는 `CNAME`)으로 별도 관리
+- 기본 `BASE_URL`은 `actions/configure-pages`의 `base_url` 출력값을 사용
+- GitHub repo variable `SITE_BASE_URL`가 있으면 이를 우선 사용 (커스텀 도메인용)
+- 커스텀 도메인은 GitHub Pages 설정(`Custom domain`)으로 연결하고, 필요 시 `static/CNAME`를 사용한다
+
+`baseURL` 주입 우선순위:
+- `SITE_BASE_URL` (repo variable) 우선
+- 없으면 GitHub Pages 배포 URL (`actions/configure-pages` 출력값) 사용
 
 ### 7.4 Pagefind 버전/실행 정책
 
@@ -252,23 +277,26 @@ CLI 규칙:
 
 ## 9. 리다이렉트 정책 (`aliases` 중심)
 
-### 9.1 역할 분리 (문서 전체 공통 규칙)
+### 9.1 역할 정의 (문서 전체 공통 규칙)
 
 - `aliases`
   - front matter에 기록
   - Hugo가 alias HTML 생성
   - 클라이언트 리다이렉트 보조 용도
-- GitHub Pages는 Cloudflare `_redirects` 같은 서버 측 리다이렉트 규칙 파일을 지원하지 않는다.
+
+GitHub Pages 제약:
+- Cloudflare `_redirects` 같은 서버 측 리다이렉트 규칙 파일을 지원하지 않는다.
 
 중요:
 - `aliases`를 HTTP 301로 간주하지 않는다.
 - GitHub Pages에서 서버 측 301/302가 필요하면 별도 호스트/프록시가 필요하다.
 
-### 9.2 slug 변경 운영 절차
+### 9.2 slug 변경 운영 절차 (GitHub Pages 기준)
 
 1. 포스트 `slug` 변경
 2. 기존 경로를 `aliases`에 추가
 3. 배포 후 이전/신규 URL 모두 확인 (alias HTML 동작 확인)
+4. 서버 측 301이 꼭 필요한 경우, 호스트/프록시 전략을 별도 검토
 
 ### 9.3 후속 개선 (v1.1 후보)
 
@@ -284,7 +312,7 @@ CLI 규칙:
 3. `slug` 입력 (공개 URL용)
 4. 이미지가 있으면 `images/`에 저장하고 상대경로로 참조
 5. 로컬 미리보기 확인
-6. 커밋/푸시 → GitHub Actions 배포 확인 (필요 시 별도 PR 검토) → merge
+6. 커밋/푸시 → GitHub Actions 배포 확인 → merge
 
 ### 10.2 발행
 
@@ -314,6 +342,7 @@ CLI 규칙:
 - GitHub Actions 실행 시간/분량, GitHub Pages 배포 제약을 고려해야 함
 - v1에서는 순수 정적 사이트 + GitHub Pages 표준 배포를 유지
 - 파일/미디어 증가 속도 관리 필요
+- 프로젝트 사이트 URL은 repo 경로(`/<repo>/`)를 포함하므로, 템플릿/자산 경로는 `baseURL`을 기준으로 생성해야 함
 
 주의:
 - 정확한 제한/정책은 운영 시점에 GitHub 공식 문서 최신값 확인
@@ -346,8 +375,8 @@ CLI 규칙:
 
 ### 12.2 baseURL / canonical / 절대 URL
 
-- GitHub Pages 배포 URL 기준 canonical/절대 URL 생성
-- 커스텀 도메인 도입 후 canonical 생성값 확인
+- 기본(프로젝트 사이트) 배포 시 `https://<user>.github.io/<repo>/` 기준 canonical/절대 URL 생성
+- 커스텀 도메인 도입 후 `SITE_BASE_URL` 기준 canonical 생성값 확인
 - RSS/sitemap 절대 URL 정합성 확인
 
 ### 12.3 Pagefind 검색 인덱싱
@@ -406,11 +435,12 @@ CLI 규칙:
 - Cloudflare 빌드에서 `SKIP_DEPENDENCY_INSTALL=1` 권장(사실상 필수)
 - `npx --no-install pagefind --glob "posts/**/*.html"`로 검색 인덱싱 범위/재현성 강화
 
-### v4 전환안 (현재 기준)
+### v4 전환안 (현재 기준, Cloudflare 폐기 후)
 
 - 호스팅/배포를 Cloudflare Pages에서 `GitHub Pages + GitHub Actions`로 전환
 - Cloudflare 전용 `Deploy command`/`_redirects` 운영을 폐기하고 `aliases` 중심 정책으로 단순화
 - GitHub Actions 워크플로우에서 Hugo/Pagefind 빌드를 수행하고 `public/`를 Pages에 배포
+- GitHub Pages 프로젝트 사이트 URL(`/repo/`) 특성을 반영해 서브경로 링크 생성을 보정
 
 ## 부록 A. 현재 repo와의 정합성 체크 포인트
 
@@ -418,10 +448,12 @@ CLI 규칙:
 - `hugo.yaml`: v3 핵심 보정값 반영 상태 유지
 - `package.json`: `pagefind` 버전 핀 + `build:pages` 스크립트 일치 유지
 - `.github/workflows/deploy-github-pages.yml`: GitHub Pages 배포 워크플로우와 문서 설명 일치 유지
+- 템플릿 링크 생성: GitHub Pages 프로젝트 사이트의 repo 서브경로를 보존하도록 `absURL`/`.Permalink` 사용
 
 ## 부록 B. 참고 문서(운영 시 확인)
 
 - GitHub Pages + GitHub Actions (Hugo) 배포 문서
+- GitHub Pages 커스텀 도메인 설정 문서
 - Hugo taxonomies / URLs / aliases / archetypes / front matter / summaries 문서
 - Pagefind CLI / indexing options 문서
 

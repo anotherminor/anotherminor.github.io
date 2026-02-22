@@ -42,7 +42,13 @@ jobs:
         run: npm ci
 
       - name: Build site with Hugo
-        run: hugo --gc --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
+        env:
+          SITE_BASE_URL: ${{ vars.SITE_BASE_URL }}
+          PAGES_BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: |
+          BASE_URL="${SITE_BASE_URL:-${PAGES_BASE_URL}/}"
+          echo "Using Hugo baseURL: $BASE_URL"
+          hugo --gc --minify --baseURL "$BASE_URL"
 
       - name: Build Pagefind index
         run: npx --no-install pagefind --site public --glob "posts/**/*.html"
