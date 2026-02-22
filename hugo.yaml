@@ -32,10 +32,10 @@ params:
   homeFullCount: 5
   giscus:
     enabled: true
-    repo: "OWNER/REPO"
-    repoId: ""
+    repo: "anotherminor/anotherminor.github.io"
+    repoId: "R_kgDORV6bpQ"
     category: "General"
-    categoryId: ""
+    categoryId: "DIC_kwDORV6bpc4C295u"
     mapping: "pathname"
     strict: "0"
     reactionsEnabled: "1"
