@@ -1,15 +1,18 @@
 {{ $isLink := and .Params.formats (in .Params.formats "link") .Params.external_url }}
-<article class="post-card">
-  <h2 class="post-title">
+<article class="entry-summary">
+  <div class="entry-summary__main">
+    {{ partial "post-meta.html" . }}
+    <h2 class="entry-summary__title">
+      {{ if $isLink }}
+        <a href="{{ .Params.external_url }}" rel="noopener noreferrer">{{ .Title }}</a>
+      {{ else }}
+        <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+      {{ end }}
+    </h2>
+    <p class="entry-summary__snippet">{{ partial "post-summary-text.html" . }}</p>
     {{ if $isLink }}
-      <a href="{{ .Params.external_url }}" rel="noopener noreferrer">{{ .Title }}</a>
-    {{ else }}
-      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+      <p class="entry-summary__aux" data-pagefind-ignore><a href="{{ .RelPermalink }}">내 글</a></p>
     {{ end }}
-  </h2>
-  {{ partial "post-meta.html" . }}
-  <p>{{ partial "post-summary-text.html" . }}</p>
-  {{ if $isLink }}
-    <p class="footer-note"><a href="{{ .RelPermalink }}">내 글</a></p>
-  {{ end }}
+  </div>
+  <a class="entry-summary__arrow" href="{{ if $isLink }}{{ .Params.external_url }}{{ else }}{{ .RelPermalink }}{{ end }}"{{ if $isLink }} rel="noopener noreferrer"{{ end }} aria-label="{{ .Title }} 보기">↗</a>
 </article>

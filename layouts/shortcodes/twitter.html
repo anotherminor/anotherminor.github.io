@@ -1,0 +1,23 @@
+{{- $url := "" -}}
+{{- if .IsNamedParams -}}
+  {{- $url = .Get "url" -}}
+{{- else -}}
+  {{- $url = .Get 0 -}}
+{{- end -}}
+{{- if not $url -}}
+  {{- errorf "twitter shortcode requires a tweet url (%s)" .Position -}}
+{{- end -}}
+{{- $scriptKey := "social_embed_twitter_script" -}}
+{{- $needsScript := not (.Page.Scratch.Get $scriptKey) -}}
+{{- if $needsScript }}{{- .Page.Scratch.Set $scriptKey true -}}{{- end -}}
+<div class="social-embed social-embed--script social-embed--twitter">
+  <div class="social-embed__script-wrap">
+    <blockquote class="twitter-tweet">
+      <a href="{{ $url }}" rel="noopener noreferrer">X에서 게시물 열기</a>
+    </blockquote>
+    <p class="social-embed__assist">임베드가 지연되면 <a href="{{ $url }}" target="_blank" rel="noopener noreferrer">X 원문 보기</a>.</p>
+  </div>
+</div>
+{{- if $needsScript -}}
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+{{- end -}}

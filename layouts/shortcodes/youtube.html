@@ -1,0 +1,38 @@
+{{- $raw := "" -}}
+{{- if .IsNamedParams -}}
+  {{- $raw = or (.Get "id") (.Get "url") -}}
+{{- else -}}
+  {{- $raw = .Get 0 -}}
+{{- end -}}
+{{- if not $raw -}}
+  {{- errorf "youtube shortcode requires an id or url (%s)" .Position -}}
+{{- end -}}
+{{- $id := $raw -}}
+{{- if in $raw "://" -}}
+  {{- if in $raw "watch?v=" -}}
+    {{- $id = replaceRE `^.*[?&]v=([^&]+).*$` `$1` $raw -}}
+  {{- else if in $raw "youtu.be/" -}}
+    {{- $id = replaceRE `^.*youtu\.be/([^?&/]+).*$` `$1` $raw -}}
+  {{- else if in $raw "/shorts/" -}}
+    {{- $id = replaceRE `^.*\/shorts\/([^?&/]+).*$` `$1` $raw -}}
+  {{- else if in $raw "/embed/" -}}
+    {{- $id = replaceRE `^.*\/embed\/([^?&/]+).*$` `$1` $raw -}}
+  {{- end -}}
+{{- end -}}
+{{- $title := "YouTube video" -}}
+{{- if .IsNamedParams -}}
+  {{- $title = default $title (.Get "title") -}}
+{{- else -}}
+  {{- with .Get 1 }}{{ $title = . }}{{ end -}}
+{{- end -}}
+<div class="social-embed social-embed--landscape">
+  <div class="social-embed__frame">
+    <iframe
+      src="https://www.youtube.com/embed/{{ $id | safeURL }}"
+      title="{{ $title }}"
+      loading="lazy"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen></iframe>
+  </div>
+</div>

@@ -1,41 +1,52 @@
 {{ define "main" }}
   {{ $taxonomy := .Data.Plural }}
   {{ $term := .Data.Term }}
+  {{ $pages := .Pages.ByDate.Reverse }}
 
-  <section class="panel">
-    <h1>{{ .Title }}</h1>
-    <p class="footer-note">
-      {{ if eq $taxonomy "categories" }}카테고리 전문 목록{{ end }}
-      {{ if eq $taxonomy "tags" }}태그 스니펫 목록{{ end }}
-      {{ if eq $taxonomy "formats" }}포맷 아카이브(숨김 운영){{ end }}
+  <section class="page-hero page-hero--term page-hero--{{ $taxonomy | urlize }}" data-pagefind-ignore>
+    <p class="page-hero__eyebrow">
+      {{ if eq $taxonomy "categories" }}category{{ else if eq $taxonomy "tags" }}tag{{ else if eq $taxonomy "formats" }}format{{ else }}term{{ end }}
+    </p>
+    <h1 class="page-hero__title">{{ .Title }}</h1>
+    <p class="page-hero__lede">
+      {{ if eq $taxonomy "categories" }}카테고리 글은 전문 렌더링으로 이어서 읽을 수 있게 구성합니다.{{ end }}
+      {{ if eq $taxonomy "tags" }}태그 페이지는 제목·메타·요약 중심의 컴팩트 리스트를 사용합니다.{{ end }}
+      {{ if eq $taxonomy "formats" }}포맷 아카이브는 숨김 진입 페이지이며 `news`와 `link`를 가볍게 탐색하도록 설계됩니다.{{ end }}
     </p>
   </section>
 
-  {{ $pages := .Pages.ByDate.Reverse }}
-
   {{ if eq $taxonomy "categories" }}
     {{ $pager := .Paginate $pages 5 }}
-    {{ range $pager.Pages }}
-      {{ partial "post-card-full.html" . }}
-    {{ end }}
+    <section class="stream-layout" aria-label="Category posts">
+      {{ range $i, $p := $pager.Pages }}
+        {{ if gt $i 0 }}<div class="stream-divider" aria-hidden="true"></div>{{ end }}
+        {{ partial "post-card-full.html" (dict "page" $p "forceFullBody" true) }}
+      {{ end }}
+    </section>
     {{ partial "pagination.html" . }}
   {{ else if eq $taxonomy "tags" }}
     {{ $pager := .Paginate $pages 20 }}
-    {{ range $pager.Pages }}
-      {{ partial "post-card-summary.html" . }}
-    {{ end }}
+    <section class="card-list card-list--compact" aria-label="Tag posts">
+      {{ range $pager.Pages }}
+        {{ partial "post-card-summary.html" . }}
+      {{ end }}
+    </section>
     {{ partial "pagination.html" . }}
   {{ else if eq $taxonomy "formats" }}
     {{ $pager := .Paginate $pages 20 }}
-    {{ range $pager.Pages }}
-      {{ partial "post-card-format.html" (dict "page" . "term" $term) }}
-    {{ end }}
+    <section class="format-list" aria-label="Format posts">
+      {{ range $pager.Pages }}
+        {{ partial "post-card-format.html" (dict "page" . "term" $term) }}
+      {{ end }}
+    </section>
     {{ partial "pagination.html" . }}
   {{ else }}
     {{ $pager := .Paginate $pages 20 }}
-    {{ range $pager.Pages }}
-      {{ partial "post-card-summary.html" . }}
-    {{ end }}
+    <section class="card-list" aria-label="Posts">
+      {{ range $pager.Pages }}
+        {{ partial "post-card-summary.html" . }}
+      {{ end }}
+    </section>
     {{ partial "pagination.html" . }}
   {{ end }}
 {{ end }}

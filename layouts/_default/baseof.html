@@ -4,24 +4,45 @@
   {{ partial "head.html" . }}
   {{ block "extra_head" . }}{{ end }}
 </head>
-<body>
-  <div class="shell">
-    <aside class="sidebar" aria-label="Primary navigation">
-      {{ partial "sidebar.html" . }}
-    </aside>
+{{ $classes := slice (printf "kind-%s" .Kind) }}
+{{ if .IsHome }}{{ $classes = $classes | append "page-home" }}{{ end }}
+{{ if eq .Kind "term" }}{{ $classes = $classes | append (printf "taxonomy-%s" (.Data.Plural | urlize)) }}{{ end }}
+{{ if and (eq .Kind "page") (eq .Section "about") }}{{ $classes = $classes | append "page-about" }}{{ end }}
+{{ if and (eq .Kind "page") (eq .Section "search") }}{{ $classes = $classes | append "page-search" }}{{ end }}
+{{ if and (eq .Kind "page") (eq .Section "archive") }}{{ $classes = $classes | append "page-archive" }}{{ end }}
+{{ if eq .Kind "404" }}{{ $classes = $classes | append "page-404" }}{{ end }}
+{{ if and (eq .Kind "page") (eq .Section "posts") }}{{ $classes = $classes | append "page-post" }}{{ end }}
+<body class="{{ delimit $classes ` ` }}">
+  <a class="skip-link" href="#main-content">본문으로 건너뛰기</a>
 
-    <main class="main">
-      <nav class="mobile-nav" aria-label="Primary navigation">
+  <header class="site-header" aria-label="Primary navigation">
+    <div class="site-header__inner">
+      <a class="site-brand" href="{{ .Site.Home.Permalink }}">
+        <span class="site-brand__mark" aria-hidden="true">✦</span>
+        <span class="site-brand__word">{{ .Site.Title }}</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation links">
         {{ partial "mobile-nav-links.html" . }}
       </nav>
 
-      {{ block "main" . }}{{ end }}
+      <div class="site-header__actions">
+        {{ $searchHref := "search/" | absURL }}
+        <a class="site-action" href="{{ $searchHref }}"{{ if eq .Permalink $searchHref }} aria-current="page"{{ end }}>search</a>
+      </div>
+    </div>
+  </header>
 
-      <footer class="panel footer-note">
-        <p>Hugo + GitHub Pages · Search by Pagefind · Comments by giscus</p>
-      </footer>
-    </main>
-  </div>
+  <main id="main-content" class="site-main">
+    {{ block "main" . }}{{ end }}
+  </main>
+
+  <footer class="site-footer" data-pagefind-ignore>
+    <div class="site-footer__inner">
+      <p class="site-footer__brand"><span aria-hidden="true">✦</span> {{ .Site.Title }}</p>
+      <p class="site-footer__copy">Hugo + GitHub Pages · Search by Pagefind · Comments by giscus</p>
+    </div>
+  </footer>
 
   {{ block "extra_scripts" . }}{{ end }}
 </body>

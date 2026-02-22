@@ -1,14 +1,19 @@
 {{ define "main" }}
-  <section class="panel">
-    <h1>{{ .Title }}</h1>
-    {{ with .Content }}{{ . }}{{ end }}
+  <section class="page-hero" data-pagefind-ignore>
+    <p class="page-hero__eyebrow">collection</p>
+    <h1 class="page-hero__title">{{ .Title }}</h1>
+    {{ with .Content }}<div class="page-hero__lede">{{ . }}</div>{{ end }}
   </section>
 
   {{ $posts := where .Pages "Section" "posts" }}
   {{ $posts = $posts.ByDate.Reverse }}
   {{ $pager := .Paginate $posts 20 }}
-  {{ range $pager.Pages }}
-    {{ partial "post-card-summary.html" . }}
-  {{ end }}
+
+  <section class="card-list" aria-label="Post list">
+    {{ range $pager.Pages }}
+      {{ partial "post-card-summary.html" . }}
+    {{ end }}
+  </section>
+
   {{ partial "pagination.html" . }}
 {{ end }}

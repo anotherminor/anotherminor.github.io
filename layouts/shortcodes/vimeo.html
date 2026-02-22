@@ -1,0 +1,29 @@
+{{- $raw := "" -}}
+{{- if .IsNamedParams -}}
+  {{- $raw = or (.Get "id") (.Get "url") -}}
+{{- else -}}
+  {{- $raw = .Get 0 -}}
+{{- end -}}
+{{- if not $raw -}}
+  {{- errorf "vimeo shortcode requires an id or url (%s)" .Position -}}
+{{- end -}}
+{{- $id := $raw -}}
+{{- if in $raw "://" -}}
+  {{- $id = replaceRE `^.*vimeo\.com/(?:video/)?([0-9]+).*$` `$1` $raw -}}
+{{- end -}}
+{{- $title := "Vimeo video" -}}
+{{- if .IsNamedParams -}}
+  {{- $title = default $title (.Get "title") -}}
+{{- else -}}
+  {{- with .Get 1 }}{{ $title = . }}{{ end -}}
+{{- end -}}
+<div class="social-embed social-embed--landscape">
+  <div class="social-embed__frame">
+    <iframe
+      src="https://player.vimeo.com/video/{{ $id | safeURL }}"
+      title="{{ $title }}"
+      loading="lazy"
+      allow="autoplay; fullscreen; picture-in-picture"
+      allowfullscreen></iframe>
+  </div>
+</div>

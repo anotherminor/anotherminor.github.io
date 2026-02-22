@@ -1,0 +1,43 @@
+{{- $url := "" -}}
+{{- $username := "" -}}
+{{- $videoID := "" -}}
+{{- if .IsNamedParams -}}
+  {{- $url = .Get "url" -}}
+  {{- $username = or (.Get "username") "" -}}
+  {{- $videoID = or (.Get "video_id") "" -}}
+{{- else -}}
+  {{- $url = .Get 0 -}}
+{{- end -}}
+{{- if and $url (or (eq $username "") (eq $videoID "")) -}}
+  {{- $username = replaceRE `^https?://(?:www\.)?tiktok\.com/@([^/]+)/video/([0-9]+).*$` `$1` $url -}}
+  {{- $videoID = replaceRE `^https?://(?:www\.)?tiktok\.com/@([^/]+)/video/([0-9]+).*$` `$2` $url -}}
+{{- end -}}
+{{- if not $url -}}
+  {{- if and $username $videoID -}}
+    {{- $url = printf "https://www.tiktok.com/@%s/video/%s" $username $videoID -}}
+  {{- end -}}
+{{- end -}}
+{{- if or (not $url) (not $videoID) (not $username) -}}
+  {{- errorf "tiktok shortcode requires a TikTok post url or username+video_id (%s)" .Position -}}
+{{- end -}}
+{{- $scriptKey := "social_embed_tiktok_script" -}}
+{{- $needsScript := not (.Page.Scratch.Get $scriptKey) -}}
+{{- if $needsScript }}{{- .Page.Scratch.Set $scriptKey true -}}{{- end -}}
+<div class="social-embed social-embed--portrait social-embed--script social-embed--tiktok">
+  <div class="social-embed__script-wrap">
+    <blockquote
+      class="tiktok-embed"
+      cite="{{ $url }}"
+      data-video-id="{{ $videoID }}"
+      style="max-width: 605px; min-width: 325px;">
+      <section>
+        TikTok 임베드를 불러오는 중입니다.
+        <a target="_blank" title="@{{ $username }}" href="https://www.tiktok.com/@{{ $username }}?refer=embed" rel="noopener noreferrer">@{{ $username }} 계정 열기</a>
+      </section>
+    </blockquote>
+    <p class="social-embed__assist">임베드가 보이지 않으면 <a href="{{ $url }}" target="_blank" rel="noopener noreferrer">TikTok에서 원문 보기</a>.</p>
+  </div>
+</div>
+{{- if $needsScript -}}
+<script async src="https://www.tiktok.com/embed.js"></script>
+{{- end -}}

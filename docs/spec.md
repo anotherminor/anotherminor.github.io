@@ -1,4 +1,4 @@
-# anotherminor.pages.dev 통합 명세서
+# anotherminor.github.io 통합 계획안
 
 작성 목적: 이 문서는 블로그의 기획 원칙, 구현 설정, 운영 루틴, 검증 기준을 하나로 합친 단일 기준 문서(Single Source of Truth)입니다.
 
@@ -36,6 +36,7 @@
 
 - 콘텐츠는 `순수 Markdown + YAML front matter` 중심으로 유지
 - 빌더 전용 문법(Shortcode/Liquid/MDX)은 본문에서 최소화
+- 단, 반복 사용되는 소셜 임베드는 작성 편의를 위해 제한된 Hugo shortcode 사용을 허용
 - 이미지/첨부는 포스트 번들 상대경로 규칙 고정
 - 퍼머링크 규칙은 초기에 고정하고 자주 바꾸지 않음
 - 콘텐츠와 테마/레이아웃을 논리적으로 분리
@@ -48,7 +49,7 @@
 - 호스팅/배포: `GitHub Pages`
 - 댓글: `giscus` (GitHub Discussions 기반)
 - 검색: `Pagefind`
-- 임베드: 플랫폼 제공 embed HTML 우선
+- 임베드: 플랫폼 제공 embed HTML 우선(운영 작성은 Hugo shortcode 래퍼 우선)
 
 ### 3.1 저장소 공개 전략 (확정)
 
@@ -136,10 +137,6 @@ GitHub Pages에서 사이트의 루트 URL은 저장소 유형에 따라 달라�
 - 사용자 사이트(repo 이름이 `<user>.github.io`): `https://<user>.github.io/`
 - 커스텀 도메인 사용 시: `https://<custom-domain>/`
 
-현재 저장소(`anotherminor.pages.dev`)는 프로젝트 사이트이므로 기본 URL은 다음 형태다.
-
-- `https://anotherminor.github.io/anotherminor.pages.dev/`
-
 장기 운영 권장안:
 - 기본 운영은 프로젝트 사이트 URL로 가능
 - 링크 안정성과 브랜딩을 위해 커스텀 도메인 연결을 권장
@@ -170,6 +167,8 @@ Hugo taxonomy 사용 시 기본적으로 taxonomy list(`/tags/`)와 term page(`/
 - 검색
 - 404
 
+각 화면의 상세 렌더링/UI 규칙은 `15.4 페이지 설계(사용자 화면 9종)`을 따른다.
+
 ### 6.4 내비게이션 정책
 
 고정 메뉴(노출):
@@ -179,6 +178,7 @@ Hugo taxonomy 사용 시 기본적으로 taxonomy list(`/tags/`)와 term page(`/
 - `about`
 
 포맷 아카이브(`news`, `link`)는 메뉴에 노출하지 않고 배지 클릭/직접 URL로 진입한다.
+구체적인 표시 규칙(배지/메타/목록 형태)은 `15.4 페이지 설계`에서 정의한다.
 
 ## 7. 구현 설정 (Hugo / GitHub Pages / Pagefind) - v4 핵심
 
@@ -193,8 +193,44 @@ Hugo taxonomy 사용 시 기본적으로 taxonomy list(`/tags/`)와 term page(`/
 - `ignoreErrors: ["error-disable-taxonomy"]`
 
 목적:
-- 임베드 HTML(raw HTML) 렌더링 허용
+- 임베드 HTML(raw HTML) 렌더링 허용(직접 입력 및 shortcode 내부 출력 모두 지원)
 - taxonomy list 비활성화 + 빌드 로그 실패 리스크 완화
+
+### 7.1.1 소셜 임베드 작성 규칙 (Hugo shortcode)
+
+운영 작성 시에는 긴 embed HTML을 본문에 직접 붙여넣기보다 `layouts/shortcodes/`의 소셜 임베드 shortcode를 우선 사용한다. 이 규칙은 작성 속도/수정 편의성을 위한 예외이며, 내부 구현은 플랫폼 공식 embed HTML/스크립트를 감싸는 방식으로 유지해 이식성을 크게 해치지 않도록 한다.
+
+현재 지원 shortcode:
+
+- `youtube`
+- `youtube-shorts`
+- `tiktok`
+- `instagram`
+- `twitter`
+- `threads`
+- `facebook`
+- `vimeo`
+
+작성 원칙:
+
+- 본문에서는 URL(또는 영상 ID)만 넘기는 한 줄 호출을 기본으로 사용
+- 세로형 콘텐츠(`youtube-shorts`, `tiktok`)는 shortcode 내부에서 포트레이트 비율(`9:16`) 래퍼를 적용
+- 스크립트 기반 플랫폼(TikTok / Instagram / X(Twitter) / Threads)은 같은 페이지에서 필요한 스크립트를 1회만 로드
+- 임베드 실패/지연 시 사용자 친화적 링크 폴백 문구를 출력
+- 필요 시 raw HTML 임베드는 계속 허용(예외 케이스 대응)
+
+예시(본문):
+
+```md
+{{< youtube "https://www.youtube.com/watch?v=..." >}}
+{{< youtube-shorts "https://www.youtube.com/shorts/..." >}}
+{{< tiktok "https://www.tiktok.com/@user/video/..." >}}
+{{< instagram "https://www.instagram.com/p/.../" >}}
+{{< twitter "https://twitter.com/.../status/..." >}}
+{{< threads "https://www.threads.net/@.../post/..." >}}
+{{< facebook "https://www.facebook.com/.../posts/..." >}}
+{{< vimeo "https://vimeo.com/..." >}}
+```
 
 ### 7.2 GitHub Pages Build/Deploy Interface (최종)
 
@@ -239,9 +275,13 @@ public
 주의:
 - `npx pagefind` (자동 최신 설치) 방식은 사용하지 않음
 
+검색 UX/인덱싱 대체안(JSON 인덱스)은 `15.2 검색 페이지(정적 환경)`에서 정의한다.
+
 ## 8. 템플릿 규칙 (구현 가드레일)
 
 ### 8.1 검색 인덱싱 규칙 (이중 안전장치)
+
+이 절은 구현 가드레일 요약이며, 배경/운영 원칙은 `15.2 검색 페이지(정적 환경)`을 따른다.
 
 템플릿 규칙:
 - `data-pagefind-body`는 포스트 상세 템플릿에만 사용
@@ -256,21 +296,24 @@ CLI 규칙:
 
 ### 8.2 링크로그(`formats=["link"]`) 규칙
 
-목록:
+이 절은 템플릿 구현 강제 규칙 요약이며, 렌더링/SEO 정책의 상세 기준은 `15.3 링크로그(link 포맷) 렌더링과 SEO`를 따른다.
+
 - `formats=["link"]`이고 `external_url`이 있으면 제목 링크는 외부 URL
 - 외부 링크에 `rel="noopener noreferrer"` 적용
 - 내부 상세(`.Permalink`)로 가는 보조 링크 제공
-
-상세:
-- 본문 상단에 원문 링크(`external_url`) 명시
+- 상세 본문 상단에 원문 링크(`external_url`) 명시
 
 ### 8.3 포맷 배지 규칙
+
+이 절은 템플릿 출력 규칙 요약이며, 화면별 노출 위치/메타 조합은 `15.4 페이지 설계(사용자 화면 9종)`을 따른다.
 
 - `formats=["news"]` → `NEWS` 배지
 - `formats=["link"]` → `LINK` 배지
 - 배지는 클릭 가능하며 해당 포맷 term 페이지(`/formats/news/`, `/formats/link/`)로 이동
 
 ### 8.4 canonical 우선순위
+
+이 절은 `<head>` 템플릿 구현 규칙 요약이며, 적용 맥락은 `15.3 링크로그(link 포맷) 렌더링과 SEO`를 따른다.
 
 - 기본: `.Permalink`
 - 예외: front matter의 `canonical`이 있으면 우선 사용
@@ -441,6 +484,155 @@ GitHub Pages 제약:
 - Cloudflare 전용 `Deploy command`/`_redirects` 운영을 폐기하고 `aliases` 중심 정책으로 단순화
 - GitHub Actions 워크플로우에서 Hugo/Pagefind 빌드를 수행하고 `public/`를 Pages에 배포
 - GitHub Pages 프로젝트 사이트 URL(`/repo/`) 특성을 반영해 서브경로 링크 생성을 보정
+
+### v4.1 운영 보정안 (소셜 임베드 작성성 개선)
+
+- 소셜 임베드 작성을 `Hugo shortcode` 중심으로 정리하고 플랫폼별 shortcode 추가
+- `YouTube Shorts`, `TikTok`에 세로형(`9:16`) 레이아웃 래퍼 적용
+- 스크립트 기반 임베드의 스크립트 중복 로드 방지 및 링크 폴백 문구 개선
+- 임베드 공통 스타일(크기/정렬/여백) 표준화
+
+## 15. 렌더링·검색·링크로그·페이지 설계 가이드
+
+### 15.1 홈/카테고리 ‘전문’ 렌더링과 성능 제어
+
+정책
+
+- 홈과 카테고리 페이지는 원칙적으로 “전문(잘림 없이)”을 렌더링합니다.
+
+예외(비상 브레이크)
+
+- 이미지/임베드가 많거나 글이 지나치게 길어 목록 로딩에 부담이 생길 경우, 작성자가 본문에 `<!--more-->`를 삽입해 목록에서의 출력 길이를 제한할 수 있습니다.
+- 이 예외를 사용할 때에도 개별 포스트(상세) 페이지에는 전문이 유지되어야 합니다.
+- 목록에 노출할 텍스트를 명확히 통제해야 하면 `summary` 필드를 함께 사용합니다.
+
+### 15.2 검색 페이지(정적 환경)
+
+정적 사이트에서 검색은 “빌드 시점에 만든 인덱스”를 브라우저에서 탐색하는 방식으로 구현합니다. 서버는 필요하지 않습니다.
+
+기본 구현(권장): Pagefind
+
+설치/버전 핀(필수)
+
+- 저장소에 `package.json` + lockfile을 추가합니다.
+- `pagefind`는 devDependencies에 **정확 버전**으로 고정합니다.
+- CI(GitHub Actions)에서는 `npm ci`로만 설치하고 `npx --no-install`로만 실행합니다.
+
+빌드 단계(필수)
+
+- Hugo 빌드 후 `public/` 디렉터리를 Pagefind가 인덱싱합니다.
+- 표준 커맨드(요약):
+  - `hugo --gc --minify` 후
+  - `npx --no-install pagefind --site public --glob "posts/**/*.html"`
+
+인덱싱 범위 제어(필수, 이중 안전장치)
+
+- 템플릿 규칙
+  - `data-pagefind-body`는 **개별 포스트 상세 템플릿에만** 사용합니다.
+  - 홈/카테고리/태그/포맷/아카이브/검색/404/about 템플릿에는 `data-pagefind-body`를 넣지 않습니다.
+  - giscus 영역에는 `data-pagefind-ignore`를 적용합니다.
+- CLI 규칙
+  - `--glob "posts/**/*.html"`로 **포스트 상세 HTML만** 인덱싱하도록 고정합니다.
+  - 템플릿 실수로 목록 페이지에 표식이 들어가더라도 인덱싱 범위를 제한합니다.
+
+대체 구현(필요 시): JSON 인덱스 + 클라이언트 검색(Fuse.js 등)
+
+- 빌드 시 `index.json` 같은 검색 인덱스를 생성하고, 브라우저에서 이를 읽어 검색합니다.
+- 요구사항 1: 설정에서 홈 출력에 JSON을 포함(HTML/RSS/JSON).
+- 요구사항 2: JSON 내용을 정의하는 템플릿(레이아웃)을 추가(제목/URL/요약/본문 등 어떤 필드를 내보낼지 명시).
+- 주의: 글이 늘면 `index.json`이 커져 초기 로딩 부담이 커질 수 있습니다.
+
+### 15.3 링크로그(link 포맷) 렌더링과 SEO
+
+목표
+
+- 목록에서 제목 클릭은 외부 원문으로 즉시 이동.
+- 동시에 내부 상세 페이지(아카이빙/댓글/내 메모)는 별도 경로로 항상 접근 가능.
+
+목록 템플릿 정책
+
+- `formats`에 `link`가 있고 `external_url`이 있으면
+  - 제목 링크: `external_url`
+  - 보조 링크(예: “내 글”, ∞ 등): 내부 상세 `.Permalink`
+  - 외부 링크에 `rel="noopener noreferrer"` 적용(권장)
+
+상세 페이지 정책
+
+- 본문 상단에 “원문 링크(external_url)”를 명확히 노출(필수 권장).
+
+canonical(정규 URL) 정책
+
+- 기본: 내부 상세 페이지의 `.Permalink`를 정규 URL로 사용합니다.
+- 예외: 프론트매터에 `canonical`이 지정된 경우(교차 게시 등)에는 그 값을 우선합니다.
+- 구현 원칙: `<link rel="canonical" href="{{ .Params.canonical | default .Permalink }}">` 형태로 처리합니다.
+
+### 15.4 페이지 설계(사용자 화면 9종)
+
+공통 UI 규칙
+
+- 내비게이션 메뉴는 `rambling / entertainment / tech / about` 4개만 고정 노출합니다.
+  - 데스크톱: 사이드바
+  - 모바일: 상단(탑)
+- 포맷 배지는 `formats`가 있는 글에만 표시합니다: `NEWS`, `LINK`
+  - 배지는 클릭 가능하며 해당 포맷 아카이브(`/formats/news/`, `/formats/link/`)로 이동합니다.
+- 메타 정보 표기(권장 순서)
+  - 날짜 → 카테고리 → 포맷 배지(있을 때만)
+  - 태그는 상세 페이지에서 노출(목록에서는 생략하거나 축약)
+- 스니펫(요약) 규칙
+  - `summary`가 있으면 우선 사용
+  - 없으면 본문 첫 문단을 일정 길이로 잘라 사용
+
+1. 홈(최초 랜딩)
+
+- 최신 글 N개를 “전문(잘림 없이)” 리스트로 렌더링합니다.
+- N을 넘는 글은 하단 “더보기” 링크로 아카이브(2)로 이동합니다.
+- 홈은 숫자 페이지네이션을 쓰지 않습니다.
+
+2. 아카이브(모아보기)
+
+- 연/월 기준으로 그룹핑하고 “제목만” 나열합니다.
+- 각 항목은 제목 + 날짜 + (있을 때) 포맷 배지로 표기합니다.
+
+3. 카테고리 페이지(3개: rambling/entertainment/tech)
+
+- 전문(잘림 없이) 리스트 + 실제 페이지네이션을 적용합니다.
+- 홈의 “더보기” 방식과 구분됩니다.
+
+4. 태그 페이지
+
+- 스니펫(요약) 리스트 + 실제 페이지네이션을 적용합니다.
+- 제목/날짜/카테고리/포맷 배지 + 요약을 함께 노출합니다.
+
+5. 포맷 페이지(숨김 아카이브: news/link)
+
+- 내비게이션 메뉴에는 노출하지 않습니다.
+- 진입은 (a) 포맷 배지 클릭 또는 (b) 직접 URL로 합니다.
+- 목록은 가볍게 구성합니다.
+  - `news`: 제목 + 날짜 + 카테고리 + 1줄 요약(권장)
+  - `link`: 제목 + 날짜 + 카테고리 + (가능하면) 외부 도메인/원문 표시
+- `link`이고 `external_url`이 있으면
+  - 제목 클릭: 외부 원문
+  - 보조 링크(예: “내 글”, ∞): 내부 상세
+
+6. 개별 포스트(상세)
+
+- 제목/메타(날짜·카테고리·포맷 배지·태그) → 본문(임베드 포함) → 댓글(giscus) 순서로 구성합니다.
+- `link` 포맷은 본문 상단에 원문 링크(`external_url`)를 명확히 노출합니다.
+
+7. About(단일 페이지)
+
+- 소개/연락/원하는 정보만 포함하는 단일 페이지입니다.
+- 댓글은 기본적으로 넣지 않습니다.
+
+8. 검색 페이지
+
+- 검색 입력창 + 결과 리스트로 구성합니다.
+- 결과는 제목 + 날짜 + 카테고리 + 포맷 배지 + 스니펫을 노출합니다.
+- 기본 정렬은 최신순을 권장합니다.
+
+9. 404 페이지
+
+- “페이지를 찾을 수 없음” 안내와 함께 홈/아카이브/검색으로 이동 링크를 제공합니다.
 
 ## 부록 A. 현재 repo와의 정합성 체크 포인트
 

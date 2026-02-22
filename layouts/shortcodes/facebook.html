@@ -1,0 +1,24 @@
+{{- $url := "" -}}
+{{- if .IsNamedParams -}}
+  {{- $url = .Get "url" -}}
+{{- else -}}
+  {{- $url = .Get 0 -}}
+{{- end -}}
+{{- if not $url -}}
+  {{- errorf "facebook shortcode requires a post url (%s)" .Position -}}
+{{- end -}}
+{{- $width := "500" -}}
+{{- if .IsNamedParams -}}
+  {{- with .Get "width" }}{{ $width = printf "%v" . }}{{ end -}}
+{{- else -}}
+  {{- with .Get 1 }}{{ $width = printf "%v" . }}{{ end -}}
+{{- end -}}
+<div class="social-embed social-embed--script social-embed--facebook">
+  <div class="social-embed__script-wrap">
+    <iframe
+      loading="lazy"
+      allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+      src="https://www.facebook.com/plugins/post.php?href={{ $url | urlquery }}&show_text=true&width={{ $width | safeURL }}"></iframe>
+    <p class="social-embed__assist">Facebook 임베드가 차단되면 <a href="{{ $url }}" target="_blank" rel="noopener noreferrer">원문 게시물 열기</a>.</p>
+  </div>
+</div>

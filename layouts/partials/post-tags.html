@@ -1,5 +1,5 @@
 {{ with .GetTerms "tags" }}
-  <ul class="tag-list" aria-label="Tags">
+  <ul class="tag-list" aria-label="Tags" data-pagefind-ignore>
     {{ range . }}
       <li><a href="{{ .RelPermalink }}">#{{ .LinkTitle }}</a></li>
     {{ end }}

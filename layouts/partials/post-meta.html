@@ -1,8 +1,8 @@
-<div class="meta">
-  <time datetime="{{ .Date.Format `2006-01-02T15:04:05Z07:00` }}">{{ .Date.Format "2006-01-02" }}</time>
+<div class="meta" data-pagefind-ignore>
+  <time class="meta__item" datetime="{{ .Date.Format `2006-01-02T15:04:05Z07:00` }}">{{ .Date.Format "2006.01.02" }}</time>
   {{ with .GetTerms "categories" }}
     {{ with index . 0 }}
-      <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+      <a class="meta__item meta__item--category" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
     {{ end }}
   {{ end }}
   {{ partial "format-badges.html" . }}

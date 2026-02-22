@@ -2,24 +2,73 @@
   {{ $isPost := eq .Section "posts" }}
   {{ $isLink := and .Params.formats (in .Params.formats "link") .Params.external_url }}
 
-  <article class="panel"{{ if $isPost }} data-pagefind-body{{ end }}>
-    <h1>{{ .Title }}</h1>
-    {{ if $isPost }}
-      {{ partial "post-meta.html" . }}
-    {{ else if .Date }}
-      <div class="meta"><time datetime="{{ .Date.Format `2006-01-02T15:04:05Z07:00` }}">{{ .Date.Format "2006-01-02" }}</time></div>
-    {{ end }}
+  {{ if $isPost }}
+    <article class="post-detail" data-pagefind-body>
+      <header class="post-detail__header" data-pagefind-ignore="all">
+        <p class="post-detail__eyebrow">entry</p>
+        <h1 class="post-detail__title">{{ .Title }}</h1>
+        {{ partial "post-meta.html" . }}
+        {{ with .GetTerms "tags" }}
+          <ul class="chip-list chip-list--tags" aria-label="Tags">
+            {{ range . }}
+              <li><a href="{{ .RelPermalink }}">#{{ .LinkTitle }}</a></li>
+            {{ end }}
+          </ul>
+        {{ end }}
+      </header>
 
-    {{ if $isLink }}
-      <p><strong>원문:</strong> <a href="{{ .Params.external_url }}" rel="noopener noreferrer">{{ .Params.external_url }}</a></p>
-    {{ end }}
+      {{ if $isLink }}
+        <aside class="source-callout" data-pagefind-ignore>
+          <p class="source-callout__label">원문 링크</p>
+          <p class="source-callout__url"><a href="{{ .Params.external_url }}" rel="noopener noreferrer">{{ .Params.external_url }}</a></p>
+        </aside>
+      {{ end }}
 
-    {{ .Content }}
+      <div class="post-detail__body prose-body">
+        {{ .Content }}
+      </div>
+    </article>
 
-    {{ if $isPost }}
-      {{ partial "post-tags.html" . }}
-    {{ end }}
-  </article>
+    {{ partial "giscus.html" . }}
+  {{ else }}
+    <article class="page-article">
+      <header class="page-hero {{ if eq .Section `about` }}page-hero--about{{ end }}" data-pagefind-ignore>
+        <p class="page-hero__eyebrow">{{ if eq .Section `about` }}about{{ else }}page{{ end }}</p>
+        <h1 class="page-hero__title">{{ .Title }}</h1>
+        {{ with .Params.summary }}<p class="page-hero__lede">{{ . }}</p>{{ end }}
+      </header>
+      <div class="page-article__body prose-body">
+        {{ .Content }}
+      </div>
+    </article>
+  {{ end }}
+{{ end }}
 
-  {{ partial "giscus.html" . }}
+{{ define "extra_scripts" }}
+  {{ if eq .Section "posts" }}
+    <script>
+      window.addEventListener('DOMContentLoaded', function () {
+        var article = document.querySelector('.post-detail');
+        if (!article) return;
+        var bar = document.createElement('div');
+        bar.className = 'reading-progress';
+        bar.innerHTML = '<span class="reading-progress__fill"></span>';
+        document.body.appendChild(bar);
+        var fill = bar.querySelector('.reading-progress__fill');
+        var update = function () {
+          var rect = article.getBoundingClientRect();
+          var articleTop = window.scrollY + rect.top;
+          var articleHeight = article.offsetHeight;
+          var viewport = window.innerHeight;
+          var total = Math.max(articleHeight - viewport, 1);
+          var progress = (window.scrollY - articleTop) / total;
+          progress = Math.min(1, Math.max(0, progress));
+          fill.style.width = (progress * 100).toFixed(2) + '%';
+        };
+        update();
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+      });
+    </script>
+  {{ end }}
 {{ end }}

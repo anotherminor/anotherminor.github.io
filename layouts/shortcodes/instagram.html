@@ -1,0 +1,23 @@
+{{- $url := "" -}}
+{{- if .IsNamedParams -}}
+  {{- $url = .Get "url" -}}
+{{- else -}}
+  {{- $url = .Get 0 -}}
+{{- end -}}
+{{- if not $url -}}
+  {{- errorf "instagram shortcode requires a post/reel url (%s)" .Position -}}
+{{- end -}}
+{{- $scriptKey := "social_embed_instagram_script" -}}
+{{- $needsScript := not (.Page.Scratch.Get $scriptKey) -}}
+{{- if $needsScript }}{{- .Page.Scratch.Set $scriptKey true -}}{{- end -}}
+<div class="social-embed social-embed--script social-embed--instagram">
+  <div class="social-embed__script-wrap">
+    <blockquote class="instagram-media" data-instgrm-permalink="{{ $url }}" data-instgrm-version="14" style="background:transparent; border:0; margin:0 auto; max-width:620px; width:100%;">
+      <a href="{{ $url }}" target="_blank" rel="noopener noreferrer">Instagram에서 게시물 열기</a>
+    </blockquote>
+    <p class="social-embed__assist">임베드가 바로 보이지 않으면 <a href="{{ $url }}" target="_blank" rel="noopener noreferrer">Instagram 원문</a>을 열면 됩니다.</p>
+  </div>
+</div>
+{{- if $needsScript -}}
+<script async src="https://www.instagram.com/embed.js"></script>
+{{- end -}}

@@ -1,26 +1,36 @@
 {{ define "main" }}
-  <section class="panel">
-    <h1>{{ .Title }}</h1>
-    <p class="footer-note">연/월 기준 제목 중심 아카이브입니다.</p>
+  <section class="page-hero page-hero--archive" data-pagefind-ignore>
+    <p class="page-hero__eyebrow">archive</p>
+    <h1 class="page-hero__title">{{ .Title }}</h1>
+    <p class="page-hero__lede">연도와 월 기준으로 묶인 전체 글 목록입니다.</p>
   </section>
 
   {{ $posts := where .Site.RegularPages "Section" "posts" }}
   {{ $posts = $posts.ByDate.Reverse }}
 
-  <section class="panel">
-    {{ range ($posts.GroupByDate "2006-01") }}
-      <div class="archive-group">
-        <h2>{{ .Key }}</h2>
-        <ul class="archive-list">
-          {{ range .Pages }}
-            <li class="archive-item">
-              <time datetime="{{ .Date.Format `2006-01-02` }}">{{ .Date.Format "2006-01-02" }}</time>
-              <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-              {{ partial "format-badges.html" . }}
-            </li>
+  <section class="archive-timeline" aria-label="Archive timeline">
+    {{ range ($posts.GroupByDate "2006") }}
+      <section class="archive-year">
+        <h2 class="archive-year__title">{{ .Key }}</h2>
+        <div class="archive-year__months">
+          {{ range (.Pages.GroupByDate "2006-01") }}
+            {{ $monthPages := .Pages }}
+            <section class="archive-month">
+              <h3 class="archive-month__title">{{ index (split .Key "-") 1 }}월</h3>
+              <ul class="archive-list">
+                {{ range $monthPages }}
+                  <li class="archive-item">
+                    <time datetime="{{ .Date.Format `2006-01-02` }}">{{ .Date.Format "01.02" }}</time>
+                    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+                    <span class="archive-item__meta">{{ with .GetTerms "categories" }}{{ with index . 0 }}{{ .LinkTitle }}{{ end }}{{ end }}</span>
+                    {{ partial "format-badges.html" . }}
+                  </li>
+                {{ end }}
+              </ul>
+            </section>
           {{ end }}
-        </ul>
-      </div>
+        </div>
+      </section>
     {{ end }}
   </section>
 {{ end }}

@@ -1,18 +1,24 @@
 {{ with .Paginator }}
   {{ if gt .TotalPages 1 }}
-    <nav class="pagination" aria-label="Pagination">
+    <nav class="pagination" aria-label="Pagination" data-pagefind-ignore>
       {{ if .HasPrev }}
-        <a href="{{ .Prev.URL }}">이전</a>
+        <a class="pagination__edge" href="{{ .Prev.URL }}">이전</a>
+      {{ else }}
+        <span class="pagination__edge is-disabled">이전</span>
       {{ end }}
-      {{ range .Pagers }}
-        {{ if eq .PageNumber $.Paginator.PageNumber }}
-          <span class="current">{{ .PageNumber }}</span>
-        {{ else }}
-          <a href="{{ .URL }}">{{ .PageNumber }}</a>
+      <div class="pagination__pages">
+        {{ range .Pagers }}
+          {{ if eq .PageNumber $.Paginator.PageNumber }}
+            <span class="current">{{ .PageNumber }}</span>
+          {{ else }}
+            <a href="{{ .URL }}">{{ .PageNumber }}</a>
+          {{ end }}
         {{ end }}
-      {{ end }}
+      </div>
       {{ if .HasNext }}
-        <a href="{{ .Next.URL }}">다음</a>
+        <a class="pagination__edge" href="{{ .Next.URL }}">다음</a>
+      {{ else }}
+        <span class="pagination__edge is-disabled">다음</span>
       {{ end }}
     </nav>
   {{ end }}

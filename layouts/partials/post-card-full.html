@@ -1,17 +1,36 @@
-{{ $isLink := and .Params.formats (in .Params.formats "link") .Params.external_url }}
-<article class="post-card">
-  <h2 class="post-title">
-    {{ if $isLink }}
-      <a href="{{ .Params.external_url }}" rel="noopener noreferrer">{{ .Title }}</a>
-    {{ else }}
-      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-    {{ end }}
-  </h2>
-  {{ partial "post-meta.html" . }}
-
-  {{ if $isLink }}
-    <p class="footer-note"><a href="{{ .Params.external_url }}" rel="noopener noreferrer">원문</a> · <a href="{{ .RelPermalink }}">내 글</a></p>
+{{ $page := . }}
+{{ $forceFullBody := false }}
+{{ if reflect.IsMap . }}
+  {{ with index . "page" }}
+    {{ $page = . }}
   {{ end }}
+  {{ $forceFullBody = or (index . "forceFullBody") false }}
+{{ end }}
+{{ $isLink := and $page.Params.formats (in $page.Params.formats "link") $page.Params.external_url }}
+<article class="entry-full">
+  <header class="entry-full__header">
+    {{ partial "post-meta.html" $page }}
+    <h2 class="entry-full__title">
+      {{ if $isLink }}
+        <a href="{{ $page.Params.external_url }}" rel="noopener noreferrer">{{ $page.Title }}</a>
+      {{ else }}
+        <a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a>
+      {{ end }}
+    </h2>
+    {{ if $isLink }}
+      <p class="entry-full__source" data-pagefind-ignore>
+        <a href="{{ $page.Params.external_url }}" rel="noopener noreferrer">원문</a>
+        <span>·</span>
+        <a href="{{ $page.RelPermalink }}">내 글</a>
+      </p>
+    {{ end }}
+  </header>
 
-  {{ partial "post-list-body.html" . }}
+  <div class="entry-full__body prose-body">
+    {{ if $forceFullBody }}
+      {{ $page.Content }}
+    {{ else }}
+      {{ partial "post-list-body.html" $page }}
+    {{ end }}
+  </div>
 </article>

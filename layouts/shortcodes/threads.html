@@ -1,0 +1,27 @@
+{{- $url := "" -}}
+{{- if .IsNamedParams -}}
+  {{- $url = .Get "url" -}}
+{{- else -}}
+  {{- $url = .Get 0 -}}
+{{- end -}}
+{{- if not $url -}}
+  {{- errorf "threads shortcode requires a post url (%s)" .Position -}}
+{{- end -}}
+{{- $scriptKey := "social_embed_threads_script" -}}
+{{- $needsScript := not (.Page.Scratch.Get $scriptKey) -}}
+{{- if $needsScript }}{{- .Page.Scratch.Set $scriptKey true -}}{{- end -}}
+<div class="social-embed social-embed--script social-embed--threads">
+  <div class="social-embed__script-wrap">
+    <blockquote
+      class="text-post-media"
+      data-text-post-permalink="{{ $url }}"
+      data-text-post-version="0"
+      style="background:transparent; border:0; margin:0 auto; max-width:680px; width:100%;">
+      <a href="{{ $url }}" target="_blank" rel="noopener noreferrer">Threads에서 게시물 열기</a>
+    </blockquote>
+    <p class="social-embed__assist">임베드가 보이지 않으면 <a href="{{ $url }}" target="_blank" rel="noopener noreferrer">Threads 원문 보기</a>.</p>
+  </div>
+</div>
+{{- if $needsScript -}}
+<script async src="https://www.threads.net/embed.js"></script>
+{{- end -}}

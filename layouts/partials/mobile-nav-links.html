@@ -7,4 +7,3 @@
 {{ $archiveHref := "archive/" | absURL }}
 {{ $searchHref := "search/" | absURL }}
 <a href="{{ $archiveHref }}"{{ if eq .Permalink $archiveHref }} aria-current="page"{{ end }}>archive</a>
-<a href="{{ $searchHref }}"{{ if eq .Permalink $searchHref }} aria-current="page"{{ end }}>search</a>

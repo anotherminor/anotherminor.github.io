@@ -3,12 +3,22 @@
 {{ end }}
 
 {{ define "main" }}
-  <section class="panel">
-    <h1>{{ .Title }}</h1>
-    <p class="footer-note">검색 인덱스는 포스트 상세 HTML만 대상으로 생성됩니다.</p>
+  <section class="page-hero page-hero--search" data-pagefind-ignore>
+    <p class="page-hero__eyebrow">search</p>
+    <h1 class="page-hero__title">{{ .Title }}</h1>
+    <p class="page-hero__lede">아카이브의 글 제목과 본문 일부를 빠르게 탐색합니다.</p>
   </section>
 
-  <section class="panel">
+  <section class="search-shell" data-pagefind-ignore>
+    <div class="search-shell__suggestions">
+      <span>추천 키워드</span>
+      <a href="#search">tech</a>
+      <a href="#search">rambling</a>
+      <a href="#search">embed</a>
+    </div>
+  </section>
+
+  <section class="search-results-shell">
     <div id="search"></div>
   </section>
 {{ end }}

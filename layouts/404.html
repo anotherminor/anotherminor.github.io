@@ -1,11 +1,12 @@
 {{ define "main" }}
-  <section class="panel">
-    <h1>404</h1>
-    <p>페이지를 찾을 수 없습니다.</p>
-    <p>
-      <a href="{{ .Site.Home.Permalink }}">홈</a> ·
-      <a href="{{ "archive/" | absURL }}">아카이브</a> ·
-      <a href="{{ "search/" | absURL }}">검색</a>
-    </p>
+  <section class="error-stage" data-pagefind-ignore>
+    <div class="error-stage__number">404</div>
+    <h1 class="error-stage__title">페이지를 찾을 수 없습니다</h1>
+    <p class="error-stage__lede">주소가 바뀌었거나 존재하지 않는 페이지입니다. 홈, 아카이브, 검색에서 다시 탐색해보세요.</p>
+    <div class="error-stage__actions">
+      <a class="button button--solid" href="{{ .Site.Home.Permalink }}">홈으로</a>
+      <a class="button button--ghost" href="{{ "archive/" | absURL }}">아카이브</a>
+      <a class="button button--ghost" href="{{ "search/" | absURL }}">검색</a>
+    </div>
   </section>
 {{ end }}
