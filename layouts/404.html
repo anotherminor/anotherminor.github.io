@@ -1,0 +1,11 @@
+{{ define "main" }}
+  <section class="panel">
+    <h1>404</h1>
+    <p>페이지를 찾을 수 없습니다.</p>
+    <p>
+      <a href="{{ "/" | relURL }}">홈</a> ·
+      <a href="{{ "/archive/" | relURL }}">아카이브</a> ·
+      <a href="{{ "/search/" | relURL }}">검색</a>
+    </p>
+  </section>
+{{ end }}

@@ -1,0 +1,19 @@
+{{ with .Paginator }}
+  {{ if gt .TotalPages 1 }}
+    <nav class="pagination" aria-label="Pagination">
+      {{ if .HasPrev }}
+        <a href="{{ .Prev.URL }}">이전</a>
+      {{ end }}
+      {{ range .Pagers }}
+        {{ if eq .PageNumber $.Paginator.PageNumber }}
+          <span class="current">{{ .PageNumber }}</span>
+        {{ else }}
+          <a href="{{ .URL }}">{{ .PageNumber }}</a>
+        {{ end }}
+      {{ end }}
+      {{ if .HasNext }}
+        <a href="{{ .Next.URL }}">다음</a>
+      {{ end }}
+    </nav>
+  {{ end }}
+{{ end }}

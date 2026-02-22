@@ -1,0 +1,41 @@
+{{ define "main" }}
+  {{ $taxonomy := .Data.Plural }}
+  {{ $term := .Data.Term }}
+
+  <section class="panel">
+    <h1>{{ .Title }}</h1>
+    <p class="footer-note">
+      {{ if eq $taxonomy "categories" }}카테고리 전문 목록{{ end }}
+      {{ if eq $taxonomy "tags" }}태그 스니펫 목록{{ end }}
+      {{ if eq $taxonomy "formats" }}포맷 아카이브(숨김 운영){{ end }}
+    </p>
+  </section>
+
+  {{ $pages := .Pages.ByDate.Reverse }}
+
+  {{ if eq $taxonomy "categories" }}
+    {{ $pager := .Paginate $pages 5 }}
+    {{ range $pager.Pages }}
+      {{ partial "post-card-full.html" . }}
+    {{ end }}
+    {{ partial "pagination.html" . }}
+  {{ else if eq $taxonomy "tags" }}
+    {{ $pager := .Paginate $pages 20 }}
+    {{ range $pager.Pages }}
+      {{ partial "post-card-summary.html" . }}
+    {{ end }}
+    {{ partial "pagination.html" . }}
+  {{ else if eq $taxonomy "formats" }}
+    {{ $pager := .Paginate $pages 20 }}
+    {{ range $pager.Pages }}
+      {{ partial "post-card-format.html" (dict "page" . "term" $term) }}
+    {{ end }}
+    {{ partial "pagination.html" . }}
+  {{ else }}
+    {{ $pager := .Paginate $pages 20 }}
+    {{ range $pager.Pages }}
+      {{ partial "post-card-summary.html" . }}
+    {{ end }}
+    {{ partial "pagination.html" . }}
+  {{ end }}
+{{ end }}

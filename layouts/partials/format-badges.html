@@ -1,0 +1,5 @@
+{{ with .GetTerms "formats" }}
+  {{ range . }}
+    <a class="badge" href="{{ .RelPermalink }}">{{ upper .LinkTitle }}</a>
+  {{ end }}
+{{ end }}

@@ -1,0 +1,14 @@
+{{ define "main" }}
+  <section class="panel">
+    <h1>{{ .Title }}</h1>
+    {{ with .Content }}{{ . }}{{ end }}
+  </section>
+
+  {{ $posts := where .Pages "Section" "posts" }}
+  {{ $posts = $posts.ByDate.Reverse }}
+  {{ $pager := .Paginate $posts 20 }}
+  {{ range $pager.Pages }}
+    {{ partial "post-card-summary.html" . }}
+  {{ end }}
+  {{ partial "pagination.html" . }}
+{{ end }}

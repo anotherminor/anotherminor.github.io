@@ -1,0 +1,59 @@
+baseURL: "https://example.pages.dev/"
+languageCode: "ko-kr"
+title: "anotherminor"
+defaultContentLanguage: "ko"
+enableRobotsTXT: true
+summaryLength: 160
+
+permalinks:
+  posts: /posts/:year/:month/:slug/
+
+taxonomies:
+  category: categories
+  tag: tags
+  format: formats
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+
+disableKinds:
+  - taxonomy
+
+ignoreErrors:
+  - error-disable-taxonomy
+
+pagination:
+  pagerSize: 5
+
+params:
+  siteDescription: "저널링 및 아카이빙을 위한 정적 블로그"
+  homeFullCount: 5
+  giscus:
+    enabled: true
+    repo: "OWNER/REPO"
+    repoId: ""
+    category: "General"
+    categoryId: ""
+    mapping: "pathname"
+    strict: "0"
+    reactionsEnabled: "1"
+    emitMetadata: "0"
+    inputPosition: "bottom"
+    lang: "ko"
+    loading: "lazy"
+    theme:
+      light: "light"
+      dark: "dark"
+  nav:
+    - name: "rambling"
+      url: "/categories/rambling/"
+    - name: "entertainment"
+      url: "/categories/entertainment/"
+    - name: "tech"
+      url: "/categories/tech/"
+    - name: "about"
+      url: "/about/"
+
+menu: {}

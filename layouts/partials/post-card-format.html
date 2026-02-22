@@ -1,0 +1,24 @@
+{{ $page := .page }}
+{{ $term := lower (.term | default "") }}
+{{ $isLinkTerm := eq $term "link" }}
+{{ $isLink := and $isLinkTerm $page.Params.external_url }}
+<article class="post-card">
+  <h2 class="post-title">
+    {{ if $isLink }}
+      <a href="{{ $page.Params.external_url }}" rel="noopener noreferrer">{{ $page.Title }}</a>
+    {{ else }}
+      <a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a>
+    {{ end }}
+  </h2>
+  {{ partial "post-meta.html" $page }}
+
+  {{ if $isLink }}
+    <p>
+      <a href="{{ $page.Params.external_url }}" rel="noopener noreferrer">원문</a>
+      <span class="footer-note"> · </span>
+      <a href="{{ $page.RelPermalink }}">내 글</a>
+    </p>
+  {{ else }}
+    <p>{{ partial "post-summary-text.html" $page }}</p>
+  {{ end }}
+</article>

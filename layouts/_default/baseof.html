@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="{{ .Site.LanguageCode | default `ko-kr` }}">
+<head>
+  {{ partial "head.html" . }}
+  {{ block "extra_head" . }}{{ end }}
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Primary navigation">
+      {{ partial "sidebar.html" . }}
+    </aside>
+
+    <main class="main">
+      <nav class="mobile-nav" aria-label="Primary navigation">
+        {{ partial "mobile-nav-links.html" . }}
+      </nav>
+
+      {{ block "main" . }}{{ end }}
+
+      <footer class="panel footer-note">
+        <p>Hugo + Cloudflare Pages · Search by Pagefind · Comments by giscus</p>
+      </footer>
+    </main>
+  </div>
+
+  {{ block "extra_scripts" . }}{{ end }}
+</body>
+</html>

@@ -1,0 +1,25 @@
+{{ define "main" }}
+  <section class="panel">
+    <h1>{{ .Site.Title }}</h1>
+    <p class="footer-note">최신 글을 전문 렌더링으로 표시합니다. 긴 글/임베드가 많은 글은 `<!--more-->`로 예외적으로 목록 길이를 제한할 수 있습니다.</p>
+  </section>
+
+  {{ $posts := where .Site.RegularPages "Section" "posts" }}
+  {{ $posts = $posts.ByDate.Reverse }}
+  {{ $n := .Site.Params.homeFullCount | default 5 }}
+
+  {{ if gt (len $posts) 0 }}
+    {{ range first $n $posts }}
+      {{ partial "post-card-full.html" . }}
+    {{ end }}
+    {{ if gt (len $posts) $n }}
+      <section class="panel">
+        <a href="{{ "/archive/" | relURL }}">더보기 (archive)</a>
+      </section>
+    {{ end }}
+  {{ else }}
+    <section class="panel">
+      <p>아직 게시된 글이 없습니다.</p>
+    </section>
+  {{ end }}
+{{ end }}

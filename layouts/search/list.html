@@ -1,0 +1,19 @@
+{{ define "extra_head" }}
+  <link rel="stylesheet" href="{{ "/pagefind/pagefind-ui.css" | relURL }}">
+{{ end }}
+
+{{ define "main" }}
+  <section class="panel">
+    <h1>{{ .Title }}</h1>
+    <p class="footer-note">검색 인덱스는 포스트 상세 HTML만 대상으로 생성됩니다.</p>
+  </section>
+
+  <section class="panel">
+    <div id="search"></div>
+  </section>
+{{ end }}
+
+{{ define "extra_scripts" }}
+  <script src="{{ "/pagefind/pagefind-ui.js" | relURL }}" defer></script>
+  <script src="{{ "js/search-init.js" | relURL }}" defer></script>
+{{ end }}

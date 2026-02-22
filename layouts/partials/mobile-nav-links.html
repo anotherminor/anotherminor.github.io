@@ -1,0 +1,8 @@
+{{ range .Site.Params.nav }}
+  {{ $href := .url | relURL }}
+  {{ $current := $.RelPermalink }}
+  {{ $active := or (eq $current $href) (and (ne $href "/") (hasPrefix $current $href)) }}
+  <a href="{{ $href }}"{{ if $active }} aria-current="page"{{ end }}>{{ .name }}</a>
+{{ end }}
+<a href="{{ "/archive/" | relURL }}"{{ if eq .RelPermalink "/archive/" }} aria-current="page"{{ end }}>archive</a>
+<a href="{{ "/search/" | relURL }}"{{ if eq .RelPermalink "/search/" }} aria-current="page"{{ end }}>search</a>

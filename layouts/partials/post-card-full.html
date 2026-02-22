@@ -1,0 +1,17 @@
+{{ $isLink := and .Params.formats (in .Params.formats "link") .Params.external_url }}
+<article class="post-card">
+  <h2 class="post-title">
+    {{ if $isLink }}
+      <a href="{{ .Params.external_url }}" rel="noopener noreferrer">{{ .Title }}</a>
+    {{ else }}
+      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    {{ end }}
+  </h2>
+  {{ partial "post-meta.html" . }}
+
+  {{ if $isLink }}
+    <p class="footer-note"><a href="{{ .Params.external_url }}" rel="noopener noreferrer">원문</a> · <a href="{{ .RelPermalink }}">내 글</a></p>
+  {{ end }}
+
+  {{ partial "post-list-body.html" . }}
+</article>

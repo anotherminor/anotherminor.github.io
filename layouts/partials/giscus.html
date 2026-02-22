@@ -1,0 +1,28 @@
+{{ $g := .Site.Params.giscus }}
+{{ $enabled := and $g $g.enabled (eq .Section "posts") (ne (.Params.comments | default true) false) }}
+{{ if $enabled }}
+<section class="panel" aria-labelledby="comments-title" data-pagefind-ignore>
+  <h2 id="comments-title">Comments</h2>
+  {{ if and $g.repo $g.repoId $g.category $g.categoryId }}
+    <script
+      src="https://giscus.app/client.js"
+      data-repo="{{ $g.repo }}"
+      data-repo-id="{{ $g.repoId }}"
+      data-category="{{ $g.category }}"
+      data-category-id="{{ $g.categoryId }}"
+      data-mapping="{{ $g.mapping | default `pathname` }}"
+      data-strict="{{ $g.strict | default `0` }}"
+      data-reactions-enabled="{{ $g.reactionsEnabled | default `1` }}"
+      data-emit-metadata="{{ $g.emitMetadata | default `0` }}"
+      data-input-position="{{ $g.inputPosition | default `bottom` }}"
+      data-theme="preferred_color_scheme"
+      data-lang="{{ $g.lang | default `ko` }}"
+      data-loading="{{ $g.loading | default `lazy` }}"
+      crossorigin="anonymous"
+      async>
+    </script>
+  {{ else }}
+    <p class="footer-note">giscus를 활성화하려면 `hugo.yaml`의 `params.giscus.repoId`, `categoryId`를 채우세요.</p>
+  {{ end }}
+</section>
+{{ end }}

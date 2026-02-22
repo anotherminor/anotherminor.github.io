@@ -1,0 +1,13 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{{ $title := .Site.Title }}
+{{ if not .IsHome }}{{ $title = printf "%s | %s" .Title .Site.Title }}{{ end }}
+<title>{{ $title }}</title>
+{{ $description := .Site.Params.siteDescription | default .Site.Title }}
+{{ with .Params.summary }}{{ $description = . | plainify }}{{ end }}
+<meta name="description" content="{{ $description }}">
+{{ $canonical := .Permalink }}
+{{ with .Params.canonical }}{{ $canonical = . }}{{ end }}
+<link rel="canonical" href="{{ $canonical | safeURL }}">
+<link rel="stylesheet" href="{{ "css/site.css" | relURL }}">
+<meta name="color-scheme" content="light dark">

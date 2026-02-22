@@ -1,0 +1,25 @@
+{{ define "main" }}
+  {{ $isPost := eq .Section "posts" }}
+  {{ $isLink := and .Params.formats (in .Params.formats "link") .Params.external_url }}
+
+  <article class="panel"{{ if $isPost }} data-pagefind-body{{ end }}>
+    <h1>{{ .Title }}</h1>
+    {{ if $isPost }}
+      {{ partial "post-meta.html" . }}
+    {{ else if .Date }}
+      <div class="meta"><time datetime="{{ .Date.Format `2006-01-02T15:04:05Z07:00` }}">{{ .Date.Format "2006-01-02" }}</time></div>
+    {{ end }}
+
+    {{ if $isLink }}
+      <p><strong>원문:</strong> <a href="{{ .Params.external_url }}" rel="noopener noreferrer">{{ .Params.external_url }}</a></p>
+    {{ end }}
+
+    {{ .Content }}
+
+    {{ if $isPost }}
+      {{ partial "post-tags.html" . }}
+    {{ end }}
+  </article>
+
+  {{ partial "giscus.html" . }}
+{{ end }}
