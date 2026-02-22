@@ -1,4 +1,0 @@
-# Cloudflare Pages redirects (manual in v1)
-# Add 301/302 rules here when a published slug changes.
-# Example:
-# /posts/2026/02/old-slug/ /posts/2026/02/new-slug/ 301

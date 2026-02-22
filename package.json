@@ -2,11 +2,11 @@
   "name": "anotherminor-pages-dev",
   "private": true,
   "version": "0.1.0",
-  "description": "Hugo journal blog with Pagefind for Cloudflare Pages",
+  "description": "Hugo journal blog with Pagefind for GitHub Pages",
   "scripts": {
     "search:index": "pagefind --site public --glob \"posts/**/*.html\"",
     "build": "hugo --gc --minify && npm run search:index",
-    "build:cf": "hugo --gc --minify --baseURL \"${SITE_BASE_URL:-$CF_PAGES_URL}\" && npx --no-install pagefind --site public --glob \"posts/**/*.html\""
+    "build:pages": "hugo --gc --minify --baseURL \"${BASE_URL:-http://localhost:1313/}\" && npx --no-install pagefind --site public --glob \"posts/**/*.html\""
   },
   "devDependencies": {
     "pagefind": "1.4.0"

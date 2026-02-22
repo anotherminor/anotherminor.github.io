@@ -1,4 +1,4 @@
-# anotherminor.pages.dev 통합 명세서 (v1 + v3 보정안)
+# anotherminor.pages.dev 통합 명세서
 
 작성 목적: 이 문서는 블로그의 기획 원칙, 구현 설정, 운영 루틴, 검증 기준을 하나로 합친 단일 기준 문서(Single Source of Truth)입니다.
 
@@ -27,7 +27,7 @@
 ### 2.3 빌드/호스팅 분리 원칙
 
 - `Hugo`: 빌드(정적 산출물 생성)
-- `Cloudflare Pages`: 호스팅/배포
+- `GitHub Pages`: 호스팅/배포
 - 경계면은 `public/` 산출물 폴더
 
 이 경계면을 지키면 빌더/호스트 교체가 쉬워진다.
@@ -45,7 +45,7 @@
 - 작성: `MWeb` (macOS)
 - 저장소: `GitHub` (단일 공개 저장소)
 - 빌드: `Hugo`
-- 호스팅/배포: `Cloudflare Pages`
+- 호스팅/배포: `GitHub Pages`
 - 댓글: `giscus` (GitHub Discussions 기반)
 - 검색: `Pagefind`
 - 임베드: 플랫폼 제공 embed HTML 우선
@@ -163,7 +163,7 @@ Hugo taxonomy 사용 시 기본적으로 taxonomy list(`/tags/`)와 term page(`/
 
 포맷 아카이브(`news`, `link`)는 메뉴에 노출하지 않고 배지 클릭/직접 URL로 진입한다.
 
-## 7. 구현 설정 (Hugo / Cloudflare Pages / Pagefind) - v3 핵심
+## 7. 구현 설정 (Hugo / GitHub Pages / Pagefind) - v4 핵심
 
 ### 7.1 Hugo 설정 핵심 (`hugo.yaml`)
 
@@ -179,30 +179,31 @@ Hugo taxonomy 사용 시 기본적으로 taxonomy list(`/tags/`)와 term page(`/
 - 임베드 HTML(raw HTML) 렌더링 허용
 - taxonomy list 비활성화 + 빌드 로그 실패 리스크 완화
 
-### 7.2 Cloudflare Pages Build/Deploy Interface (최종)
+### 7.2 GitHub Pages Build/Deploy Interface (최종)
 
-Build command (최종):
+배포 방식(최종):
 
 ```sh
-npm ci && hugo --gc --minify --baseURL "${SITE_BASE_URL:-$CF_PAGES_URL}" && npx --no-install pagefind --site public --glob "posts/**/*.html"
+npm ci
+hugo --gc --minify --baseURL "${BASE_URL}"
+npx --no-install pagefind --site public --glob "posts/**/*.html"
 ```
 
-Output directory:
+출력 디렉터리:
 
 ```txt
 public
 ```
 
-### 7.3 Cloudflare Pages 환경변수 계약
+GitHub Actions 워크플로우에서 `actions/configure-pages` 출력값을 `BASE_URL`로 사용해 Hugo `baseURL`을 주입한다.
 
-- `HUGO_VERSION` (정확 버전 핀)
-- `NODE_VERSION` (정확 버전 핀)
-- `SKIP_DEPENDENCY_INSTALL=1` (자동 설치 중복 방지)
-- `SITE_BASE_URL` (커스텀 도메인 도입 후 프로덕션에서 설정)
+### 7.3 GitHub Pages 배포 계약 (워크플로우)
 
-`baseURL` 주입 우선순위:
-- `SITE_BASE_URL`가 있으면 사용 (프로덕션 canonical 안정화)
-- 없으면 `CF_PAGES_URL` 사용 (프리뷰/초기 운영)
+- GitHub Actions로 빌드/배포한다 (`.github/workflows/deploy-github-pages.yml`)
+- Hugo 버전은 워크플로우에서 핀 (`0.156.0`)
+- Node 버전은 워크플로우에서 핀 (`20`)
+- `BASE_URL`은 `actions/configure-pages`의 `base_url` 출력값 사용
+- 커스텀 도메인은 GitHub Pages 설정(또는 `CNAME`)으로 별도 관리
 
 ### 7.4 Pagefind 버전/실행 정책
 
@@ -249,7 +250,7 @@ CLI 규칙:
 - 기본: `.Permalink`
 - 예외: front matter의 `canonical`이 있으면 우선 사용
 
-## 9. 리다이렉트 정책 (`aliases` vs `_redirects`)
+## 9. 리다이렉트 정책 (`aliases` 중심)
 
 ### 9.1 역할 분리 (문서 전체 공통 규칙)
 
@@ -257,22 +258,21 @@ CLI 규칙:
   - front matter에 기록
   - Hugo가 alias HTML 생성
   - 클라이언트 리다이렉트 보조 용도
-- `static/_redirects`
-  - Cloudflare Pages HTTP 리다이렉트(301/302) 규칙
+- GitHub Pages는 Cloudflare `_redirects` 같은 서버 측 리다이렉트 규칙 파일을 지원하지 않는다.
 
 중요:
 - `aliases`를 HTTP 301로 간주하지 않는다.
+- GitHub Pages에서 서버 측 301/302가 필요하면 별도 호스트/프록시가 필요하다.
 
 ### 9.2 slug 변경 운영 절차
 
 1. 포스트 `slug` 변경
 2. 기존 경로를 `aliases`에 추가
-3. `static/_redirects`에 301 규칙 추가
-4. 배포 후 이전/신규 URL 모두 확인
+3. 배포 후 이전/신규 URL 모두 확인 (alias HTML 동작 확인)
 
 ### 9.3 후속 개선 (v1.1 후보)
 
-- Hugo `.Aliases` 기반 `_redirects` 자동 생성 검토
+- Hugo `.Aliases` 기반 alias 운영 자동 점검(또는 향후 호스트 변경 시 리다이렉트 규칙 생성) 검토
 
 ## 10. 운영 루틴
 
@@ -284,7 +284,7 @@ CLI 규칙:
 3. `slug` 입력 (공개 URL용)
 4. 이미지가 있으면 `images/`에 저장하고 상대경로로 참조
 5. 로컬 미리보기 확인
-6. 커밋/푸시 → PR 프리뷰 확인 → merge
+6. 커밋/푸시 → GitHub Actions 배포 확인 (필요 시 별도 PR 검토) → merge
 
 ### 10.2 발행
 
@@ -293,7 +293,7 @@ CLI 규칙:
 ### 10.3 수정/정정
 
 - URL(slug) 변경은 예외적으로만 허용
-- 불가피할 때 `aliases` + `static/_redirects`를 함께 사용
+- 불가피할 때 `aliases`를 사용하고, 서버 측 리다이렉트가 꼭 필요하면 호스팅 전략을 재검토
 - 필요 시 `updated` 갱신
 
 ### 10.4 `<!--more-->` 정책
@@ -309,14 +309,14 @@ CLI 규칙:
 
 ## 11. 리스크 가드레일
 
-### 11.1 Cloudflare Pages 운영 리스크 (요약)
+### 11.1 GitHub Pages / GitHub Actions 운영 리스크 (요약)
 
-- 빌드 횟수/시간, 파일 수/개별 파일 크기 제한 존재
-- v1에서는 순수 정적 + Functions 미사용 원칙 유지
+- GitHub Actions 실행 시간/분량, GitHub Pages 배포 제약을 고려해야 함
+- v1에서는 순수 정적 사이트 + GitHub Pages 표준 배포를 유지
 - 파일/미디어 증가 속도 관리 필요
 
 주의:
-- 정확한 수치는 변동될 수 있으므로 운영 시점에 Cloudflare 공식 문서 최신값 확인
+- 정확한 제한/정책은 운영 시점에 GitHub 공식 문서 최신값 확인
 
 ### 11.2 GitHub 저장소 용량 리스크 (요약)
 
@@ -340,14 +340,14 @@ CLI 규칙:
 ### 12.1 taxonomy disable + 빌드 로그 안정성
 
 - `disableKinds: [taxonomy]` 적용 후 빌드 성공
-- `ignoreErrors: ["error-disable-taxonomy"]` 적용 상태에서 Cloudflare Pages 빌드 성공
+- `ignoreErrors: ["error-disable-taxonomy"]` 적용 상태에서 GitHub Actions 빌드 성공
 - `/categories/`, `/tags/`, `/formats/` 미생성 확인
 - `/categories/<term>/`, `/tags/<term>/`, `/formats/<term>/` 생성 유지 확인
 
 ### 12.2 baseURL / canonical / 절대 URL
 
-- 프리뷰 배포: `CF_PAGES_URL` 기준 canonical/절대 URL 생성
-- 프로덕션(커스텀 도메인 도입 후): `SITE_BASE_URL` 기준 canonical 생성
+- GitHub Pages 배포 URL 기준 canonical/절대 URL 생성
+- 커스텀 도메인 도입 후 canonical 생성값 확인
 - RSS/sitemap 절대 URL 정합성 확인
 
 ### 12.3 Pagefind 검색 인덱싱
@@ -366,18 +366,18 @@ CLI 규칙:
 ### 12.5 리다이렉트
 
 - `aliases`만 추가 시 alias HTML 기반 이동 동작 확인
-- `_redirects` 추가 시 HTTP 301/302 동작 확인
-- `static/_redirects`가 배포 결과물에 포함되는지 확인
+- `aliases` 추가 시 alias HTML 기반 이동 동작 확인
+- (선택) 커스텀 도메인/프록시 도입 시 서버 측 리다이렉트 정책 별도 검증
 
 ### 12.6 빌드 재현성
 
 - `npm ci` 후 빌드 성공
 - lockfile 유지 상태 재빌드 일관성 확인
-- Cloudflare Pages와 로컬 빌드 결과 핵심 동작 동일성 확인
+- GitHub Actions 배포 결과와 로컬 빌드 결과 핵심 동작 동일성 확인
 
 ## 13. 후속 작업 (v1.1+)
 
-- Hugo `.Aliases` 기반 `_redirects` 자동 생성
+- Hugo `.Aliases` 기반 alias 점검 자동화 (또는 향후 호스트 전환 대비 리다이렉트 규칙 생성)
 - 이미지 처리 자동화(Hugo image processing / render hook)
 - 콘텐츠 검증 스크립트
   - 카테고리 허용값 검사
@@ -406,17 +406,22 @@ CLI 규칙:
 - Cloudflare 빌드에서 `SKIP_DEPENDENCY_INSTALL=1` 권장(사실상 필수)
 - `npx --no-install pagefind --glob "posts/**/*.html"`로 검색 인덱싱 범위/재현성 강화
 
+### v4 전환안 (현재 기준)
+
+- 호스팅/배포를 Cloudflare Pages에서 `GitHub Pages + GitHub Actions`로 전환
+- Cloudflare 전용 `Deploy command`/`_redirects` 운영을 폐기하고 `aliases` 중심 정책으로 단순화
+- GitHub Actions 워크플로우에서 Hugo/Pagefind 빌드를 수행하고 `public/`를 Pages에 배포
+
 ## 부록 A. 현재 repo와의 정합성 체크 포인트
 
 - `README.md`: 요약/진입 문서 역할 유지, 본 문서 링크 제공
 - `hugo.yaml`: v3 핵심 보정값 반영 상태 유지
-- `package.json`: `pagefind` 버전 핀 + `build:cf` 스크립트 일치 유지
-- `static/_redirects`: 수동 리다이렉트 정책과 문서 설명 일치 유지
+- `package.json`: `pagefind` 버전 핀 + `build:pages` 스크립트 일치 유지
+- `.github/workflows/deploy-github-pages.yml`: GitHub Pages 배포 워크플로우와 문서 설명 일치 유지
 
 ## 부록 B. 참고 문서(운영 시 확인)
 
-- Cloudflare Pages Hugo 가이드
-- Cloudflare Pages build image / limits / redirects 문서
+- GitHub Pages + GitHub Actions (Hugo) 배포 문서
 - Hugo taxonomies / URLs / aliases / archetypes / front matter / summaries 문서
 - Pagefind CLI / indexing options 문서
 
