@@ -3,9 +3,9 @@
     <h1>404</h1>
     <p>페이지를 찾을 수 없습니다.</p>
     <p>
-      <a href="{{ "/" | relURL }}">홈</a> ·
-      <a href="{{ "/archive/" | relURL }}">아카이브</a> ·
-      <a href="{{ "/search/" | relURL }}">검색</a>
+      <a href="{{ .Site.Home.Permalink }}">홈</a> ·
+      <a href="{{ "archive/" | absURL }}">아카이브</a> ·
+      <a href="{{ "search/" | absURL }}">검색</a>
     </p>
   </section>
 {{ end }}

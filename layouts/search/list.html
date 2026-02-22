@@ -1,5 +1,5 @@
 {{ define "extra_head" }}
-  <link rel="stylesheet" href="{{ "/pagefind/pagefind-ui.css" | relURL }}">
+  <link rel="stylesheet" href="{{ "pagefind/pagefind-ui.css" | absURL }}">
 {{ end }}
 
 {{ define "main" }}
@@ -14,6 +14,6 @@
 {{ end }}
 
 {{ define "extra_scripts" }}
-  <script src="{{ "/pagefind/pagefind-ui.js" | relURL }}" defer></script>
+  <script src="{{ "pagefind/pagefind-ui.js" | absURL }}" defer></script>
   <script src="{{ "js/search-init.js" | relURL }}" defer></script>
 {{ end }}

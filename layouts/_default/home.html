@@ -14,7 +14,7 @@
     {{ end }}
     {{ if gt (len $posts) $n }}
       <section class="panel">
-        <a href="{{ "/archive/" | relURL }}">더보기 (archive)</a>
+        <a href="{{ "archive/" | absURL }}">더보기 (archive)</a>
       </section>
     {{ end }}
   {{ else }}

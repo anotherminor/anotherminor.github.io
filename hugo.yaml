@@ -48,12 +48,12 @@ params:
       dark: "dark"
   nav:
     - name: "rambling"
-      url: "/categories/rambling/"
+      url: "categories/rambling/"
     - name: "entertainment"
-      url: "/categories/entertainment/"
+      url: "categories/entertainment/"
     - name: "tech"
-      url: "/categories/tech/"
+      url: "categories/tech/"
     - name: "about"
-      url: "/about/"
+      url: "about/"
 
 menu: {}

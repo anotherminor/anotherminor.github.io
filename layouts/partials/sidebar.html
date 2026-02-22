@@ -1,14 +1,16 @@
-<h1 class="brand"><a href="{{ "/" | relURL }}">{{ .Site.Title }}</a></h1>
+<h1 class="brand"><a href="{{ .Site.Home.Permalink }}">{{ .Site.Title }}</a></h1>
 <p class="footer-note">{{ .Site.Params.siteDescription }}</p>
 <ul class="nav-list">
   {{ range .Site.Params.nav }}
-    {{ $href := .url | relURL }}
-    {{ $current := $.RelPermalink }}
-    {{ $active := or (eq $current $href) (and (ne $href "/") (hasPrefix $current $href)) }}
+    {{ $href := .url | absURL }}
+    {{ $current := $.Permalink }}
+    {{ $active := or (eq $current $href) (and (ne $href $.Site.Home.Permalink) (hasPrefix $current $href)) }}
     <li>
       <a href="{{ $href }}"{{ if $active }} aria-current="page"{{ end }}>{{ .name }}</a>
     </li>
   {{ end }}
-  <li><a href="{{ "/archive/" | relURL }}"{{ if eq .RelPermalink "/archive/" }} aria-current="page"{{ end }}>archive</a></li>
-  <li><a href="{{ "/search/" | relURL }}"{{ if eq .RelPermalink "/search/" }} aria-current="page"{{ end }}>search</a></li>
+  {{ $archiveHref := "archive/" | absURL }}
+  {{ $searchHref := "search/" | absURL }}
+  <li><a href="{{ $archiveHref }}"{{ if eq .Permalink $archiveHref }} aria-current="page"{{ end }}>archive</a></li>
+  <li><a href="{{ $searchHref }}"{{ if eq .Permalink $searchHref }} aria-current="page"{{ end }}>search</a></li>
 </ul>
