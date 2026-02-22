@@ -27,7 +27,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Setup Hugo
-        uses: actions/setup-hugo@v3
+        uses: peaceiris/actions-hugo@v3
         with:
           hugo-version: "0.156.0"
           extended: true
