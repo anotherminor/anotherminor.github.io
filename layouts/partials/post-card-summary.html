@@ -11,7 +11,7 @@
     </h2>
     <p class="entry-summary__snippet">{{ partial "post-summary-text.html" . }}</p>
     {{ if $isLink }}
-      <p class="entry-summary__aux" data-pagefind-ignore><a href="{{ .RelPermalink }}">내 글</a></p>
+      <p class="entry-summary__aux" data-pagefind-ignore><a href="{{ .RelPermalink }}" aria-label="내 글 상세 보기">¶ 내 글</a></p>
     {{ end }}
   </div>
   <a class="entry-summary__arrow" href="{{ if $isLink }}{{ .Params.external_url }}{{ else }}{{ .RelPermalink }}{{ end }}"{{ if $isLink }} rel="noopener noreferrer"{{ end }} aria-label="{{ .Title }} 보기">↗</a>

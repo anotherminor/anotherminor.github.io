@@ -6,7 +6,7 @@
 {{ if $isLink }}{{ $domain = replaceRE `^https?://([^/]+)/?.*$` `$1` $page.Params.external_url }}{{ end }}
 <article class="format-card format-card--{{ $term }}">
   <div class="format-card__meta">
-    <span class="badge badge--solid">{{ upper $term }}</span>
+    <a class="badge badge--solid" href="{{ printf "/formats/%s/" $term | relURL }}">{{ upper $term }}</a>
     <time datetime="{{ $page.Date.Format `2006-01-02` }}">{{ $page.Date.Format "2006.01.02" }}</time>
     {{ with $page.GetTerms "categories" }}{{ with index . 0 }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}{{ end }}
   </div>
@@ -30,7 +30,7 @@
   {{ if $isLink }}
     <p class="format-card__links" data-pagefind-ignore>
       <a href="{{ $page.Params.external_url }}" rel="noopener noreferrer">원문</a>
-      <a href="{{ $page.RelPermalink }}">내 글</a>
+      <a href="{{ $page.RelPermalink }}" aria-label="내 글 상세 보기">¶ 내 글</a>
     </p>
   {{ end }}
 </article>
