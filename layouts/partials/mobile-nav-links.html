@@ -1,9 +1,8 @@
 {{ range .Site.Params.nav }}
-  {{ $href := .url | absURL }}
-  {{ $current := $.Permalink }}
-  {{ $active := or (eq $current $href) (and (ne $href $.Site.Home.Permalink) (hasPrefix $current $href)) }}
-  <a href="{{ $href }}"{{ if $active }} aria-current="page"{{ end }}>{{ .name }}</a>
+{{ $href := .url | relURL }}
+{{ $current := $.Permalink }}
+{{ $currentRel := $.RelPermalink }}
+{{ $active := or (eq $current $href) (eq $currentRel $href) (and (ne .url "/") (hasPrefix $currentRel $href)) }}
+<a href="{{ $href }}" {{ if $active }} aria-current="page" {{ end }}>{{ .name }}</a>
 {{ end }}
-{{ $archiveHref := "archive/" | absURL }}
-{{ $searchHref := "search/" | absURL }}
-<a href="{{ $archiveHref }}"{{ if eq .Permalink $archiveHref }} aria-current="page"{{ end }}>archive</a>
+{{ $searchHref := "search/" | relURL }}

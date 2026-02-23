@@ -2,15 +2,20 @@
 <p class="footer-note">{{ .Site.Params.siteDescription }}</p>
 <ul class="nav-list">
   {{ range .Site.Params.nav }}
-    {{ $href := .url | absURL }}
-    {{ $current := $.Permalink }}
-    {{ $active := or (eq $current $href) (and (ne $href $.Site.Home.Permalink) (hasPrefix $current $href)) }}
-    <li>
-      <a href="{{ $href }}"{{ if $active }} aria-current="page"{{ end }}>{{ .name }}</a>
-    </li>
+  {{ $href := .url | relURL }}
+  {{ $current := $.Permalink }}
+  {{ $currentRel := $.RelPermalink }}
+  {{ $active := or (eq $current $href) (eq $currentRel $href) (and (ne .url "/") (hasPrefix $currentRel $href)) }}
+  <li>
+    <a href="{{ $href }}" {{ if $active }} aria-current="page" {{ end }}>{{ .name }}</a>
+  </li>
   {{ end }}
-  {{ $archiveHref := "archive/" | absURL }}
-  {{ $searchHref := "search/" | absURL }}
-  <li><a href="{{ $archiveHref }}"{{ if eq .Permalink $archiveHref }} aria-current="page"{{ end }}>archive</a></li>
-  <li><a href="{{ $searchHref }}"{{ if eq .Permalink $searchHref }} aria-current="page"{{ end }}>search</a></li>
+  {{ $searchHref := "search/" | relURL }}
+  <li><a href="{{ $searchHref }}" {{ if eq .Permalink $searchHref }} aria-current="page" {{ end }}
+      aria-label="Search"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+        style="vertical-align: middle;">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg></a></li>
 </ul>

@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="{{ .Site.LanguageCode | default `ko-kr` }}">
+
 <head>
   {{ partial "head.html" . }}
   {{ block "extra_head" . }}{{ end }}
@@ -12,30 +13,41 @@
 {{ if and (eq .Kind "page") (eq .Section "archive") }}{{ $classes = $classes | append "page-archive" }}{{ end }}
 {{ if eq .Kind "404" }}{{ $classes = $classes | append "page-404" }}{{ end }}
 {{ if and (eq .Kind "page") (eq .Section "posts") }}{{ $classes = $classes | append "page-post" }}{{ end }}
+
 <body class="{{ delimit $classes ` ` }}">
   <a class="skip-link" href="#main-content">본문으로 건너뛰기</a>
 
-  <header class="site-header" aria-label="Primary navigation">
-    <div class="site-header__inner">
-      <a class="site-brand" href="{{ .Site.Home.Permalink }}">
-        <span class="site-brand__mark" aria-hidden="true">✦</span>
-        <span class="site-brand__word">{{ .Site.Title }}</span>
-      </a>
+  <div class="site-layout">
+    <header class="site-header" aria-label="Primary navigation">
+      <div class="site-header__inner">
+        <a class="site-brand" href="{{ .Site.Home.Permalink }}">
+          <span class="site-brand__mark" aria-hidden="true">✦</span>
+          <span class="site-brand__word">{{ .Site.Title }}</span>
+        </a>
 
-      <nav class="site-nav" aria-label="Primary navigation links">
-        {{ partial "mobile-nav-links.html" . }}
-      </nav>
+        <nav class="site-nav" aria-label="Primary navigation links">
+          {{ partial "mobile-nav-links.html" . }}
+        </nav>
 
-      <div class="site-header__actions">
-        {{ $searchHref := "search/" | absURL }}
-        <a class="site-action" href="{{ $searchHref }}"{{ if eq .Permalink $searchHref }} aria-current="page"{{ end }}>search</a>
+        <div class="site-header__actions">
+          {{ $searchHref := "search/" | relURL }}
+          <a class="site-action" href="{{ $searchHref }}" {{ if eq .Permalink $searchHref }} aria-current="page" {{ end
+            }} aria-label="Search">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+              style="vertical-align: middle;">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </a>
+        </div>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <main id="main-content" class="site-main">
-    {{ block "main" . }}{{ end }}
-  </main>
+    <main id="main-content" class="site-main">
+      {{ block "main" . }}{{ end }}
+    </main>
+  </div>
 
   <footer class="site-footer" data-pagefind-ignore>
     <div class="site-footer__inner">
@@ -46,4 +58,5 @@
 
   {{ block "extra_scripts" . }}{{ end }}
 </body>
+
 </html>
