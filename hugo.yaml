@@ -1,4 +1,4 @@
-baseURL: "https://example.pages.dev/"
+baseURL: "https://anotherminor.github.io/"
 languageCode: "ko-kr"
 title: "anotherminor"
 defaultContentLanguage: "ko"
@@ -30,22 +30,9 @@ pagination:
 params:
   siteDescription: "저널링 및 아카이빙을 위한 정적 블로그"
   homeFullCount: 5
-  giscus:
+  commentbox:
     enabled: true
-    repo: "anotherminor/anotherminor.github.io"
-    repoId: "R_kgDORV6bpQ"
-    category: "General"
-    categoryId: "DIC_kwDORV6bpc4C295u"
-    mapping: "pathname"
-    strict: "0"
-    reactionsEnabled: "1"
-    emitMetadata: "0"
-    inputPosition: "bottom"
-    lang: "ko"
-    loading: "lazy"
-    theme:
-      light: "light"
-      dark: "dark"
+    projectId: "5648809497460736-proj"
   nav:
     - name: "rambling"
       url: "categories/rambling/"

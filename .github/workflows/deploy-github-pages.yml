@@ -48,7 +48,7 @@ jobs:
         run: |
           BASE_URL="${SITE_BASE_URL:-${PAGES_BASE_URL}/}"
           echo "Using Hugo baseURL: $BASE_URL"
-          hugo --gc --minify --baseURL "$BASE_URL"
+          hugo --gc --minify --cleanDestinationDir --baseURL "$BASE_URL"
 
       - name: Build Pagefind index
         run: npx --no-install pagefind --site public --glob "posts/**/*.html"

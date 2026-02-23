@@ -47,14 +47,15 @@
 - 저장소: `GitHub` (단일 공개 저장소)
 - 빌드: `Hugo`
 - 호스팅/배포: `GitHub Pages`
-- 댓글: `giscus` (GitHub Discussions 기반)
+- 댓글: `commentbox.io`
 - 검색: `Pagefind`
 - 임베드: 플랫폼 제공 embed HTML 우선(운영 작성은 Hugo shortcode 래퍼 우선)
 
 ### 3.1 저장소 공개 전략 (확정)
 
 - 단일 공개 GitHub 저장소를 사용한다.
-- 사이트 소스/콘텐츠/Discussions(giscus) 연결을 같은 repo에 둔다.
+- 사이트 소스/콘텐츠는 같은 repo에 둔다.
+- 댓글은 `commentbox.io` 프로젝트 ID로 연동한다.
 - 이유: 초기 설정/운영 복잡도를 최소화한다.
 
 ## 4. 콘텐츠 계약 (Public Content Contract)
@@ -243,7 +244,7 @@ Hugo taxonomy 사용 시 기본적으로 taxonomy list(`/tags/`)와 term page(`/
 
 ```sh
 npm ci
-hugo --gc --minify --baseURL "${BASE_URL}"
+hugo --gc --minify --cleanDestinationDir --baseURL "${BASE_URL}"
 npx --no-install pagefind --site public --glob "posts/**/*.html"
 ```
 
@@ -274,6 +275,7 @@ public
 
 주의:
 - `npx pagefind` (자동 최신 설치) 방식은 사용하지 않음
+- 로컬 검증 시에도 `public/` 잔여 산출물(특히 과거 draft 빌드 결과)이 검색 인덱스에 섞이지 않도록 Hugo 빌드에 `--cleanDestinationDir`를 포함
 
 검색 UX/인덱싱 대체안(JSON 인덱스)은 `15.2 검색 페이지(정적 환경)`에서 정의한다.
 
@@ -285,7 +287,7 @@ public
 
 템플릿 규칙:
 - `data-pagefind-body`는 포스트 상세 템플릿에만 사용
-- giscus 영역은 `data-pagefind-ignore`
+- commentbox 영역은 `data-pagefind-ignore`
 - 목록/분류/검색/404/about 템플릿에는 `data-pagefind-body` 금지
 
 CLI 규칙:
@@ -355,11 +357,13 @@ GitHub Pages 제약:
 3. `slug` 입력 (공개 URL용)
 4. 이미지가 있으면 `images/`에 저장하고 상대경로로 참조
 5. 로컬 미리보기 확인
-6. 커밋/푸시 → GitHub Actions 배포 확인 → merge
+6. 로컬 콘텐츠 검증 실행 (`npm run validate:content`)
+7. 커밋/푸시 → GitHub Actions 배포 확인 → merge
 
 ### 10.2 발행
 
-- `draft: false`로 변경 후 merge → 자동 배포
+- `draft: false`로 변경 전/직후 로컬에서 `npm run validate:content`로 front matter 계약 위반 여부를 점검
+- 이후 merge → 자동 배포
 
 ### 10.3 수정/정정
 
@@ -425,20 +429,21 @@ GitHub Pages 제약:
 ### 12.3 Pagefind 검색 인덱싱
 
 - `public/posts/**/*.html`만 인덱싱되는지 확인
+- 로컬 검증 전 `public/` 잔여 산출물 정리(`--cleanDestinationDir` 포함 빌드) 상태 확인
 - 홈/카테고리/태그/아카이브가 검색 결과에 섞이지 않는지 확인
 - 동일 글이 목록/상세로 중복 검색되지 않는지 확인
-- giscus 댓글 내용이 검색 결과에 섞이지 않는지 확인
+- commentbox 댓글 내용이 검색 결과에 섞이지 않는지 확인
 
-### 12.4 댓글(giscus)
+### 12.4 댓글(commentbox.io)
 
-- 비로그인 상태에서 읽기 가능
-- 로그인 상태에서 댓글 작성 가능
-- Discussions 매핑(pathname) 정상 동작
+- 댓글 박스 렌더링 정상 동작 (`params.commentbox.projectId` 설정 기준)
+- 댓글 작성/표시 기본 흐름 정상 동작
+- 페이지 경로 기준 스레드 분리(`defaultBoxId = RelPermalink`) 정상 동작
 
 ### 12.5 리다이렉트
 
 - `aliases`만 추가 시 alias HTML 기반 이동 동작 확인
-- `aliases` 추가 시 alias HTML 기반 이동 동작 확인
+- `slug` 변경 + `aliases` 추가 조합에서 이전 URL 이동 동작 확인
 - (선택) 커스텀 도메인/프록시 도입 시 서버 측 리다이렉트 정책 별도 검증
 
 ### 12.6 빌드 재현성
@@ -451,10 +456,9 @@ GitHub Pages 제약:
 
 - Hugo `.Aliases` 기반 alias 점검 자동화 (또는 향후 호스트 전환 대비 리다이렉트 규칙 생성)
 - 이미지 처리 자동화(Hugo image processing / render hook)
-- 콘텐츠 검증 스크립트
-  - 카테고리 허용값 검사
-  - `formats` 허용값 검사
-  - `link` 포맷의 `external_url` 검사
+- 로컬 콘텐츠 검증 스크립트의 CI 품질 게이트 연동 (GitHub Actions, 필요 시)
+  - 로컬(`npm run validate:content`)과 동일 스크립트를 재사용해 규칙 드리프트를 방지
+  - 카테고리/`formats`/`external_url` 계약 위반 시 PR 또는 push 단계에서 실패 처리
 - 검색 UI 커스터마이징 (필요 시)
 
 ## 14. 변경 이력 / 결정 로그
@@ -491,6 +495,13 @@ GitHub Pages 제약:
 - `YouTube Shorts`, `TikTok`에 세로형(`9:16`) 레이아웃 래퍼 적용
 - 스크립트 기반 임베드의 스크립트 중복 로드 방지 및 링크 폴백 문구 개선
 - 임베드 공통 스타일(크기/정렬/여백) 표준화
+
+### v4.2 댓글체계 전환안 (현재 구현 기준)
+
+- 댓글 시스템을 `giscus`에서 `commentbox.io`로 전환
+- Hugo 설정 키를 `params.giscus`에서 `params.commentbox`로 변경하고 `projectId` 기반 임베드로 단순화
+- 포스트 상세 댓글 스레드 식별자는 페이지 경로(`RelPermalink`)를 사용(`defaultBoxId`)
+- 댓글 임베드 영역은 검색 인덱싱 제외(`data-pagefind-ignore`) 정책 유지
 
 ## 15. 렌더링·검색·링크로그·페이지 설계 가이드
 
@@ -530,7 +541,7 @@ GitHub Pages 제약:
 - 템플릿 규칙
   - `data-pagefind-body`는 **개별 포스트 상세 템플릿에만** 사용합니다.
   - 홈/카테고리/태그/포맷/아카이브/검색/404/about 템플릿에는 `data-pagefind-body`를 넣지 않습니다.
-  - giscus 영역에는 `data-pagefind-ignore`를 적용합니다.
+  - commentbox 영역에는 `data-pagefind-ignore`를 적용합니다.
 - CLI 규칙
   - `--glob "posts/**/*.html"`로 **포스트 상세 HTML만** 인덱싱하도록 고정합니다.
   - 템플릿 실수로 목록 페이지에 표식이 들어가더라도 인덱싱 범위를 제한합니다.
@@ -616,7 +627,7 @@ canonical(정규 URL) 정책
 
 6. 개별 포스트(상세)
 
-- 제목/메타(날짜·카테고리·포맷 배지·태그) → 본문(임베드 포함) → 댓글(giscus) 순서로 구성합니다.
+- 제목/메타(날짜·카테고리·포맷 배지·태그) → 본문(임베드 포함) → 댓글(commentbox.io) 순서로 구성합니다.
 - `link` 포맷은 본문 상단에 원문 링크(`external_url`)를 명확히 노출합니다.
 
 7. About(단일 페이지)
@@ -637,10 +648,10 @@ canonical(정규 URL) 정책
 ## 부록 A. 현재 repo와의 정합성 체크 포인트
 
 - `README.md`: 요약/진입 문서 역할 유지, 본 문서 링크 제공
-- `hugo.yaml`: v3 핵심 보정값 반영 상태 유지
+- `hugo.yaml`: v4.x 핵심 설정 반영 상태 유지
 - `package.json`: `pagefind` 버전 핀 + `build:pages` 스크립트 일치 유지
 - `.github/workflows/deploy-github-pages.yml`: GitHub Pages 배포 워크플로우와 문서 설명 일치 유지
-- 템플릿 링크 생성: GitHub Pages 프로젝트 사이트의 repo 서브경로를 보존하도록 `absURL`/`.Permalink` 사용
+- 템플릿 링크 생성: 배포 `baseURL`(프로젝트 사이트 서브경로/루트/커스텀 도메인)를 보존하도록 `absURL`/`.Permalink` 사용
 
 ## 부록 B. 참고 문서(운영 시 확인)
 

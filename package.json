@@ -4,9 +4,10 @@
   "version": "0.1.0",
   "description": "Hugo journal blog with Pagefind for GitHub Pages",
   "scripts": {
-    "search:index": "pagefind --site public --glob \"posts/**/*.html\"",
-    "build": "hugo --gc --minify && npm run search:index",
-    "build:pages": "hugo --gc --minify --baseURL \"${BASE_URL:-http://localhost:1313/}\" && npx --no-install pagefind --site public --glob \"posts/**/*.html\""
+    "search:index": "npx --no-install pagefind --site public --glob \"posts/**/*.html\"",
+    "validate:content": "ruby scripts/validate-content.rb",
+    "build": "hugo --gc --minify --cleanDestinationDir && npm run search:index",
+    "build:pages": "hugo --gc --minify --cleanDestinationDir --baseURL \"${BASE_URL:-http://localhost:1313/}\" && npx --no-install pagefind --site public --glob \"posts/**/*.html\""
   },
   "devDependencies": {
     "pagefind": "1.4.0"

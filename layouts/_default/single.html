@@ -29,7 +29,7 @@
       </div>
     </article>
 
-    {{ partial "giscus.html" . }}
+    {{ partial "commentbox.html" . }}
   {{ else }}
     <article class="page-article">
       <header class="page-hero {{ if eq .Section `about` }}page-hero--about{{ end }}" data-pagefind-ignore>

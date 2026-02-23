@@ -1,11 +1,11 @@
-# anotherminor.pages.dev
+# anotherminor.github.io
 
 Hugo 기반의 정적 저널링 블로그입니다.
 
 - 콘텐츠: Markdown + YAML front matter
 - 배포: GitHub Pages (GitHub Actions)
 - 검색: Pagefind
-- 댓글: giscus (GitHub Discussions)
+- 댓글: commentbox.io
 
 ## Project Goals
 
@@ -19,7 +19,7 @@ Hugo 기반의 정적 저널링 블로그입니다.
 - Hosting: GitHub Pages
 - CI/CD: GitHub Actions
 - Search: Pagefind
-- Comments: giscus
+- Comments: commentbox.io
 
 ## Local Preview
 
@@ -37,6 +37,8 @@ npm ci
 BASE_URL="http://localhost:1313/" npm run build:pages
 ```
 
+`build:pages` 스크립트는 `public/`의 이전 산출물을 정리한 뒤 빌드하여, 로컬에서 `-D` 미리보기 후에도 검색 인덱스에 draft 글이 섞이지 않도록 합니다.
+
 ## Deployment (GitHub Pages)
 
 - GitHub repo `Settings` → `Pages`
@@ -48,11 +50,9 @@ BASE_URL="http://localhost:1313/" npm run build:pages
 
 ## URL / Domain Notes
 
-- 기본 GitHub Pages 프로젝트 사이트 URL은 `https://<user>.github.io/<repo>/` 형태입니다.
-- 현재 repo 이름이 `anotherminor.pages.dev` 이므로 기본 URL은 `https://anotherminor.github.io/anotherminor.pages.dev/` 형태가 됩니다.
-- 장기적으로 URL 정상화(짧고 안정적인 주소)를 원하면 아래 중 하나를 선택합니다.
-  - 커스텀 도메인 연결 (권장)
-  - 사용자 사이트 repo (`<user>.github.io`)로 운영
+- 현재 repo는 사용자 사이트 repo(`anotherminor.github.io`)이므로 기본 GitHub Pages URL은 `https://anotherminor.github.io/` 입니다.
+- 프로젝트 사이트 repo를 사용할 경우 기본 URL은 `https://<user>.github.io/<repo>/` 형태가 됩니다.
+- 커스텀 도메인을 연결하면 `SITE_BASE_URL` 기준으로 canonical/절대 URL을 고정할 수 있습니다.
 
 커스텀 도메인 사용 시:
 - GitHub repo variable `SITE_BASE_URL` 설정 (예: `https://blog.example.com`)
