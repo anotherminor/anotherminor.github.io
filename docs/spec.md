@@ -438,7 +438,7 @@ GitHub Pages 제약:
 
 - 댓글 박스 렌더링 정상 동작 (`params.commentbox.projectId` 설정 기준)
 - 댓글 작성/표시 기본 흐름 정상 동작
-- 페이지 경로 기준 스레드 분리(`defaultBoxId = RelPermalink`) 정상 동작
+- 페이지 URL 기준 스레드 분리(기본 `#commentbox` 박스 ID 기준) 정상 동작
 
 ### 12.5 리다이렉트
 
@@ -500,7 +500,7 @@ GitHub Pages 제약:
 
 - 댓글 시스템을 `giscus`에서 `commentbox.io`로 전환
 - Hugo 설정 키를 `params.giscus`에서 `params.commentbox`로 변경하고 `projectId` 기반 임베드로 단순화
-- 포스트 상세 댓글 스레드 식별자는 페이지 경로(`RelPermalink`)를 사용(`defaultBoxId`)
+- 포스트별 댓글 스레드는 페이지 URL + 기본 박스 ID(`commentbox`) 조합으로 구분
 - 댓글 임베드 영역은 검색 인덱싱 제외(`data-pagefind-ignore`) 정책 유지
 
 ## 15. 렌더링·검색·링크로그·페이지 설계 가이드

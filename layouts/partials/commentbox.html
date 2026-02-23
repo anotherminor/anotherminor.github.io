@@ -7,15 +7,12 @@
     <p>Powered by commentbox.io</p>
   </div>
   {{ if $c.projectId }}
-    <div class="commentbox"></div>
+    <div class="commentbox" id="commentbox"></div>
     <script src="https://unpkg.com/commentbox.io/dist/commentBox.min.js" defer></script>
     <script>
       window.addEventListener('DOMContentLoaded', function () {
         if (typeof commentBox !== 'function') return;
-        commentBox({{ $c.projectId | jsonify }}, {
-          className: 'commentbox',
-          defaultBoxId: {{ .RelPermalink | jsonify }}
-        });
+        commentBox({{ $c.projectId | jsonify }});
       });
     </script>
   {{ else }}
