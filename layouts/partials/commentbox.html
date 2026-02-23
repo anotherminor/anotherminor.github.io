@@ -12,7 +12,7 @@
     <script>
       window.addEventListener('DOMContentLoaded', function () {
         if (typeof commentBox !== 'function') return;
-        commentBox({{ $c.projectId | jsonify }});
+        commentBox({{ printf "%q" $c.projectId | safeJS }});
       });
     </script>
   {{ else }}
