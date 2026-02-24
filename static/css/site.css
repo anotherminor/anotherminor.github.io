@@ -171,9 +171,16 @@ h6 {
   letter-spacing: -0.02em;
 }
 
+.site-brand__desc {
+  margin: 0;
+  color: var(--text-faint);
+  font-size: 0.82rem;
+}
+
 .site-nav {
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   gap: 0.5rem;
 }
 
@@ -192,6 +199,7 @@ h6 {
 
 .site-header__actions {
   margin-top: 1rem;
+  text-align: right;
 }
 
 .site-action {
@@ -1040,22 +1048,6 @@ h6 {
   font-size: 0.85rem;
 }
 
-.reading-progress {
-  position: fixed;
-  top: calc(var(--header-height) - 1px);
-  left: 0;
-  width: 100%;
-  height: 3px;
-  z-index: 59;
-  background: var(--line);
-}
-
-.reading-progress__fill {
-  display: block;
-  height: 100%;
-  width: 0;
-  background: var(--accent);
-}
 
 .search-shell {
   margin-bottom: 0.9rem;

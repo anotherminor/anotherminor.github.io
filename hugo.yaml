@@ -28,19 +28,30 @@ pagination:
   pagerSize: 5
 
 params:
-  siteDescription: "저널링 및 아카이빙을 위한 정적 블로그"
+  siteDescription: "기록하고 보관하는 개인 공간"
   homeFullCount: 5
   commentbox:
     enabled: true
     projectId: "5648809497460736-proj"
+  categoryTitles:
+    rambling: "단상"
+    entertainment: "미디어"
+    tech: "테크"
+  categoryDescriptions:
+    categories:
+      rambling: "부끄러운 민낯의 정수."
+      entertainment: "상업영화 위주의 소식과 감상."
+      tech: "애플빠가 바라보는 기술과 디바이스."
+    tags: 
+    formats: 
   nav:
-    - name: "rambling"
+    - name: "단상"
       url: "categories/rambling/"
-    - name: "entertainment"
+    - name: "미디어"
       url: "categories/entertainment/"
-    - name: "tech"
+    - name: "테크"
       url: "categories/tech/"
-    - name: "about"
+    - name: "소개"
       url: "about/"
 
 menu: {}

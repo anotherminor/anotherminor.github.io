@@ -1,5 +1,5 @@
 ---
-title: "About"
+title: "소개"
 date: 2026-02-22T10:00:00+09:00
 draft: false
 slug: "about"

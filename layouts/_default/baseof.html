@@ -24,6 +24,7 @@
           <span class="site-brand__mark" aria-hidden="true">✦</span>
           <span class="site-brand__word">{{ .Site.Title }}</span>
         </a>
+        <p class="site-brand__desc">{{ .Site.Params.siteDescription }}</p>
 
         <nav class="site-nav" aria-label="Primary navigation links">
           {{ partial "mobile-nav-links.html" . }}

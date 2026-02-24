@@ -1,31 +1,25 @@
 {{ define "main" }}
-  <section class="page-hero page-hero--home" data-pagefind-ignore>
-    <p class="page-hero__eyebrow">digital archive</p>
-    <h1 class="page-hero__title">{{ .Site.Title }}</h1>
-    <p class="page-hero__lede">{{ .Site.Params.siteDescription }}</p>
+{{ $posts := where .Site.RegularPages "Section" "posts" }}
+{{ $posts = $posts.ByDate.Reverse }}
+{{ $n := .Site.Params.homeFullCount | default 5 }}
+
+<section class="stream-layout" aria-label="Latest posts">
+  {{ if gt (len $posts) 0 }}
+  {{ range $i, $p := first $n $posts }}
+  {{ if gt $i 0 }}<div class="stream-divider" aria-hidden="true"></div>{{ end }}
+  {{ partial "post-card-full.html" (dict "page" $p "forceFullBody" true) }}
+  {{ end }}
+
+  {{ if gt (len $posts) $n }}
+  <div class="stream-more" data-pagefind-ignore>
+    <a class="button button--ghost" href="{{ " archive/" | absURL }}">더보기 (archive)</a>
+  </div>
+  {{ end }}
+  {{ else }}
+  <section class="empty-state">
+    <h2>아직 게시된 글이 없습니다.</h2>
+    <p>첫 포스트를 발행하면 이 영역에 최신 글이 전문 렌더링으로 표시됩니다.</p>
   </section>
-
-  {{ $posts := where .Site.RegularPages "Section" "posts" }}
-  {{ $posts = $posts.ByDate.Reverse }}
-  {{ $n := .Site.Params.homeFullCount | default 5 }}
-
-  <section class="stream-layout" aria-label="Latest posts">
-    {{ if gt (len $posts) 0 }}
-      {{ range $i, $p := first $n $posts }}
-        {{ if gt $i 0 }}<div class="stream-divider" aria-hidden="true"></div>{{ end }}
-        {{ partial "post-card-full.html" (dict "page" $p "forceFullBody" true) }}
-      {{ end }}
-
-      {{ if gt (len $posts) $n }}
-        <div class="stream-more" data-pagefind-ignore>
-          <a class="button button--ghost" href="{{ "archive/" | absURL }}">더보기 (archive)</a>
-        </div>
-      {{ end }}
-    {{ else }}
-      <section class="empty-state">
-        <h2>아직 게시된 글이 없습니다.</h2>
-        <p>첫 포스트를 발행하면 이 영역에 최신 글이 전문 렌더링으로 표시됩니다.</p>
-      </section>
-    {{ end }}
-  </section>
+  {{ end }}
+</section>
 {{ end }}
