@@ -8,13 +8,6 @@
     <p class="post-detail__eyebrow">entry</p>
     <h1 class="post-detail__title">{{ .Title }}</h1>
     {{ partial "post-meta.html" . }}
-    {{ with .GetTerms "tags" }}
-    <ul class="chip-list chip-list--tags" aria-label="Tags">
-      {{ range . }}
-      <li><a href="{{ .RelPermalink }}">#{{ .LinkTitle }}</a></li>
-      {{ end }}
-    </ul>
-    {{ end }}
   </header>
 
   {{ if $isLink }}
@@ -29,6 +22,15 @@
     {{ .Content }}
   </div>
 </article>
+
+{{ with .GetTerms "tags" }}
+<hr class="post-detail__divider">
+<ul class="chip-list chip-list--tags" aria-label="Tags">
+  {{ range . }}
+  <li><a href="{{ .RelPermalink }}">#{{ .LinkTitle }}</a></li>
+  {{ end }}
+</ul>
+{{ end }}
 
 {{ partial "commentbox.html" . }}
 {{ else }}

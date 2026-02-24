@@ -153,6 +153,13 @@ h6 {
   gap: 1.5rem;
 }
 
+.site-brand-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15rem;
+}
+
 .site-brand {
   display: inline-flex;
   gap: 0.3rem;
@@ -199,7 +206,7 @@ h6 {
 
 .site-header__actions {
   margin-top: 1rem;
-  text-align: right;
+  align-self: flex-end;
 }
 
 .site-action {
@@ -770,6 +777,12 @@ h6 {
 .post-detail {
   display: grid;
   gap: 1.15rem;
+}
+
+.post-detail__divider {
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  margin: 2rem 0 0.5rem;
 }
 
 .post-detail__header {
