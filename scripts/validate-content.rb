@@ -10,7 +10,7 @@ POST_GLOB = File.join(ROOT, "content", "posts", "**", "index.md")
 FRONT_MATTER_RE = /\A---\s*\n(.*?)\n---\s*(?:\n|\z)/m
 
 ALLOWED_CATEGORIES = %w[rambling entertainment tech].freeze
-ALLOWED_FORMATS = %w[news link].freeze
+ALLOWED_FORMATS = %w[link].freeze
 REQUIRED_KEYS = %w[title date draft slug categories].freeze
 
 def rel(path)

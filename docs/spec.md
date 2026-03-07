@@ -107,7 +107,7 @@ front matter는 YAML로 통일한다.
 
 ### 5.3 선택 필드
 
-- `formats` (array, 길이 1, `news|link`)
+- `formats` (array, 길이 1, `link`)
 - `external_url` (`formats=["link"]`일 때 사용)
 - `aliases` (이전 URL 경로 기록)
 - `canonical` (교차 게시 시 정규 URL override)
@@ -120,7 +120,8 @@ front matter는 YAML로 통일한다.
 
 - 태그는 주제 태그만 사용 (형태 태그 금지)
 - 기본 글에는 `formats`를 기록하지 않음
-- 예외 글에만 `formats: ["news"]` 또는 `formats: ["link"]`
+- 예외 글에만 `formats: ["link"]`
+- 뉴스성 글은 `formats` 대신 `소식` 태그로 분류한다.
 
 ## 6. URL / 분류 / 페이지 정책
 
@@ -178,7 +179,7 @@ Hugo taxonomy 사용 시 기본적으로 taxonomy list(`/tags/`)와 term page(`/
 - `tech`
 - `about`
 
-포맷 아카이브(`news`, `link`)는 메뉴에 노출하지 않고 배지 클릭/직접 URL로 진입한다.
+포맷 아카이브(`link`)는 메뉴에 노출하지 않고 배지 클릭/직접 URL로 진입한다.
 구체적인 표시 규칙(배지/메타/목록 형태)은 `15.4 페이지 설계`에서 정의한다.
 
 ## 7. 구현 설정 (Hugo / GitHub Pages / Pagefind) - v4 핵심
@@ -312,9 +313,8 @@ CLI 규칙:
 이 절은 템플릿 출력 규칙 요약이며, 화면별 노출 위치/메타 조합은 `15.4 페이지 설계(사용자 화면 9종)`을 따른다.
 
 - 홈/카테고리/태그/포맷 목록 카드(또는 메타 영역)에서 `formats` 값을 읽어 조건부로 배지를 출력한다.
-- `formats=["news"]` → `NEWS` 배지
 - `formats=["link"]` → `LINK` 배지
-- 배지는 클릭 가능하며 해당 포맷 term 페이지(`/formats/news/`, `/formats/link/`)로 이동
+- 배지는 클릭 가능하며 해당 포맷 term 페이지(`/formats/link/`)로 이동
 
 ### 8.4 canonical 우선순위
 
@@ -469,7 +469,7 @@ GitHub Pages 제약:
 ### v1 기획안 (초기)
 
 - Hugo + Cloudflare Pages + Markdown/YAML + page bundle 중심 설계 확정
-- 카테고리 3종 + 태그 + 포맷(news/link 예외) 정책 수립
+- 카테고리 3종 + 태그 + 포맷(link 예외) 정책 수립
 - 임베드(raw HTML) + giscus + Pagefind 방향성 확정
 
 ### v2 보정안
@@ -590,8 +590,8 @@ canonical(정규 URL) 정책
 - 내비게이션 메뉴는 `rambling / entertainment / tech / about` 4개만 고정 노출합니다.
   - 데스크톱: 사이드바
   - 모바일: 상단(탑)
-- 포맷 배지는 `formats`가 있는 글에만 표시합니다: `NEWS`, `LINK`
-  - 배지는 클릭 가능하며 해당 포맷 아카이브(`/formats/news/`, `/formats/link/`)로 이동합니다.
+- 포맷 배지는 `formats`가 있는 글에만 표시합니다: `LINK`
+  - 배지는 클릭 가능하며 해당 포맷 아카이브(`/formats/link/`)로 이동합니다.
   - 홈/카테고리/태그/포맷 목록 카드 또는 메타 영역에서 조건부 렌더링합니다.
 - 메타 정보 표기(권장 순서)
   - 날짜 → 카테고리 → 포맷 배지(있을 때만)
@@ -621,12 +621,11 @@ canonical(정규 URL) 정책
 - 스니펫(요약) 리스트 + 실제 페이지네이션을 적용합니다.
 - 제목/날짜/카테고리/포맷 배지 + 요약을 함께 노출합니다.
 
-5. 포맷 페이지(숨김 아카이브: news/link)
+5. 포맷 페이지(숨김 아카이브: link)
 
 - 내비게이션 메뉴에는 노출하지 않습니다.
 - 진입은 (a) 포맷 배지 클릭 또는 (b) 직접 URL로 합니다.
 - 목록은 가볍게 구성합니다.
-  - `news`: 제목 + 날짜 + 카테고리 + 1줄 요약(권장)
   - `link`: 제목 + 날짜 + 카테고리 + (가능하면) 외부 도메인/원문 표시
 - `link`이고 `external_url`이 있으면
   - 제목 클릭: 외부 원문
