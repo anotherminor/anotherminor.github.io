@@ -62,3 +62,4 @@ BASE_URL="http://localhost:1313/" npm run build:pages
 ## Documentation
 
 - 통합 명세서(기획 + 구현 + 운영 + 검증): `docs/spec.md`
+- 폰트 지정 입력 시트: `docs/font-input-sheet.md`
