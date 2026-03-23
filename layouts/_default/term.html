@@ -26,7 +26,7 @@
 <section class="stream-layout" aria-label="Category posts">
   {{ range $i, $p := $pager.Pages }}
   {{ if gt $i 0 }}<div class="stream-divider" aria-hidden="true"></div>{{ end }}
-  {{ partial "post-card-full.html" (dict "page" $p "forceFullBody" true) }}
+  {{ partial "post-card-full.html" $p }}
   {{ end }}
 </section>
 {{ partial "pagination.html" . }}

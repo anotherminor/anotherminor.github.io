@@ -7,7 +7,7 @@
   {{ if gt (len $posts) 0 }}
   {{ range $i, $p := first $n $posts }}
   {{ if gt $i 0 }}<div class="stream-divider" aria-hidden="true"></div>{{ end }}
-  {{ partial "post-card-full.html" (dict "page" $p "forceFullBody" true) }}
+  {{ partial "post-card-full.html" $p }}
   {{ end }}
 
   {{ if gt (len $posts) $n }}
