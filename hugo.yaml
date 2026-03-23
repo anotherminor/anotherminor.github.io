@@ -28,7 +28,7 @@ pagination:
   pagerSize: 5
 
 params:
-  siteDescription: "기록하고 보관하는 개인 공간"
+  siteDescription: "어나더마이너의 개인 공간"
   homeFullCount: 5
   commentbox:
     enabled: true

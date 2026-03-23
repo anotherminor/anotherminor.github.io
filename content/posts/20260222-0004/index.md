@@ -12,6 +12,8 @@ summary: "shortcode 기반으로 YouTube, Shorts, TikTok, Instagram, X(Twitter),
 
 일반 가로형 영상과 세로형 영상이 같은 본문 폭 안에서 어떻게 보이는지도 함께 확인하려고 순서를 섞어 넣었다. 특히 `YouTube Shorts`와 `TikTok`은 shortcode 내부에서 세로 비율 래퍼를 사용하므로 별도 스타일을 본문에 직접 쓰지 않아도 된다.
 
+<!--more-->
+
 ## YouTube
 
 가로형 YouTube 임베드는 가장 기본적인 케이스라서 기준점처럼 보기 좋다. 본문에서 폭이 줄어들 때 비율이 안정적으로 유지되는지만 보면 된다.
