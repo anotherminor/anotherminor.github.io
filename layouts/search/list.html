@@ -1,0 +1,14 @@
+{{ define "main" }}
+  {{ $heroTitle := partial "page-title.html" . }}
+  <section class="page-hero page-hero--search" data-pagefind-ignore>
+    <p class="page-hero__eyebrow">search</p>
+    <h1 class="page-hero__title" data-search-hero-title>{{ $heroTitle }}</h1>
+  </section>
+
+  {{ partial "search-ui.html" . }}
+{{ end }}
+
+{{ define "extra_scripts" }}
+  <script src="{{ "pagefind/pagefind-ui.js" | relURL }}" defer></script>
+  <script src="{{ "js/search-init.js" | relURL }}" defer></script>
+{{ end }}

@@ -1,0 +1,34 @@
+{{ $page := . }}
+{{ $forceFullBody := false }}
+{{ $hideCategory := false }}
+{{ if reflect.IsMap . }}
+  {{ with index . "page" }}
+    {{ $page = . }}
+  {{ end }}
+  {{ $forceFullBody = or (index . "forceFullBody") false }}
+  {{ $hideCategory = or (index . "hideCategory") false }}
+{{ end }}
+{{ $isLink := and $page.Params.formats (in $page.Params.formats "link") $page.Params.external_url }}
+<article class="entry-full">
+  <header class="entry-full__header">
+    {{ partial "post-meta.html" (dict "page" $page "hideCategory" $hideCategory) }}
+    <h2 class="entry-full__title{{ if $isLink }} entry-full__title--with-detail{{ end }}">
+      {{ if $isLink }}
+        <a class="entry-full__title-link" href="{{ $page.Params.external_url }}" rel="noopener noreferrer">{{ $page.Title }}</a>
+        <span class="entry-full__detail-link-wrap" data-pagefind-ignore>
+          <a class="entry-full__detail-link entry-detail-link" href="{{ $page.RelPermalink }}" aria-label="내 글 상세 보기">¶</a>
+        </span>
+      {{ else }}
+        <a class="entry-full__title-link" href="{{ $page.RelPermalink }}">{{ $page.Title }}</a>
+      {{ end }}
+    </h2>
+  </header>
+
+  <div class="entry-full__body prose-body">
+    {{ if $forceFullBody }}
+      {{ $page.Content }}
+    {{ else }}
+      {{ partial "post-list-body.html" $page }}
+    {{ end }}
+  </div>
+</article>

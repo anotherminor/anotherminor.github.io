@@ -1,0 +1,8 @@
+{{ if .Truncated }}
+  <div class="post-list-body__summary">
+    {{ .Summary }}
+  </div>
+  <p class="post-list-body__more"><a href="{{ .RelPermalink }}">계속 읽기</a></p>
+{{ else }}
+  {{ .Content }}
+{{ end }}

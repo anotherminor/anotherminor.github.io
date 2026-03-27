@@ -1,0 +1,60 @@
+{{- $languageID := lower (.Type | default "bash") -}}
+{{- $languageLabels := dict
+  "bash" "bash"
+  "console" "console"
+  "css" "css"
+  "diff" "diff"
+  "dockerfile" "dockerfile"
+  "go" "go"
+  "html" "html"
+  "ini" "ini"
+  "javascript" "javascript"
+  "js" "javascript"
+  "json" "json"
+  "jsx" "jsx"
+  "markdown" "markdown"
+  "md" "markdown"
+  "plaintext" "text"
+  "py" "python"
+  "python" "python"
+  "rb" "ruby"
+  "rs" "rust"
+  "sh" "shell"
+  "shell" "shell"
+  "sql" "sql"
+  "text" "text"
+  "toml" "toml"
+  "ts" "typescript"
+  "tsx" "tsx"
+  "typescript" "typescript"
+  "xml" "xml"
+  "yaml" "yaml"
+  "yml" "yaml"
+-}}
+{{- $languageLabel := index $languageLabels $languageID -}}
+{{- if not $languageLabel -}}
+  {{- $languageLabel = lower (humanize (replace $languageID "_" " ")) -}}
+{{- end -}}
+{{- $highlighted := transform.HighlightCodeBlock . -}}
+<div class="code-block{{ if .Type }} code-block--highlighted{{ end }}" data-code-language="{{ $languageID }}">
+  <div class="code-block__header">
+    <span class="code-block__label">{{ $languageLabel }}</span>
+    <button class="code-block__copy" type="button" data-code-copy aria-label="코드 복사">
+      <svg class="code-block__copy-icon code-block__copy-icon--copy" aria-hidden="true" viewBox="0 0 18 18"
+        fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="6.25" y="2.25" width="9.5" height="11.5" rx="1.75" stroke="currentColor" stroke-width="1.8" />
+        <path d="M11.75 15.75H4.25C3.2835 15.75 2.5 14.9665 2.5 14V5.75C2.5 4.7835 3.2835 4 4.25 4H5.5"
+          stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <svg class="code-block__copy-icon code-block__copy-icon--success" aria-hidden="true" viewBox="0 0 16 16"
+        fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1.75 8.5 5.75 12.25 14.25 3.75" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"
+          stroke-linejoin="round" />
+      </svg>
+    </button>
+    <span class="sr-only" aria-live="polite" data-code-copy-status></span>
+  </div>
+  <div class="code-block__body">
+    {{- $highlighted.Wrapped | safeHTML -}}
+  </div>
+</div>

@@ -1,0 +1,26 @@
+{{- $url := "" -}}
+{{- if .IsNamedParams -}}
+  {{- $url = .Get "url" -}}
+{{- else -}}
+  {{- $url = .Get 0 -}}
+{{- end -}}
+{{- if not $url -}}
+  {{- errorf "facebook shortcode requires a post url (%s)" .Position -}}
+{{- end -}}
+{{- $width := "500" -}}
+{{- if .IsNamedParams -}}
+  {{- with .Get "width" }}{{ $width = printf "%v" . }}{{ end -}}
+{{- else -}}
+  {{- with .Get 1 }}{{ $width = printf "%v" . }}{{ end -}}
+{{- end -}}
+{{- $titles := .Site.Params.socialEmbeds.titles -}}
+{{- $title := default "Facebook 게시물" $titles.facebook -}}
+<div class="social-embed social-embed--script social-embed--facebook">
+  <div class="social-embed__script-wrap">
+    <iframe
+      title="{{ $title }}"
+      loading="lazy"
+      allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+      src="https://www.facebook.com/plugins/post.php?href={{ $url | urlquery }}&show_text=true&width={{ $width | safeURL }}"></iframe>
+  </div>
+</div>

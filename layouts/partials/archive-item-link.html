@@ -1,0 +1,17 @@
+{{ $page := . }}
+{{ $externalURL := $page.Params.external_url }}
+{{ $domain := "" }}
+{{ if $externalURL }}{{ $domain = replaceRE `^https?://(?:www\.)?([^/:?#]+).*$` `$1` $externalURL }}{{ end }}
+<li class="archive-item archive-item--link">
+  <div class="archive-item__body">
+    <div class="archive-item__title-row">
+      <a class="archive-item__title" href="{{ $page.RelPermalink }}">{{ $page.Title }}</a>
+      {{ if and $externalURL $domain }}
+        <a class="archive-item__domain" href="{{ $externalURL }}" rel="noopener noreferrer">· {{ $domain }}</a>
+      {{ end }}
+    </div>
+    <div class="archive-item__meta">
+      {{ with $page.GetTerms "categories" }}{{ with index . 0 }}<span>{{ .LinkTitle }}</span>{{ end }}{{ end }}
+    </div>
+  </div>
+</li>

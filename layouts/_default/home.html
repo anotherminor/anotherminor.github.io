@@ -1,0 +1,24 @@
+{{ define "main" }}
+{{ $posts := where .Site.RegularPages "Section" "posts" }}
+{{ $posts = $posts.ByDate.Reverse }}
+{{ $n := .Site.Params.homeFullCount | default 5 }}
+
+<section class="stream-layout" aria-label="Latest posts">
+  {{ if gt (len $posts) 0 }}
+  {{ range $i, $p := first $n $posts }}
+  {{ partial "post-card-full.html" $p }}
+  {{ end }}
+
+  {{ if gt (len $posts) $n }}
+  <div class="stream-more" data-pagefind-ignore>
+    <a class="stream-more__link" href="{{ "archive/" | relURL }}">글 모아보기</a>
+  </div>
+  {{ end }}
+  {{ else }}
+  <section class="empty-state">
+    <h2>아직 게시된 글이 없습니다.</h2>
+    <p>첫 포스트를 발행하면 이 영역에 최신 글이 전문 렌더링으로 표시됩니다.</p>
+  </section>
+  {{ end }}
+</section>
+{{ end }}

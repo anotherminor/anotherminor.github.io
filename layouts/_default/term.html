@@ -1,0 +1,80 @@
+{{ define "main" }}
+{{ $taxonomy := .Data.Plural }}
+{{ $term := .Data.Term }}
+{{ $pages := .Pages.ByDate.Reverse }}
+{{ $heroTitle := partial "page-title.html" . }}
+{{ $isLinkFormatArchive := and (eq $taxonomy "formats") (eq $term "link") }}
+
+{{ if ne $taxonomy "categories" }}
+<section class="page-hero page-hero--term page-hero--{{ $taxonomy | urlize }}{{ if $isLinkFormatArchive }} page-hero--archive-like{{ end }}" data-pagefind-ignore>
+  <p class="page-hero__eyebrow">
+    {{ if eq $taxonomy "tags" }}tag{{ else if $isLinkFormatArchive }}external links{{ else if eq $taxonomy "formats" }}format{{ else }}term{{ end }}
+  </p>
+  <h1 class="page-hero__title">{{ $heroTitle }}</h1>
+  <p class="page-hero__lede">
+    {{ with index .Site.Params.categoryDescriptions $taxonomy }}
+    {{ if reflect.IsMap . }}
+    {{ with index . $term }}{{ . }}{{ end }}
+    {{ else }}
+    {{ . }}
+    {{ end }}
+    {{ end }}
+  </p>
+</section>
+{{ end }}
+
+{{ if eq $taxonomy "categories" }}
+{{ $pager := .Paginate $pages 5 }}
+<section class="stream-layout" aria-label="Category posts">
+  {{ range $i, $p := $pager.Pages }}
+  {{ partial "post-card-full.html" (dict "page" $p "hideCategory" true) }}
+  {{ end }}
+</section>
+{{ partial "pagination.html" . }}
+{{ else if eq $taxonomy "tags" }}
+{{ $pager := .Paginate $pages 20 }}
+<section class="card-list card-list--compact" aria-label="Tag posts">
+  {{ range $pager.Pages }}
+  {{ partial "post-card-summary.html" . }}
+  {{ end }}
+</section>
+{{ partial "pagination.html" . }}
+{{ else if $isLinkFormatArchive }}
+<section class="archive-timeline archive-timeline--format-link" aria-label="Link archive timeline">
+  {{ range ($pages.GroupByDate "2006") }}
+    <section class="archive-year">
+      <h2 class="archive-year__title">{{ .Key }}년</h2>
+      <div class="archive-year__months">
+        {{ range (.Pages.GroupByDate "2006-01") }}
+          {{ $monthPages := .Pages }}
+          <section class="archive-month">
+            <h3 class="archive-month__title">{{ (index $monthPages 0).Date.Format "1월" }}</h3>
+            <ul class="archive-list">
+              {{ range $monthPages }}
+                {{ partial "archive-item-link.html" . }}
+              {{ end }}
+            </ul>
+          </section>
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
+</section>
+{{ else if eq $taxonomy "formats" }}
+{{ $pager := .Paginate $pages 20 }}
+<section class="format-list" aria-label="Format posts">
+  {{ range $pager.Pages }}
+  {{ partial "post-card-format.html" (dict "page" . "term" $term) }}
+  {{ end }}
+</section>
+{{ partial "pagination.html" . }}
+{{ else }}
+{{ $pager := .Paginate $pages 20 }}
+<section class="card-list" aria-label="Posts">
+  {{ range $pager.Pages }}
+  {{ partial "post-card-summary.html" . }}
+  {{ end }}
+</section>
+{{ partial "pagination.html" . }}
+{{ end }}
+{{ end }}

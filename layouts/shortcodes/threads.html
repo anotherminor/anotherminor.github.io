@@ -1,0 +1,31 @@
+{{- $url := "" -}}
+{{- if .IsNamedParams -}}
+  {{- $url = .Get "url" -}}
+{{- else -}}
+  {{- $url = .Get 0 -}}
+{{- end -}}
+{{- if not $url -}}
+  {{- errorf "threads shortcode requires a post url (%s)" .Position -}}
+{{- end -}}
+{{- $fallback := .Site.Params.socialEmbeds.fallback -}}
+{{- $loadingLabel := default "소셜 임베드를 불러오는 중입니다." $fallback.loading -}}
+{{- $openLabel := default "Threads에서 게시물 열기" $fallback.threadsOpen -}}
+{{- $scriptKey := "social_embed_threads_script" -}}
+{{- $needsScript := not (.Page.Scratch.Get $scriptKey) -}}
+{{- if $needsScript }}{{- .Page.Scratch.Set $scriptKey true -}}{{- end -}}
+<div class="social-embed social-embed--script social-embed--threads">
+  <div class="social-embed__script-wrap">
+    <blockquote
+      class="text-post-media"
+      data-text-post-permalink="{{ $url }}"
+      data-text-post-version="0"
+      data-pagefind-ignore
+      style="background:transparent; border:0; margin:0 auto; max-width:680px; width:100%;">
+      {{ $loadingLabel }}
+      <a class="social-embed__fallback-link" href="{{ $url }}" target="_blank" rel="noopener noreferrer">{{ $openLabel }}</a>
+    </blockquote>
+  </div>
+</div>
+{{- if $needsScript -}}
+<script async src="https://www.threads.net/embed.js"></script>
+{{- end -}}

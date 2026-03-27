@@ -1,0 +1,46 @@
+{{ with .Paginator }}
+  {{ if gt .TotalPages 1 }}
+    {{ $paginator := . }}
+    {{ $current := .PageNumber }}
+    {{ $total := .TotalPages }}
+    {{ $scratch := newScratch }}
+    {{ $scratch.Set "lastShown" 0 }}
+    <nav class="pagination" aria-label="Pagination" data-pagefind-ignore>
+      {{ if .HasPrev }}
+        <a class="pagination__edge" href="{{ .Prev.URL }}">이전</a>
+      {{ else }}
+        <span class="pagination__edge is-disabled">이전</span>
+      {{ end }}
+      <div class="pagination__pages">
+        {{ range seq $total }}
+          {{ $pageNumber := . }}
+          {{ $showPage := or
+            (le $total 7)
+            (and (le $current 3) (or (le $pageNumber 4) (eq $pageNumber $total)))
+            (and (ge $current (sub $total 2)) (or (eq $pageNumber 1) (ge $pageNumber (sub $total 3))))
+            (and (gt $current 3) (lt $current (sub $total 2)) (or (eq $pageNumber 1) (eq $pageNumber $total) (and (ge $pageNumber (sub $current 1)) (le $pageNumber (add $current 1)))))
+          }}
+          {{ if $showPage }}
+            {{ $lastShown := $scratch.Get "lastShown" }}
+            {{ if and (gt $lastShown 0) (gt (sub $pageNumber $lastShown) 1) }}
+              <span class="pagination__ellipsis" aria-hidden="true">…</span>
+            {{ end }}
+            {{ $pager := index $paginator.Pagers (sub $pageNumber 1) }}
+            {{ if eq $pageNumber $current }}
+              <span class="current">{{ $pageNumber }}</span>
+            {{ else }}
+              <a href="{{ $pager.URL }}">{{ $pageNumber }}</a>
+            {{ end }}
+            {{ $scratch.Set "lastShown" $pageNumber }}
+          {{ else }}
+          {{ end }}
+        {{ end }}
+      </div>
+      {{ if .HasNext }}
+        <a class="pagination__edge" href="{{ .Next.URL }}">다음</a>
+      {{ else }}
+        <span class="pagination__edge is-disabled">다음</span>
+      {{ end }}
+    </nav>
+  {{ end }}
+{{ end }}

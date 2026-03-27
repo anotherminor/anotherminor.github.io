@@ -1,0 +1,12 @@
+{{ $page := . }}
+{{ $currentRel := .RelPermalink }}
+{{ range .Site.Params.nav }}
+{{ $href := .url | relURL }}
+{{ $active := or (eq $currentRel $href) (and (ne .url "/") (hasPrefix $currentRel $href)) }}
+{{ if not $active }}
+  {{ range $page.GetTerms "categories" }}
+    {{ if eq .RelPermalink $href }}{{ $active = true }}{{ end }}
+  {{ end }}
+{{ end }}
+<a href="{{ $href }}" {{ if $active }} aria-current="page" {{ end }}>{{ .name }}</a>
+{{ end }}

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="{{ .Site.LanguageCode | default `ko-kr` }}">
+
+<head>
+  {{ partial "head.html" . }}
+  {{ block "extra_head" . }}{{ end }}
+</head>
+{{ $classes := slice (printf "kind-%s" .Kind) }}
+{{ if .IsHome }}{{ $classes = $classes | append "page-home" }}{{ end }}
+{{ if eq .Kind "term" }}{{ $classes = $classes | append (printf "taxonomy-%s" (.Data.Plural | urlize)) }}{{ end }}
+{{ if and (eq .Kind "page") (eq .Section "about") }}{{ $classes = $classes | append "page-about" }}{{ end }}
+{{ if and (eq .Kind "page") (eq .Section "search") }}{{ $classes = $classes | append "page-search" }}{{ end }}
+{{ if and (eq .Kind "page") (eq .Section "archive") }}{{ $classes = $classes | append "page-archive" }}{{ end }}
+{{ if eq .Kind "404" }}{{ $classes = $classes | append "page-404" }}{{ end }}
+{{ if and (eq .Kind "page") (eq .Section "posts") }}{{ $classes = $classes | append "page-post" }}{{ end }}
+
+<body class="{{ delimit $classes ` ` }}">
+  <a class="skip-link" href="#main-content">본문으로 건너뛰기</a>
+  {{ $currentRel := .RelPermalink }}
+  {{ $homeHref := "" | relURL }}
+  {{ $searchHref := "search/" | relURL }}
+
+  <div class="site-layout">
+    <header class="site-header" aria-label="Primary navigation">
+      <div class="site-header__inner">
+        <div class="site-brand-group">
+          <a class="site-brand" href="{{ $homeHref }}" aria-label="{{ .Site.Title }}">
+            {{ readFile "static/images/logo.svg" | safeHTML }}
+          </a>
+          {{ $desc := .Site.Params.siteDescription }}
+          {{ if eq .Kind "term" }}
+            {{ if eq .Data.Plural "categories" }}
+              {{ $catDescs := index .Site.Params.categoryDescriptions "categories" }}
+              {{ with index $catDescs .Data.Term }}{{ $desc = . }}{{ end }}
+            {{ end }}
+          {{ else if and (eq .Kind "page") (eq .Section "posts") }}
+            {{ $terms := .GetTerms "categories" }}
+            {{ if $terms }}
+              {{ $catDescs := index .Site.Params.categoryDescriptions "categories" }}
+              {{ with index $catDescs (index $terms 0).Data.Term }}{{ $desc = . }}{{ end }}
+            {{ end }}
+          {{ end }}
+          <p class="site-brand__desc">{{ $desc }}</p>
+        </div>
+
+        <nav class="site-nav" aria-label="Primary navigation links">
+          {{ partial "mobile-nav-links.html" . }}
+          <a class="site-action" href="{{ $searchHref }}" {{ if eq $currentRel $searchHref }}aria-current="page"{{ end }} aria-label="Search">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content" class="site-main">
+      {{ block "main" . }}{{ end }}
+    </main>
+
+    <footer class="site-footer" data-pagefind-ignore>
+      <div class="site-footer__inner">
+        <p class="site-footer__copy">ⓒ 2020-{{ now.Format "2006" }} anotherminor All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="{{ "js/site.js" | relURL }}" defer></script>
+  {{ block "extra_scripts" . }}{{ end }}
+</body>
+
+</html>

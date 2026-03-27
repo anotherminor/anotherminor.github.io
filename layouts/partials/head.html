@@ -1,0 +1,63 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{{ $title := .Site.Params.homeTitle | default .Site.Title }}
+{{ if not .IsHome }}
+  {{ $pageTitle := partial "page-title.html" . }}
+  {{ $title = printf "%s | %s" $pageTitle .Site.Title }}
+{{ end }}
+<title>{{ $title }}</title>
+{{ $description := .Site.Params.siteDescription | default .Site.Title }}
+{{ with .Params.summary }}{{ $description = . | plainify }}{{ end }}
+<meta name="description" content="{{ $description }}">
+{{ $canonical := .Permalink }}
+{{ with .Params.canonical }}{{ $canonical = . }}{{ end }}
+<link rel="canonical" href="{{ $canonical | safeURL }}">
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:description" content="{{ $description }}">
+<meta property="og:url" content="{{ $canonical }}">
+<meta property="og:site_name" content="{{ .Site.Title }}">
+<meta property="og:locale" content="ko_KR">
+{{ if .IsPage -}}
+<meta property="og:type" content="article">
+{{ with .Date }}<meta property="article:published_time" content="{{ .Format "2006-01-02T15:04:05Z07:00" }}">{{ end }}
+{{ else -}}
+<meta property="og:type" content="website">
+{{ end -}}
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{{ $title }}">
+<meta name="twitter:description" content="{{ $description }}">
+{{ with .OutputFormats.Get "rss" -}}
+<link rel="alternate" type="application/rss+xml" title="{{ $.Site.Title }}" href="{{ .Permalink }}">
+{{ end -}}
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<style>
+@font-face { font-family: 'GothicA1'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2205@1.0/GothicA1-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'GothicA1'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2205@1.0/GothicA1-Medium.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'GothicA1'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2205@1.0/GothicA1-SemiBold.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'GothicA1'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2205@1.0/GothicA1-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'GothicA1'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2205@1.0/GothicA1-ExtraBold.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+@font-face { font-family: 'YesMyungjo'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_13@1.0/YESMyoungjo-Regular.woff') format('woff'); font-weight: normal; font-display: swap; }
+@font-face { font-family: 'YesMyungjo'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_13@1.0/YESMyoungjo-Bold.woff') format('woff'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'MonoplexNerd'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_Monoplex-nerd@1.0/MonoplexKRNerd-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+</style>
+<link rel="preload" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2205@1.0/GothicA1-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_13@1.0/YESMyoungjo-Regular.woff" as="font" type="font/woff" crossorigin>
+{{- $c := site.Params.colors }}
+<style>
+  :root {
+    --color-bg:     {{ $c.light.bg | safeCSS }};
+    --color-text:   {{ $c.light.text | safeCSS }};
+    --color-accent: {{ $c.light.accent | safeCSS }};
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-bg:     {{ $c.dark.bg | safeCSS }};
+      --color-text:   {{ $c.dark.text | safeCSS }};
+      --color-accent: {{ $c.dark.accent | safeCSS }};
+    }
+  }
+</style>
+<link rel="stylesheet" href="{{ "css/site.css" | relURL }}">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="{{ $c.light.bg }}">
+<meta name="theme-color" content="{{ $c.dark.bg }}" media="(prefers-color-scheme: dark)">

@@ -1,0 +1,44 @@
+{{ define "main" }}
+  {{ $heroTitle := partial "page-title.html" . }}
+  <section class="page-hero page-hero--archive" data-pagefind-ignore>
+    <p class="page-hero__eyebrow">archive</p>
+    <h1 class="page-hero__title">{{ $heroTitle }}</h1>
+  </section>
+
+  {{ $posts := slice }}
+  {{ range (where .Site.RegularPages "Section" "posts").ByDate.Reverse }}
+    {{ if not (in (.Params.formats | default (slice)) "link") }}
+      {{ $posts = $posts | append . }}
+    {{ end }}
+  {{ end }}
+
+  <section class="archive-timeline" aria-label="Archive timeline">
+    {{ range ($posts.GroupByDate "2006") }}
+      <section class="archive-year">
+        <h2 class="archive-year__title">{{ .Key }}년</h2>
+        <div class="archive-year__months">
+          {{ range (.Pages.GroupByDate "2006-01") }}
+            {{ $monthPages := .Pages }}
+            <section class="archive-month">
+              <h3 class="archive-month__title">{{ (index $monthPages 0).Date.Format "1월" }}</h3>
+              <ul class="archive-list">
+                {{ range $monthPages }}
+                  <li class="archive-item">
+                    <div class="archive-item__body">
+                      <div class="archive-item__title-row">
+                        <a class="archive-item__title" href="{{ .RelPermalink }}">{{ .Title }}</a>
+                      </div>
+                      <div class="archive-item__meta">
+                        {{ with .GetTerms "categories" }}{{ with index . 0 }}<span>{{ .LinkTitle }}</span>{{ end }}{{ end }}
+                      </div>
+                    </div>
+                  </li>
+                {{ end }}
+              </ul>
+            </section>
+          {{ end }}
+        </div>
+      </section>
+    {{ end }}
+  </section>
+{{ end }}

@@ -1,0 +1,3 @@
+{{ $txt := .Params.summary }}
+{{ if not $txt }}{{ $txt = (.Summary | plainify) }}{{ end }}
+{{ $txt | plainify | truncate 180 }}

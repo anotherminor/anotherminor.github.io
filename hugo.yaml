@@ -1,0 +1,82 @@
+baseURL: "https://anotherminor.github.io/"
+languageCode: "ko-kr"
+title: "anotherminor"
+defaultContentLanguage: "ko"
+enableRobotsTXT: true
+summaryLength: 160
+
+permalinks:
+  posts: /posts/:year/:month/:slug/
+
+taxonomies:
+  category: categories
+  tag: tags
+  format: formats
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+    renderHooks:
+      image:
+        useEmbedded: always
+
+disableKinds:
+  - taxonomy
+
+ignoreErrors:
+  - error-disable-taxonomy
+
+pagination:
+  pagerSize: 5
+
+params:
+  colors:
+    light:
+      bg:     "oklch(98.1% 0.009 82)"    # 배경 기준색 (라이트)
+      text:   "oklch(19.5% 0.014 72)"    # 글자 기준색 (라이트)
+      accent: "oklch(74% 0.235 48)"      # 강조 기준색 (라이트)
+    dark:
+      bg:     "oklch(14.8% 0.012 72)"    # 배경 기준색 (다크)
+      text:   "oklch(94.6% 0.01 82)"     # 글자 기준색 (다크)
+      accent: "oklch(80% 0.205 50)"      # 강조 기준색 (다크)
+  homeTitle: "anotherminor의 블로그"
+  siteDescription: "내 개인 공간"
+  homeFullCount: 5
+  commentbox:
+    enabled: true
+    projectId: "5648809497460736-proj"
+  socialEmbeds:
+    fallback:
+      loading: "소셜 임베드를 불러오는 중입니다."
+      twitterOpen: "X에서 게시물 열기"
+      threadsOpen: "Threads에서 게시물 열기"
+      instagramOpen: "Instagram에서 게시물 열기"
+      tiktokAccountFormat: "@%s 계정 열기"
+    titles:
+      facebook: "Facebook 게시물"
+      youtube: "YouTube 동영상"
+      youtubeShorts: "YouTube Shorts"
+      vimeo: "Vimeo 동영상"
+  categoryTitles:
+    rambling: "단상"
+    entertainment: "미디어"
+    tech: "테크"
+  categoryDescriptions:
+    categories:
+      rambling: "부끄러운 민낯의 정수"
+      entertainment: "상업영화 위주의 소식과 감상"
+      tech: "애플빠가 바라보는 기술과 기기"
+    tags: 
+    formats: 
+  nav:
+    - name: "단상"
+      url: "categories/rambling/"
+    - name: "미디어"
+      url: "categories/entertainment/"
+    - name: "테크"
+      url: "categories/tech/"
+    - name: "소개"
+      url: "about/"
+
+menu: {}

@@ -1,0 +1,52 @@
+{{ define "main" }}
+{{ $isPost := eq .Section "posts" }}
+{{ $isLink := and .Params.formats (in .Params.formats "link") .Params.external_url }}
+{{ $isAbout := or (eq .Section "about") (eq .RelPermalink "/about/") }}
+
+{{ if $isPost }}
+<article class="post-detail" data-pagefind-body>
+  <header class="post-detail__header">
+    <p class="post-detail__eyebrow" data-pagefind-ignore>entry</p>
+    <h1 class="post-detail__title" data-pagefind-meta="title" data-pagefind-weight="0.05" data-pagefind-ignore>
+      {{ if $isLink }}
+      <a href="{{ .Params.external_url }}" rel="noopener noreferrer">{{ .Title }}</a>
+      {{ else }}
+      {{ .Title }}
+      {{ end }}
+    </h1>
+    {{ partial "post-meta.html" (dict "page" . "hideCategory" true) }}
+    {{ with .GetTerms "categories" }}
+      {{ with index . 0 }}
+        <span data-pagefind-meta="category" hidden>{{ .LinkTitle }}</span>
+      {{ end }}
+    {{ end }}
+  </header>
+
+  <div class="post-detail__body prose-body">
+    {{ .Content }}
+  </div>
+</article>
+
+{{ with .GetTerms "tags" }}
+<hr class="post-detail__divider">
+<ul class="chip-list chip-list--tags" aria-label="Tags">
+  {{ range . }}
+  <li><a href="{{ .RelPermalink }}">#{{ .LinkTitle }}</a></li>
+  {{ end }}
+</ul>
+{{ end }}
+
+{{ partial "commentbox.html" . }}
+{{ else }}
+<article class="page-article">
+  <header class="page-hero {{ if eq .Section `about` }}page-hero--about{{ end }}" data-pagefind-ignore>
+    <p class="page-hero__eyebrow">{{ if $isAbout }}about{{ else }}page{{ end }}</p>
+    <h1 class="page-hero__title">{{ .Title }}</h1>
+    {{ with .Params.summary }}<p class="page-hero__lede">{{ . }}</p>{{ end }}
+  </header>
+  <div class="page-article__body prose-body">
+    {{ .Content }}
+  </div>
+</article>
+{{ end }}
+{{ end }}

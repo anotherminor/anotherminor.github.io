@@ -1,0 +1,9 @@
+{{- $title := .Title -}}
+{{- if eq .Section "archive" -}}
+  {{- $title = "글 모아보기" -}}
+{{- else if eq .Section "search" -}}
+  {{- $title = "검색" -}}
+{{- else if and (eq .Kind "term") (eq .Data.Plural "formats") (eq .Data.Term "link") -}}
+  {{- $title = "외부 링크 모아보기" -}}
+{{- end -}}
+{{- return $title -}}

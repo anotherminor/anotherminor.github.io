@@ -1,0 +1,4 @@
+---
+title: "FOMO"
+slug: "fomo"
+---

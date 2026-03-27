@@ -1,0 +1,5 @@
+{{ with .GetTerms "formats" }}
+  {{ range . }}
+    <a class="meta__item meta__item--category" href="{{ .RelPermalink }}">{{ upper .LinkTitle }}</a>
+  {{ end }}
+{{ end }}

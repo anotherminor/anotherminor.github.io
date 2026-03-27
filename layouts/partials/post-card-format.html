@@ -1,0 +1,35 @@
+{{ $page := .page }}
+{{ $term := lower (.term | default "") }}
+{{ $isLinkTerm := eq $term "link" }}
+{{ $isLink := and $isLinkTerm $page.Params.external_url }}
+{{ $domain := "" }}
+{{ if $isLink }}{{ $domain = replaceRE `^https?://([^/]+)/?.*$` `$1` $page.Params.external_url }}{{ end }}
+<article class="format-card format-card--{{ $term }}">
+  <div class="format-card__meta">
+    {{ if not $isLinkTerm }}
+    <a class="badge badge--solid" href="{{ printf "formats/%s/" $term | relURL }}">{{ upper $term }}</a>
+    {{ end }}
+    <time datetime="{{ $page.Date.Format `2006-01-02` }}">{{ $page.Date.Format "2006.01.02" }}</time>
+    {{ with $page.GetTerms "categories" }}{{ with index . 0 }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}{{ end }}
+  </div>
+
+  <h2 class="format-card__title">
+    {{ if $isLink }}
+      <a href="{{ $page.Params.external_url }}" rel="noopener noreferrer">{{ $page.Title }}</a>
+      <span class="entry-full__detail-link-wrap" data-pagefind-ignore>
+        <a class="entry-full__detail-link entry-detail-link" href="{{ $page.RelPermalink }}" aria-label="내 글 상세 보기">¶</a>
+      </span>
+    {{ else }}
+      <a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a>
+    {{ end }}
+  </h2>
+
+  <p class="format-card__summary">
+    {{ if $isLink }}
+      {{ if $domain }}{{ $domain }} · {{ end }}{{ partial "post-summary-text.html" $page }}
+    {{ else }}
+      {{ partial "post-summary-text.html" $page }}
+    {{ end }}
+  </p>
+
+</article>
