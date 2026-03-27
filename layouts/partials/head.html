@@ -16,6 +16,10 @@
 <meta property="og:description" content="{{ $description }}">
 <meta property="og:url" content="{{ $canonical }}">
 <meta property="og:site_name" content="{{ .Site.Title }}">
+<meta property="og:image" content="{{ "images/og-image.png" | absURL }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="{{ "images/og-image.png" | absURL }}">
 <meta property="og:locale" content="ko_KR">
 {{ if .IsPage -}}
 <meta property="og:type" content="article">

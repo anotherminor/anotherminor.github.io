@@ -1,6 +1,6 @@
-baseURL: "https://anotherminor.github.io/"
+baseURL: "https://minorupdates.com/"
 languageCode: "ko-kr"
-title: "anotherminor"
+title: "minorupdates"
 defaultContentLanguage: "ko"
 enableRobotsTXT: true
 summaryLength: 160
@@ -40,8 +40,8 @@ params:
       bg:     "oklch(14.8% 0.012 72)"    # 배경 기준색 (다크)
       text:   "oklch(94.6% 0.01 82)"     # 글자 기준색 (다크)
       accent: "oklch(80% 0.205 50)"      # 강조 기준색 (다크)
-  homeTitle: "anotherminor의 블로그"
-  siteDescription: "내 개인 공간"
+  homeTitle: "minorupdates | anotherminor의 블로그"
+  siteDescription: "anotherminor의 블로그"
   homeFullCount: 5
   commentbox:
     enabled: true
