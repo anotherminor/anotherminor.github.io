@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "c56f3f3a93e3a8be",
+        "id": "e39fd8c059bb8d24",
         "type": "tabs",
         "children": [
           {
-            "id": "8f05f81b914c1bd3",
+            "id": "f1e7d3b1dc5c1dc4",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -176,8 +176,9 @@
       "bases:새 베이스 생성하기": false
     }
   },
-  "active": "8f05f81b914c1bd3",
+  "active": "f1e7d3b1dc5c1dc4",
   "lastOpenFiles": [
+    "20260222-0003/index.md",
     "20260329-0001/index.md",
     "20230131-0001/index.md",
     "20220504-0001/index.md",
@@ -200,7 +201,6 @@
     "20251229-0001/images",
     "20260222-0001/index.md",
     "20260222-0002/index.md",
-    "20260222-0003/index.md",
     "20250925-0001/images/chair.jpg",
     "20250925-0001/images",
     "20250925-0001/무제 폴더",
