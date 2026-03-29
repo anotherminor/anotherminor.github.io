@@ -8,3 +8,4 @@ tags: [airpods, apple, noise-canceling, tws]
 external_url: "https://www.theverge.com/23572699/airpods-wireless-earbuds-noise-cancellation-earplugs"
 formats: ["link"]
 ---
+{{< instagram "https://www.instagram.com/p/CoC17EcpUHK/?igsh=dG9oMWRrbXpjcmd6" >}}

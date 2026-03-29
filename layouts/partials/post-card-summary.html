@@ -3,16 +3,9 @@
   <div class="entry-summary__main">
     {{ partial "post-meta.html" . }}
     <h2 class="entry-summary__title">
-      {{ if $isLink }}
-        <a href="{{ .Params.external_url }}" rel="noopener noreferrer">{{ .Title }}</a>
-      {{ else }}
         <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-      {{ end }}
     </h2>
     <p class="entry-summary__snippet">{{ partial "post-summary-text.html" . }}</p>
-    {{ if $isLink }}
-      <p class="entry-summary__aux" data-pagefind-ignore><a class="entry-detail-link" href="{{ .RelPermalink }}" aria-label="내 글 상세 보기">¶ 내 글</a></p>
-    {{ end }}
   </div>
   <a class="entry-summary__arrow" href="{{ if $isLink }}{{ .Params.external_url }}{{ else }}{{ .RelPermalink }}{{ end }}"{{ if $isLink }} rel="noopener noreferrer"{{ end }} aria-label="{{ .Title }} 보기">↗</a>
 </article>

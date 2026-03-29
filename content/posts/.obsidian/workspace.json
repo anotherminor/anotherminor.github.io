@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "e3636073c482036d",
+        "id": "c56f3f3a93e3a8be",
         "type": "tabs",
         "children": [
           {
-            "id": "a5e3bf1a778652e6",
+            "id": "8f05f81b914c1bd3",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -37,7 +37,7 @@
               "type": "file-explorer",
               "state": {
                 "sortOrder": "alphabetical",
-                "autoReveal": false
+                "autoReveal": true
               },
               "icon": "lucide-folder-closed",
               "title": "파일 탐색기"
@@ -158,7 +158,8 @@
               "title": "개요"
             }
           }
-        ]
+        ],
+        "currentTab": 4
       }
     ],
     "direction": "horizontal",
@@ -175,8 +176,18 @@
       "bases:새 베이스 생성하기": false
     }
   },
-  "active": "a5e3bf1a778652e6",
+  "active": "8f05f81b914c1bd3",
   "lastOpenFiles": [
+    "20260329-0001/index.md",
+    "20230131-0001/index.md",
+    "20220504-0001/index.md",
+    "20200814-0001/index.md",
+    "20221107-0001/index.md",
+    "20221014-0001/index.md",
+    "20221007-0001/index.md",
+    "20220902-0001/index.md",
+    "20220310-0001/index.md",
+    "20220707-0001/index.md",
     "20260307-0001/index.md",
     "20251229-0001/index.md",
     "20250925-0001/index.md",
@@ -204,16 +215,6 @@
     "20250311-0001/index.md",
     "20250301-0001/images/IMG_3921.PNG",
     "[.md",
-    "20220228-0001/index.md",
-    "20220707-0001/index.md",
-    "20220902-0001/index.md",
-    "20221007-0001/index.md",
-    "20221014-0001/index.md",
-    "20221107-0001/index.md",
-    "20221108-0001/index.md",
-    "20221124-0001/index.md",
-    "20230131-0001/index.md",
-    "20221118-0001/index.md",
     "20241110-0002/images/posters.JPG",
     "20241110-0002/images/initial_desk.jpg",
     "20241110-0002/images/IMG_8256.jpg",

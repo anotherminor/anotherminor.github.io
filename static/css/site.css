@@ -370,7 +370,6 @@ h6 {
   font-weight: 600;
   letter-spacing: 0;
   text-align: center;
-  transform: scaleX(1);
 }
 
 /* ==============================================
@@ -698,24 +697,24 @@ h6 {
   border: none;
   background: none;
   box-shadow: none;
-  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+  transition: background-color 180ms ease, border-color 180ms ease;
 }
 
 .entry-summary:hover {
   border-color: transparent;
   background: transparent;
   box-shadow: none;
-  transform: translateX(0.18rem);
 }
 
 .entry-summary__main {
-  display: block;
-  gap: 0.45rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
 }
 
 .entry-summary__title {
   font-size: var(--title-card);
-  margin: 0;
+  margin: 0.15rem 0 0;
   font-family: "YesMyungjo", serif;
   line-height: 1.5;
   letter-spacing: -0.025em;
@@ -728,7 +727,7 @@ h6 {
 }
 
 .entry-summary__snippet {
-  margin: 0.5rem 0 0;
+  margin: 0.3rem 0 0;
   color: var(--text-soft);
   font-size: var(--font-small);
   line-height: 1.55;
@@ -1348,7 +1347,6 @@ h6 {
   position: relative;
   overflow: hidden;
   border-radius: 0;
-  transform: scaleX(1);
 }
 
 .prose-body .code-block--highlighted {
@@ -1374,7 +1372,6 @@ h6 {
   font-weight: inherit;
   letter-spacing: 0;
   line-height: 1.4;
-  transform: scaleX(1);
 }
 
 .prose-body .code-block__copy {
@@ -1824,6 +1821,7 @@ h6 {
 .pagefind-ui__result-link {
   color: var(--text) !important;
   text-decoration: none !important;
+  transition: color 180ms ease;
 }
 
 .pagefind-ui__result-link:hover {
@@ -2292,7 +2290,7 @@ h6 {
   }
 
   .entry-summary {
-    padding: 0.85rem;
+    padding: 1rem 0;
     gap: 0.75rem;
   }
 
@@ -2318,8 +2316,6 @@ h6 {
   }
 
   .archive-item {
-    grid-template-columns: 3.2rem minmax(0, 1fr);
-    gap: 0.25rem 0.75rem;
     padding: 0.2rem 0;
   }
 
@@ -2442,11 +2438,6 @@ h6 {
     padding: 0.7rem 0.25rem;
     border-radius: 0;
     border-bottom: none;
-  }
-
-  .archive-item {
-    grid-template-columns: 100%;
-    gap: 0.08rem;
   }
 
   .archive-item time {

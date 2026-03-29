@@ -33,6 +33,15 @@ hugo new content posts/<entry_id>/index.md
 - `index.md` 작성 후 `draft: true` → `draft: false`로 변경해 발행
 - 이미지는 `content/posts/<entry_id>/images/`에 저장 후 상대경로로 참조
 
+새 태그 추가:
+
+1. `scripts/tag-map.json`에 `"한국어 이름": "slug"` 한 줄 추가 (쉼표·콜론 형식 주의)
+2. 포스트 프론트매터에 slug 입력
+3. 로컬 확인: `npm run generate-tags`
+4. push → CI 자동 처리
+
+상세 규칙: `docs/spec.md` § 5.6 참조
+
 발행 전 콘텐츠 검증:
 
 ```bash

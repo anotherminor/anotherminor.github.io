@@ -143,9 +143,11 @@ Obsidian은 태그에 한국어 특수문자·공백·콜론을 허용하지 않
 
 **구조**
 
-- `scripts/tag-map.json`: `"한국어 표시 이름": "english-slug"` 매핑 테이블 (446개)
-- `scripts/generate-tag-pages.js`: 포스트의 slug를 읽어 `content/tags/<slug>/_index.md` 생성
-- `content/tags/<slug>/_index.md`: Hugo 태그 페이지 제목 지정 (`title: "한국어 이름"`)
+| 파일 | 역할 |
+|---|---|
+| `scripts/tag-map.json` | `"한국어 표시 이름": "english-slug"` 매핑 테이블 |
+| `scripts/generate-tag-pages.js` | 비-draft 포스트에서 slug를 수집해 `content/tags/<slug>/_index.md` 생성 |
+| `content/tags/<slug>/_index.md` | Hugo 태그 페이지 제목 고정 (`title: "한국어 이름"`) |
 
 **포스트 작성 규칙**
 
@@ -157,11 +159,92 @@ tags: [film, disney-plus, severance]
 
 URL은 `/tags/film/`이 되고, 페이지 타이틀은 `영화`로 표시된다.
 
-**새 태그 추가 방법**
+---
 
-1. `scripts/tag-map.json`에 `"한국어 이름": "new-slug"` 한 줄 추가
-2. 포스트 프론트매터에 slug 입력
-3. push → CI 자동 처리
+**새 태그 추가 루틴**
+
+#### 1단계 — `tag-map.json` 편집
+
+파일은 단일 JSON 객체다. 진입점은 `{`, 종료는 `}`이며 각 줄은 `"표시 이름": "slug"` 형식이다.
+
+```json
+{
+  ...
+  "기존 태그": "existing-slug",
+  "새 태그": "new-slug"
+}
+```
+
+**JSON 작성 규칙 (반드시 준수)**
+
+| 규칙 | 올바른 예 | 잘못된 예 |
+|---|---|---|
+| 키와 값은 각각 별도의 문자열 | `"블로그": "blog"` | `"블로그: blog"` |
+| 키-값은 콜론(`:`)으로 구분 | `"블로그": "blog"` | `"블로그" "blog"` |
+| 마지막 항목을 제외한 모든 줄에 쉼표 | `"foo": "bar",` | `"foo": "bar"` (중간 위치) |
+| 가장 마지막 항목에는 쉼표 없음 | `"zzz": "zzz"` | `"zzz": "zzz",` |
+| slug는 소문자 영문·숫자·하이픈만 | `"vision-pro"` | `"Vision Pro"` |
+
+slug 충돌(다른 표시 이름이 같은 slug)이 있으면 스크립트가 stderr에 경고를 출력한다.
+
+#### 2단계 — 포스트 프론트매터에 slug 입력
+
+```yaml
+tags: [new-slug, other-slug]
+```
+
+또는 블록 형식:
+
+```yaml
+tags:
+  - new-slug
+  - other-slug
+```
+
+#### 3단계 — 로컬 검증
+
+```bash
+npm run generate-tags
+```
+
+정상 출력 예:
+
+```
+태그 페이지 생성 완료: 1개 생성, 42개 처리
+```
+
+매핑이 누락된 태그가 있으면 stderr에 경고가 나타난다:
+
+```
+[경고] 매핑 없는 태그: "unknown-slug" — tag-map.json에 추가 필요
+```
+
+이 경우 1단계로 돌아가 `tag-map.json`에 추가한다.
+
+#### 4단계 — push
+
+push 이후 CI `prebuild` 훅이 `generate-tag-pages`를 자동 실행한다. 별도 작업 불필요.
+
+---
+
+**스크립트 동작 요약 (`generate-tag-pages.js`)**
+
+1. `tag-map.json` 로드 → `표시 이름 → slug` 맵 구성
+2. 역방향 맵(`slug → 표시 이름`) 생성
+3. `content/posts/` 하위 비-draft 포스트를 순회하며 `tags` 필드의 slug 수집
+   - 포스트에 표시 이름이 들어 있으면 `tag-map.json`으로 slug 변환
+   - 포스트에 slug가 들어 있으면 역방향 맵으로 표시 이름 조회
+   - 둘 다 없으면 경고 출력 후 해당 태그 건너뜀
+4. 수집된 slug마다 `content/tags/<slug>/_index.md` 생성 (이미 존재하면 덮어쓰지 않음)
+
+생성되는 `_index.md` 형식:
+
+```markdown
+---
+title: "한국어 이름"
+slug: "english-slug"
+---
+```
 
 **빌드 파이프라인에서의 위치**
 
