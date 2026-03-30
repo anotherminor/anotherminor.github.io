@@ -11,10 +11,24 @@
             "id": "72e460a86874f5c0",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "20241110-0002/index.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
+              },
               "icon": "lucide-file",
-              "title": "새 탭"
+              "title": "index"
             }
           }
         ]
@@ -150,12 +164,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "20241110-0002/index.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "개요"
+              "title": "index 의 개요"
             }
           }
         ],
@@ -178,6 +193,7 @@
   },
   "active": "72e460a86874f5c0",
   "lastOpenFiles": [
+    "20251229-0001/index.md",
     "20260222-0003/index.md",
     "20220228-0001/index.md",
     "20220228-0001/images/tossface-intro.jpeg",
@@ -192,7 +208,6 @@
     "20221118-0001/index.md",
     "20250306-0001/index.md",
     "20250301-0001/index.md",
-    "20251229-0001/index.md",
     "20260329-0001/index.md",
     "20230131-0001/index.md",
     "20220504-0001/index.md",
