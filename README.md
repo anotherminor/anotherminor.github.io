@@ -70,17 +70,19 @@ BASE_URL="http://localhost:1313/" npm run build:pages
 
 `build:pages` 스크립트는 `public/`의 이전 산출물을 정리한 뒤 빌드하여, 로컬에서 `-D` 미리보기 후에도 검색 인덱스에 draft 글이 섞이지 않도록 합니다.
 
-## Supabase Interactions
+## Supabase 상호작용 기능
 
-- 설정 위치: `hugo.yaml`의 `params.supabase`
-- 프론트 렌더링: `layouts/partials/interactions.html`
-- 스타일: `static/css/site.css`
-- DB/RLS/RPC 기준 SQL: `supabase/migrations/20260330153000_interactions.sql`
-- 댓글 삭제 함수: `supabase/functions/delete-comment/index.ts`
+이 블로그의 상호작용 기능은 Supabase로 관리합니다. 각 포스트 하단에 조회수, 좋아요, 댓글을 표시하고, 댓글 삭제는 별도 함수에서 비밀번호를 확인한 뒤 처리합니다. 조회수와 좋아요는 여러 사용자가 동시에 눌러도 값이 꼬이지 않도록 데이터베이스 함수 `increment_views`, `toggle_like`를 통해 갱신합니다. 댓글 목록 조회와 등록은 Supabase REST API를 사용합니다.
 
-현재 상호작용 시스템은 Supabase를 사용합니다. 개별 포스트 하단에서 조회수, 좋아요, 댓글을 렌더링하며, 댓글 삭제는 Edge Function에서 비밀번호 해시를 검증한 뒤 처리합니다. 조회수와 좋아요는 RPC(`increment_views`, `toggle_like`)를 통해 원자적으로 갱신하고, 댓글 목록/등록은 REST API로 처리합니다.
+### 적용 순서
 
-적용 순서는 다음과 같습니다. 먼저 Supabase SQL Editor에서 `supabase/migrations/20260330153000_interactions.sql` 내용을 실행해 테이블, RLS, RPC를 맞춥니다. 그다음 `supabase functions deploy delete-comment --project-ref <project-ref>`로 삭제 함수를 배포합니다. 마지막으로 `hugo.yaml`의 `params.supabase.url`, `anonKey`, `edgeFunctionUrl`이 실제 프로젝트와 일치하는지 확인합니다.
+1. Supabase SQL Editor에서 `supabase/migrations/20260330153000_interactions.sql` 내용을 실행합니다. 이 단계에서 테이블, 접근 권한 정책(RLS), 그리고 조회수와 좋아요 처리에 필요한 데이터베이스 함수가 함께 만들어집니다.
+2. 터미널에서 `supabase functions deploy delete-comment --project-ref <project-ref>`를 실행해 댓글 삭제용 Edge Function을 배포합니다. 이 함수는 사용자가 입력한 삭제 비밀번호를 확인한 뒤 댓글을 지우는 역할을 합니다.
+3. `hugo.yaml`의 `params.supabase.url`, `anonKey`, `edgeFunctionUrl`이 실제 Supabase 프로젝트 정보와 일치하는지 확인합니다. 이 값이 맞아야 사이트에서 데이터베이스와 삭제 함수를 정상적으로 호출할 수 있습니다.
+
+### 관련 위치
+
+설정값은 `hugo.yaml`의 `params.supabase`에서 관리합니다. 화면 렌더링은 `layouts/partials/interactions.html`, 스타일은 `static/css/site.css`에서 확인할 수 있습니다. 데이터베이스 기준 구조는 `supabase/migrations/20260330153000_interactions.sql`, 댓글 삭제 함수 코드는 `supabase/functions/delete-comment/index.ts`에 있습니다.
 
 ## Deployment (GitHub Pages)
 
