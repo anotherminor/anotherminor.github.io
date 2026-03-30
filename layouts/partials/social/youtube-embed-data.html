@@ -1,7 +1,10 @@
 {{- $raw := .raw -}}
+{{- $overrideStart := .start -}}
+{{- $overrideEnd := .end -}}
 {{- $id := $raw -}}
 {{- $src := "" -}}
 {{- $start := 0 -}}
+{{- $end := 0 -}}
 
 {{- if in $raw "://" -}}
   {{- if in $raw "watch?v=" -}}
@@ -15,44 +18,70 @@
   {{- end -}}
 {{- end -}}
 
-{{- $startMatch := findRESubmatch `[?&]start=([0-9]+)` $raw 1 -}}
-{{- if gt (len $startMatch) 0 -}}
-  {{- $start = int (index (index $startMatch 0) 1) -}}
+{{- if $overrideStart -}}
+  {{- $start = int $overrideStart -}}
 {{- else -}}
-  {{- $tMatch := findRESubmatch `[?&]t=([0-9hms]+)` $raw 1 -}}
-  {{- if gt (len $tMatch) 0 -}}
-    {{- $tValue := index (index $tMatch 0) 1 -}}
-    {{- if gt (len (findRE `^[0-9]+$` $tValue)) 0 -}}
-      {{- $start = int $tValue -}}
+  {{- $startMatch := findRESubmatch `[?&]start=([0-9]+)` $raw 1 -}}
+  {{- if gt (len $startMatch) 0 -}}
+    {{- $start = int (index (index $startMatch 0) 1) -}}
+  {{- else -}}
+    {{- $tMatch := findRESubmatch `[?&]t=([0-9hms]+)` $raw 1 -}}
+    {{- if gt (len $tMatch) 0 -}}
+      {{- $tValue := index (index $tMatch 0) 1 -}}
+      {{- if gt (len (findRE `^[0-9]+$` $tValue)) 0 -}}
+        {{- $start = int $tValue -}}
+      {{- else -}}
+        {{- $hours := 0 -}}
+        {{- $minutes := 0 -}}
+        {{- $seconds := 0 -}}
+        {{- $hoursMatch := findRESubmatch `([0-9]+)h` $tValue 1 -}}
+        {{- $minutesMatch := findRESubmatch `([0-9]+)m` $tValue 1 -}}
+        {{- $secondsMatch := findRESubmatch `([0-9]+)s` $tValue 1 -}}
+        {{- if gt (len $hoursMatch) 0 -}}
+          {{- $hours = int (index (index $hoursMatch 0) 1) -}}
+        {{- end -}}
+        {{- if gt (len $minutesMatch) 0 -}}
+          {{- $minutes = int (index (index $minutesMatch 0) 1) -}}
+        {{- end -}}
+        {{- if gt (len $secondsMatch) 0 -}}
+          {{- $seconds = int (index (index $secondsMatch 0) 1) -}}
+        {{- end -}}
+        {{- $start = add (add (mul $hours 3600) (mul $minutes 60)) $seconds -}}
+      {{- end -}}
     {{- else -}}
-      {{- $hours := 0 -}}
-      {{- $minutes := 0 -}}
-      {{- $seconds := 0 -}}
-      {{- $hoursMatch := findRESubmatch `([0-9]+)h` $tValue 1 -}}
-      {{- $minutesMatch := findRESubmatch `([0-9]+)m` $tValue 1 -}}
-      {{- $secondsMatch := findRESubmatch `([0-9]+)s` $tValue 1 -}}
-      {{- if gt (len $hoursMatch) 0 -}}
-        {{- $hours = int (index (index $hoursMatch 0) 1) -}}
+      {{- $timeParamMatch := findRESubmatch `[?&]time_continue=([0-9]+)` $raw 1 -}}
+      {{- if gt (len $timeParamMatch) 0 -}}
+        {{- $start = int (index (index $timeParamMatch 0) 1) -}}
       {{- end -}}
-      {{- if gt (len $minutesMatch) 0 -}}
-        {{- $minutes = int (index (index $minutesMatch 0) 1) -}}
-      {{- end -}}
-      {{- if gt (len $secondsMatch) 0 -}}
-        {{- $seconds = int (index (index $secondsMatch 0) 1) -}}
-      {{- end -}}
-      {{- $start = add (add (mul $hours 3600) (mul $minutes 60)) $seconds -}}
     {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- if $overrideEnd -}}
+  {{- $end = int $overrideEnd -}}
+{{- else -}}
+  {{- $endMatch := findRESubmatch `[?&]end=([0-9]+)` $raw 1 -}}
+  {{- if gt (len $endMatch) 0 -}}
+    {{- $end = int (index (index $endMatch 0) 1) -}}
   {{- end -}}
 {{- end -}}
 
 {{- if and $id (not (hasPrefix $id "http")) -}}
   {{- $src = printf "https://www.youtube.com/embed/%s" $id -}}
+  {{- $params := slice -}}
   {{- if gt $start 0 -}}
-    {{- $src = printf "%s?start=%d" $src $start -}}
+    {{- $params = $params | append (printf "start=%d" $start) -}}
+  {{- end -}}
+  {{- if gt $end 0 -}}
+    {{- $params = $params | append (printf "end=%d" $end) -}}
+  {{- end -}}
+  {{- if gt (len $params) 0 -}}
+    {{- $src = printf "%s?%s" $src (delimit $params "&") -}}
   {{- end -}}
 {{- end -}}
 
 {{- return (dict
+  "end" $end
   "resolvedId" $id
   "start" $start
   "src" $src

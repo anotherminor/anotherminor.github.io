@@ -9,13 +9,15 @@
 {{- end -}}
 {{- $caption := .Get "caption" -}}
 {{- $titles := .Site.Params.socialEmbeds.titles -}}
+{{- $start := .Get "start" -}}
+{{- $end := .Get "end" -}}
 {{- $title := default "YouTube 동영상" $titles.youtube -}}
 {{- if .IsNamedParams -}}
   {{- $title = default $title (.Get "title") -}}
 {{- else -}}
   {{- with .Get 1 }}{{ $title = . }}{{ end -}}
 {{- end -}}
-{{- $embed := partial "social/youtube-embed-data.html" (dict "raw" $raw) -}}
+{{- $embed := partial "social/youtube-embed-data.html" (dict "raw" $raw "start" $start "end" $end) -}}
 <div class="social-embed social-embed--landscape">
   {{- with $embed.src }}
   <div class="social-embed__frame">

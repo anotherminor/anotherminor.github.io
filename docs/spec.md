@@ -378,16 +378,15 @@ Hugo taxonomy 사용 시 기본적으로 taxonomy list(`/tags/`)와 term page(`/
 - 스크립트 기반 플랫폼(TikTok / Instagram / X(Twitter) / Threads)은 같은 페이지에서 필요한 스크립트를 1회만 로드
 - 임베드 실패/지연 시 사용자 친화적 링크 폴백 문구를 출력
 - 필요 시 raw HTML 임베드는 계속 허용(예외 케이스 대응)
-- YouTube Clip은 일반 `youtube` shortcode에 clip URL을 직접 넘기지 않고, YouTube가 제공한 공식 embed 코드의 `src`를 `youtube-clip` shortcode에 보관하는 예외 규칙으로 다룸
-- YouTube URL에 `t=` 또는 `start=`가 있으면 shortcode가 이를 embed 시작 시점으로 반영
+- YouTube URL에 `t=` `start=` `end=`가 있으면 shortcode가 이를 embed 재생 구간으로 반영
 - Instagram URL에 `index=`가 있으면 shortcode 내부에서 `img_index=`로 정규화해 전달
 
 예시(본문):
 
 ```md
 {{< youtube "https://www.youtube.com/watch?v=..." >}}
-{{< youtube "https://www.youtube.com/watch?v=...&t=90" >}}
-{{< youtube-clip src="https://www.youtube.com/embed/...?..." url="https://www.youtube.com/clip/..." >}}
+{{< youtube "https://www.youtube.com/watch?v=...&t=90&end=122" >}}
+{{< youtube url="https://www.youtube.com/watch?v=..." start="90" end="122" >}}
 {{< youtube-shorts "https://www.youtube.com/shorts/..." >}}
 {{< tiktok "https://www.tiktok.com/@user/video/..." >}}
 {{< instagram "https://www.instagram.com/p/.../?index=2" >}}

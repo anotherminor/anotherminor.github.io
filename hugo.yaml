@@ -54,12 +54,10 @@ params:
       twitterOpen: "X에서 게시물 열기"
       threadsOpen: "Threads에서 게시물 열기"
       instagramOpen: "Instagram에서 게시물 열기"
-      youtubeClipOpen: "YouTube Clip 열기"
       tiktokAccountFormat: "@%s 계정 열기"
     titles:
       facebook: "Facebook 게시물"
       youtube: "YouTube 동영상"
-      youtubeClip: "YouTube Clip"
       youtubeShorts: "YouTube Shorts"
       vimeo: "Vimeo 동영상"
   categoryTitles:
