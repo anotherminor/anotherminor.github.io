@@ -1,4 +1,4 @@
-# anotherminor.github.io
+# minorupdates.com
 
 Hugo 기반의 정적 저널링 블로그입니다.
 
