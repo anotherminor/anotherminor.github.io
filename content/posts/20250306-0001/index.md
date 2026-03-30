@@ -6,7 +6,7 @@ slug: there-ve-been-death
 categories:
   - rambling
 tags:
-  - reflections
+  - thoughts
 
 ---
 해군 출신 친구와 복역 시절 얘기를 하다가, 당시 막 도입된 ‘평일 일과 후 외출‘ 제도에 대한 이야기가 나왔다.

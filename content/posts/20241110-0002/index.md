@@ -6,7 +6,7 @@ slug: 2024-closing-notes
 categories:
   - rambling
 tags:
-  - reflections
+  - thoughts
   - retrospective
 
 ---

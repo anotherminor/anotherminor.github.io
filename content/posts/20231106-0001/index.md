@@ -6,7 +6,7 @@ slug: should-not-create
 categories:
   - rambling
 tags:
-  - reflections
+  - thoughts
 
 ---
 사람들은 똑똑하다. 자신만의 방식대로 기쁨을 향유하고, 애정을 맺고 확인하며 유대를 잇고, 종종 어려움에 부딪히지만 곧 털고 일어나며 자기가 해야 할 일을 찾고 집중하며 앞으로 나아가는 바람직한 모습을 한 사람들이 정말 많다.

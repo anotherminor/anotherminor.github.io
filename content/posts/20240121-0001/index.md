@@ -6,7 +6,7 @@ slug: four-years
 categories:
   - rambling
 tags:
-  - reflections
+  - thoughts
 
 ---
 친구들에겐 버텨낸 시간, 가족들에겐 헛되이 내다버린 시간. 또 올림픽 한 번이 돌아올 주기. 출소한 지 사 년이 되었지만 스스로가 복역 중 적법한 방식으로 탈출하지 못한 등신이라는 생각에는 변함이 없다.

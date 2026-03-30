@@ -6,7 +6,7 @@ slug: it-was-warm-because-it-was-raining
 categories:
   - rambling
 tags:
-  - reflections
+  - thoughts
 
 ---
 ![차트 - 관계빈곤 커지는 한국인](images/chart.png)

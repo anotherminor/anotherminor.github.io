@@ -6,7 +6,7 @@ slug: 2025-midyear-report
 categories:
   - rambling
 tags:
-  - reflections
+  - thoughts
   - retrospective
 
 ---

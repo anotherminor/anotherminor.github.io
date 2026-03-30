@@ -6,7 +6,7 @@ slug: hope-and-motivation
 categories:
   - rambling
 tags:
-  - reflections
+  - thoughts
 
 ---
 복무하던 때 "어떻게 하면 잘 버틸 수 있느냐"는 질문에 "그냥 집에 갈 수 있을 거라는 생각 자체를 버려라. '여기서 평생 이러고 살아야 하는구나, 내 남은 삶은 이게 전부고 그냥 여기서 지내기 위해 존재하는 거구나' 하고 생각해라"라고 대답했던 적이 있다.

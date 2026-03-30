@@ -6,7 +6,7 @@ slug: procrastination-and-control
 categories:
   - rambling
 tags:
-  - reflections
+  - thoughts
 
 ---
 중요한 결정을 미룬다. 사소한 것들도 미룬다. 얼마나 중요하느냐 하면 끼니도 포함일 정도다. 내 진로와 20대의 방향을 어떻게 정할지 갈피를 잡지 못하고 그냥 지나보내고 있다. 내 머리는 다양한 스타일을 위해 기르기 시작했지만 이제 짧은 형태라면 어떤 모양새로 가꿀지 결정할 수 없어 자르지 못하고 있다.

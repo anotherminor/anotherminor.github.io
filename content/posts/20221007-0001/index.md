@@ -6,7 +6,7 @@ slug: expression-of-care-and-duty-to-help
 categories:
   - rambling
 tags:
-  - reflections
+  - thoughts
 
 ---
 교수님께 면담 요청이 왔다. 자기가 봐온 모습과 다르게 지내는 게 걱정되고 안쓰러웠다고 하셨다. 교수님은 기억하고 계셨다. 친구조차 아는 사람이 많지 않은데, 내가 어떤 사람이었고 얼마나 변했는지 교수님은 알고 계셨다.

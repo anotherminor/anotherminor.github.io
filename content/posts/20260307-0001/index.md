@@ -6,7 +6,7 @@ slug: several-metaphors-for-spring
 categories:
   - rambling
 tags:
-  - reflections
+  - thoughts
 
 ---
 요즘 신기하게 자고 깸의 사이클은 온전하다. 적어도 해 져 있을 때 잠들어 해 떠 있을 때 깨어있는다. 목요일에는 병원에 갔다. 선생님께서 악몽은 어떻냐고 여쭤보셨다. 약을 바꿨기에 반응을 체크하는 것이다. 나는 단호히 고개를 저으며 그대로라고 단정지었다. 증량하기로 했다.
