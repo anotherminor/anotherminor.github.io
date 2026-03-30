@@ -383,6 +383,7 @@ Hugo taxonomy 사용 시 기본적으로 taxonomy list(`/tags/`)와 term page(`/
 
 ```md
 {{< youtube "https://www.youtube.com/watch?v=..." >}}
+{{< youtube "https://www.youtube.com/clip/..." >}}
 {{< youtube-shorts "https://www.youtube.com/shorts/..." >}}
 {{< tiktok "https://www.tiktok.com/@user/video/..." >}}
 {{< instagram "https://www.instagram.com/p/.../" >}}

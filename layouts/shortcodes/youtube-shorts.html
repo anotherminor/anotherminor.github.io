@@ -7,35 +7,42 @@
 {{- if not $raw -}}
   {{- errorf "youtube-shorts shortcode requires an id or url (%s)" .Position -}}
 {{- end -}}
-{{- $id := $raw -}}
-{{- if in $raw "://" -}}
-  {{- if in $raw "watch?v=" -}}
-    {{- $id = replaceRE `^.*[?&]v=([^&]+).*$` `$1` $raw -}}
-  {{- else if in $raw "youtu.be/" -}}
-    {{- $id = replaceRE `^.*youtu\.be/([^?&/]+).*$` `$1` $raw -}}
-  {{- else if in $raw "/shorts/" -}}
-    {{- $id = replaceRE `^.*\/shorts\/([^?&/]+).*$` `$1` $raw -}}
-  {{- else if in $raw "/embed/" -}}
-    {{- $id = replaceRE `^.*\/embed\/([^?&/]+).*$` `$1` $raw -}}
-  {{- end -}}
-{{- end -}}
 {{- $caption := .Get "caption" -}}
 {{- $titles := .Site.Params.socialEmbeds.titles -}}
+{{- $fallback := .Site.Params.socialEmbeds.fallback -}}
+{{- $overrideID := "" -}}
+{{- $overridePlayerParams := "" -}}
+{{- $overrideAssistHref := "" -}}
 {{- $title := default "YouTube Shorts" $titles.youtubeShorts -}}
 {{- if .IsNamedParams -}}
+  {{- $overrideID = .Get "id" -}}
+  {{- $overridePlayerParams = or (.Get "playerParams") (.Get "pp") -}}
+  {{- $overrideAssistHref = .Get "url" -}}
   {{- $title = default $title (.Get "title") -}}
 {{- else -}}
   {{- with .Get 1 }}{{ $title = . }}{{ end -}}
 {{- end -}}
+{{- $embed := partial "social/youtube-embed-data.html" (dict
+  "fallback" $fallback
+  "overrideAssistHref" $overrideAssistHref
+  "overrideID" $overrideID
+  "overridePlayerParams" $overridePlayerParams
+  "raw" $raw
+) -}}
 <div class="social-embed social-embed--portrait">
+  {{- with $embed.src }}
   <div class="social-embed__frame">
     <iframe
-      src="https://www.youtube.com/embed/{{ $id | safeURL }}"
+      src="{{ . | safeURL }}"
       title="{{ $title }}"
       loading="lazy"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
       referrerpolicy="strict-origin-when-cross-origin"
       allowfullscreen></iframe>
   </div>
+  {{- end -}}
+  {{- with $embed.assistHref }}
+  <p class="social-embed__assist"><a href="{{ . }}" target="_blank" rel="noopener noreferrer">{{ $embed.assistLabel }}</a></p>
+  {{- end -}}
   {{- with $caption }}<p class="embed-caption">{{ . | markdownify }}</p>{{ end -}}
 </div>

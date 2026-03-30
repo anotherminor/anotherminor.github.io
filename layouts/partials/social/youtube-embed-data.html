@@ -1,0 +1,71 @@
+{{- $raw := .raw -}}
+{{- $fallback := .fallback -}}
+{{- $overrideID := .overrideID -}}
+{{- $overridePlayerParams := .overridePlayerParams -}}
+{{- $overrideAssistHref := .overrideAssistHref -}}
+{{- $id := $raw -}}
+{{- $playerParams := "" -}}
+{{- $src := "" -}}
+{{- $assistHref := "" -}}
+{{- $assistLabel := "" -}}
+{{- $isClip := false -}}
+{{- $defaultClipLabel := default "YouTube Clip 열기" $fallback.youtubeClipOpen -}}
+
+{{- if $overrideID -}}
+  {{- $id = $overrideID -}}
+  {{- $playerParams = $overridePlayerParams -}}
+  {{- $assistHref = $overrideAssistHref -}}
+  {{- if and $assistHref (in $assistHref "/clip/") -}}
+    {{- $isClip = true -}}
+    {{- $assistLabel = $defaultClipLabel -}}
+  {{- end -}}
+{{- else if in $raw "://" -}}
+  {{- if in $raw "watch?v=" -}}
+    {{- $id = replaceRE `^.*[?&]v=([^&]+).*$` `$1` $raw -}}
+  {{- else if in $raw "youtu.be/" -}}
+    {{- $id = replaceRE `^.*youtu\.be/([^?&/]+).*$` `$1` $raw -}}
+  {{- else if in $raw "/shorts/" -}}
+    {{- $id = replaceRE `^.*\/shorts\/([^?&/]+).*$` `$1` $raw -}}
+  {{- else if in $raw "/embed/" -}}
+    {{- $id = replaceRE `^.*\/embed\/([^?&/]+).*$` `$1` $raw -}}
+  {{- else if in $raw "/clip/" -}}
+    {{- $isClip = true -}}
+    {{- $assistHref = $raw -}}
+    {{- $assistLabel = $defaultClipLabel -}}
+    {{- $clipID := replaceRE `^.*\/clip\/([^?&/]+).*$` `$1` $raw -}}
+    {{- with index hugo.Data.youtubeclips $clipID -}}
+      {{- with .videoId }}{{- $id = . -}}{{- end -}}
+      {{- with .playerParams }}{{- $playerParams = . -}}{{- end -}}
+    {{- else -}}
+      {{- with try (resources.GetRemote $raw) -}}
+        {{- with .Value -}}
+          {{- $body := .Content -}}
+          {{- $resolvedID := replaceRE `(?s)^.*window\['ytCommand'\].*?watchEndpoint":\{"videoId":"([^"]+)".*$` `$1` $body -}}
+          {{- if ne $resolvedID $body -}}
+            {{- $id = $resolvedID -}}
+          {{- end -}}
+          {{- $resolvedParams := replaceRE `(?s)^.*window\['ytCommand'\].*?"playerParams":"([^"]+)".*$` `$1` $body -}}
+          {{- if ne $resolvedParams $body -}}
+            {{- $playerParams = $resolvedParams -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- if and $id (not (hasPrefix $id "http")) -}}
+  {{- $src = printf "https://www.youtube.com/embed/%s" $id -}}
+  {{- if $playerParams -}}
+    {{- $src = printf "%s?pp=%s" $src $playerParams -}}
+  {{- end -}}
+{{- end -}}
+
+{{- return (dict
+  "assistHref" $assistHref
+  "assistLabel" $assistLabel
+  "isClip" $isClip
+  "playerParams" $playerParams
+  "resolvedId" $id
+  "src" $src
+) -}}
