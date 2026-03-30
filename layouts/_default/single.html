@@ -29,11 +29,13 @@
 
 {{ with .GetTerms "tags" }}
 <hr class="post-detail__divider">
-<ul class="chip-list chip-list--tags" aria-label="Tags">
-  {{ range . }}
-  <li><a href="{{ .RelPermalink }}">#{{ .LinkTitle }}</a></li>
+<p class="post-tags">
+  <span class="post-tags__label">태그:</span>
+  {{ range $i, $tag := . }}
+  {{ if gt $i 0 }}<span class="post-tags__sep" aria-hidden="true"> · </span>{{ end -}}
+  <a class="post-tags__item" href="{{ $tag.RelPermalink }}">{{ $tag.LinkTitle }}</a>
   {{ end }}
-</ul>
+</p>
 {{ end }}
 
 {{ partial "commentbox.html" . }}

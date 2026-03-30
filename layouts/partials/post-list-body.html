@@ -3,6 +3,12 @@
     {{ .Summary }}
   </div>
   <p class="post-list-body__more"><a href="{{ .RelPermalink }}">계속 읽기</a></p>
+{{ else if strings.Contains .Content "<hr>" }}
+  {{ $parts := split .Content "<hr>" }}
+  <div class="post-list-body__summary">
+    {{ index $parts 0 | safeHTML }}
+  </div>
+  <p class="post-list-body__more"><a href="{{ .RelPermalink }}">계속 읽기</a></p>
 {{ else }}
   {{ .Content }}
 {{ end }}

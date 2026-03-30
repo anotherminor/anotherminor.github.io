@@ -11,6 +11,7 @@
 {{- if in $raw "://" -}}
   {{- $id = replaceRE `^.*vimeo\.com/(?:video/)?([0-9]+).*$` `$1` $raw -}}
 {{- end -}}
+{{- $caption := .Get "caption" -}}
 {{- $titles := .Site.Params.socialEmbeds.titles -}}
 {{- $title := default "Vimeo 동영상" $titles.vimeo -}}
 {{- if .IsNamedParams -}}
@@ -27,4 +28,5 @@
       allow="autoplay; fullscreen; picture-in-picture"
       allowfullscreen></iframe>
   </div>
+  {{- with $caption }}<p class="embed-caption">{{ . | markdownify }}</p>{{ end -}}
 </div>

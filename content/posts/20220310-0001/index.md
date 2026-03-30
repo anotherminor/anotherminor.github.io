@@ -2,10 +2,16 @@
 title: "'12시간 지우학'은 지루해?… MZ세대는 '요약 주행'중"
 date: 2022-03-10T00:00:00+09:00
 draft: false
-slug: "mz-summary-binge-trend"
-categories: [rambling]
-tags: [summary, short-form, streaming, fomo, media-consumption]
-external_url: "https://www.chosun.com/culture-life/culture_general/2022/02/08/ENCSYTSSVJFNJPNUTRAQFGVZJ4/"
+slug: mz-summary-binge-trend
+categories:
+  - entertainment
+tags:
+  - summary
+  - short-form
+  - streaming
+  - fomo
+  - media-consumption
+external_url: https://www.chosun.com/culture-life/culture_general/2022/02/08/ENCSYTSSVJFNJPNUTRAQFGVZJ4/
 ---
 
 > OTT 플랫폼마다 영상 콘텐츠가 홍수처럼 쏟아지는 시대, 안 보면 대화에 소외될 것 같지만 전부 다 보기엔 너무 길다 싶을 때 요즘 젊은 세대는 유튜브 요약 영상을 찾는다. 화제작일수록 요약 영상들도 인기다.

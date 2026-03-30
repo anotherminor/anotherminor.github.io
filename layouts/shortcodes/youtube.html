@@ -19,6 +19,7 @@
     {{- $id = replaceRE `^.*\/embed\/([^?&/]+).*$` `$1` $raw -}}
   {{- end -}}
 {{- end -}}
+{{- $caption := .Get "caption" -}}
 {{- $titles := .Site.Params.socialEmbeds.titles -}}
 {{- $title := default "YouTube 동영상" $titles.youtube -}}
 {{- if .IsNamedParams -}}
@@ -36,4 +37,5 @@
       referrerpolicy="strict-origin-when-cross-origin"
       allowfullscreen></iframe>
   </div>
+  {{- with $caption }}<p class="embed-caption">{{ . | markdownify }}</p>{{ end -}}
 </div>

@@ -1114,6 +1114,26 @@ h6 {
   background: transparent;
 }
 
+.post-tags {
+  margin: 0.75rem 0 0;
+  font-size: 0.79rem;
+  line-height: 1.5;
+}
+
+.post-tags__label,
+.post-tags__sep {
+  color: color-mix(in oklch, var(--text-soft) 60%, var(--text-faint));
+}
+
+.post-tags__item {
+  color: var(--text-soft);
+  text-decoration: none;
+}
+
+.post-tags__item:hover {
+  color: var(--accent-strong);
+}
+
 .source-callout {
   margin: 2rem 0;
   padding: 0;
@@ -1469,7 +1489,7 @@ h6 {
 .prose-body hr {
   border: 0;
   height: 1px;
-  margin: 3rem 0;
+  margin: 1.5rem 0;
   background: color-mix(in oklch, var(--text) 18%, var(--bg-soft));
 }
 
@@ -1512,15 +1532,24 @@ h6 {
 .prose-body th,
 .prose-body td {
   padding: 0.5rem 0.75rem;
-  border: 1px solid color-mix(in oklch, var(--text) 18%, var(--bg-soft));
+  border: none;
+  border-bottom: 1px solid color-mix(in oklch, var(--text) 18%, var(--bg-soft));
   letter-spacing: -0.02em;
   text-align: left;
   vertical-align: top;
 }
 
+.prose-body thead tr:first-child th {
+  border-top: 1px solid color-mix(in oklch, var(--text) 18%, var(--bg-soft));
+}
+
 .prose-body thead th {
   background: var(--bg-soft);
   font-weight: 600;
+}
+
+.prose-body .footnotes > hr {
+  display: none;
 }
 
 .prose-body .footnotes {
@@ -2164,6 +2193,16 @@ h6 {
   border-radius: 0;
   display: block;
   background: transparent;
+}
+
+.embed-caption {
+  margin: 0.4rem 0 0;
+  color: var(--text-faint);
+  font-size: var(--font-smaller);
+  line-height: 1.55;
+  text-align: center;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .social-embed__assist {

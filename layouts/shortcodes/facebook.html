@@ -13,6 +13,7 @@
 {{- else -}}
   {{- with .Get 1 }}{{ $width = printf "%v" . }}{{ end -}}
 {{- end -}}
+{{- $caption := .Get "caption" -}}
 {{- $titles := .Site.Params.socialEmbeds.titles -}}
 {{- $title := default "Facebook 게시물" $titles.facebook -}}
 <div class="social-embed social-embed--script social-embed--facebook">
@@ -23,4 +24,5 @@
       allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
       src="https://www.facebook.com/plugins/post.php?href={{ $url | urlquery }}&show_text=true&width={{ $width | safeURL }}"></iframe>
   </div>
+  {{- with $caption }}<p class="embed-caption">{{ . | markdownify }}</p>{{ end -}}
 </div>
