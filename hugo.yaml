@@ -59,6 +59,7 @@ params:
     titles:
       facebook: "Facebook 게시물"
       youtube: "YouTube 동영상"
+      youtubeClip: "YouTube Clip"
       youtubeShorts: "YouTube Shorts"
       vimeo: "Vimeo 동영상"
   categoryTitles:

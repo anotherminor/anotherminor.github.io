@@ -7,6 +7,9 @@
 {{- if not $url -}}
   {{- errorf "instagram shortcode requires a post/reel url (%s)" .Position -}}
 {{- end -}}
+{{- if and (in $url "index=") (not (in $url "img_index=")) -}}
+  {{- $url = replaceRE `([?&])index=` `${1}img_index=` $url -}}
+{{- end -}}
 {{- $caption := .Get "caption" -}}
 {{- $fallback := .Site.Params.socialEmbeds.fallback -}}
 {{- $openLabel := default "Instagram에서 게시물 열기" $fallback.instagramOpen -}}

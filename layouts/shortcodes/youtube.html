@@ -9,26 +9,13 @@
 {{- end -}}
 {{- $caption := .Get "caption" -}}
 {{- $titles := .Site.Params.socialEmbeds.titles -}}
-{{- $fallback := .Site.Params.socialEmbeds.fallback -}}
-{{- $overrideID := "" -}}
-{{- $overridePlayerParams := "" -}}
-{{- $overrideAssistHref := "" -}}
 {{- $title := default "YouTube 동영상" $titles.youtube -}}
 {{- if .IsNamedParams -}}
-  {{- $overrideID = .Get "id" -}}
-  {{- $overridePlayerParams = or (.Get "playerParams") (.Get "pp") -}}
-  {{- $overrideAssistHref = .Get "url" -}}
   {{- $title = default $title (.Get "title") -}}
 {{- else -}}
   {{- with .Get 1 }}{{ $title = . }}{{ end -}}
 {{- end -}}
-{{- $embed := partial "social/youtube-embed-data.html" (dict
-  "fallback" $fallback
-  "overrideAssistHref" $overrideAssistHref
-  "overrideID" $overrideID
-  "overridePlayerParams" $overridePlayerParams
-  "raw" $raw
-) -}}
+{{- $embed := partial "social/youtube-embed-data.html" (dict "raw" $raw) -}}
 <div class="social-embed social-embed--landscape">
   {{- with $embed.src }}
   <div class="social-embed__frame">
@@ -40,9 +27,6 @@
       referrerpolicy="strict-origin-when-cross-origin"
       allowfullscreen></iframe>
   </div>
-  {{- end -}}
-  {{- with $embed.assistHref }}
-  <p class="social-embed__assist"><a href="{{ . }}" target="_blank" rel="noopener noreferrer">{{ $embed.assistLabel }}</a></p>
   {{- end -}}
   {{- with $caption }}<p class="embed-caption">{{ . | markdownify }}</p>{{ end -}}
 </div>
