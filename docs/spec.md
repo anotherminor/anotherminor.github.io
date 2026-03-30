@@ -55,11 +55,11 @@
 
 ## 3. 확정 스택
 
-- 작성: `MWeb` (macOS)
+- 작성: `Obsidian 혹은 유사 노트 앱`
 - 저장소: `GitHub` (단일 공개 저장소)
 - 빌드: `Hugo`
 - 호스팅/배포: `GitHub Pages`
-- 댓글: `commentbox.io`
+- 상호작용: `Supabase` 기반 조회수·좋아요·댓글
 - 검색: `Pagefind`
 - 임베드: 플랫폼 제공 embed HTML 우선(운영 작성은 Hugo shortcode 래퍼 우선)
 
@@ -67,7 +67,7 @@
 
 - 단일 공개 GitHub 저장소를 사용한다.
 - 사이트 소스/콘텐츠는 같은 repo에 둔다.
-- 댓글은 `commentbox.io` 프로젝트 ID로 연동한다.
+- 상호작용 데이터는 Supabase 프로젝트로 연동한다.
 - 이유: 초기 설정/운영 복잡도를 최소화한다.
 
 ## 4. 콘텐츠 계약 (Public Content Contract)
@@ -137,7 +137,7 @@ front matter는 YAML로 통일한다.
 
 ### 5.6 태그 slug 시스템
 
-Obsidian은 태그에 한국어 특수문자·공백·콜론을 허용하지 않는다.
+Obsidian 혹은 유사 노트 앱은 태그에 한국어 특수문자·공백·콜론을 안정적으로 다루기 어렵거나 앱별 제약이 있을 수 있다.
 이를 해결하기 위해 포스트 프론트매터에는 영문 slug를 저장하고,
 빌드 시 `_index.md`를 자동 생성해 Hugo가 한국어 표시 이름으로 렌더링하도록 한다.
 
@@ -151,7 +151,7 @@ Obsidian은 태그에 한국어 특수문자·공백·콜론을 허용하지 않
 
 **포스트 작성 규칙**
 
-Obsidian에서 태그를 입력할 때 slug를 직접 사용한다.
+Obsidian 혹은 유사 노트 앱에서 태그를 입력할 때는 slug를 직접 사용한다.
 
 ```yaml
 tags: [film, disney-plus, severance]
@@ -558,7 +558,7 @@ oklch(from var(--color-accent) calc(l + δ) c h / α)
 
 템플릿 규칙:
 - `data-pagefind-body`는 포스트 상세 템플릿에만 사용
-- commentbox 영역은 `data-pagefind-ignore`
+- interactions 영역은 `data-pagefind-ignore`
 - 목록/분류/검색/404/about 템플릿에는 `data-pagefind-body` 금지
 
 CLI 규칙:
@@ -626,7 +626,7 @@ GitHub Pages 제약:
 
 1. 포스트 생성
    - `hugo new content posts/<entry_id>/index.md`
-2. MWeb에서 `index.md` 작성
+2. Obsidian 혹은 유사 노트 앱에서 `index.md` 작성
 3. `slug` 입력 (공개 URL용)
 4. 이미지가 있으면 `images/`에 저장하고 상대경로로 참조
 5. 로컬 미리보기 확인
@@ -750,13 +750,16 @@ GitHub Pages 제약:
 - 가로 이미지가 본문 폭을 초과할 때만 축소되고, 원본 폭이 더 작은 이미지는 확대되지 않는지 확인
 - 세로 이미지가 비율을 유지한 채 최대 높이 480px 안으로 제한되는지 확인
 - 동일 글이 목록/상세로 중복 검색되지 않는지 확인
-- commentbox 댓글 내용이 검색 결과에 섞이지 않는지 확인
+- interactions 댓글 내용이 검색 결과에 섞이지 않는지 확인
 
-### 12.5 댓글(commentbox.io)
+### 12.5 상호작용(Supabase)
 
-- 댓글 박스 렌더링 정상 동작 (`params.commentbox.projectId` 설정 기준)
+- 상호작용 바 렌더링 정상 동작 (`params.supabase.enabled`, `url`, `anonKey`, `edgeFunctionUrl` 설정 기준)
+- 조회수 RPC(`increment_views`) 호출 시 count가 생성 또는 증가하고 화면에 반영되는지 확인
+- 좋아요 RPC(`toggle_like`) 호출 시 동일 브라우저 기준 토글과 count 반영이 정상 동작하는지 확인
 - 댓글 작성/표시 기본 흐름 정상 동작
-- 페이지 URL 기준 스레드 분리(기본 `#commentbox` 박스 ID 기준) 정상 동작
+- 댓글 삭제 Edge Function이 비밀번호 검증 성공 시 삭제, 실패 시 403 메시지를 반환하는지 확인
+- 포스트 permalink 기준으로 조회수·좋아요·댓글이 분리되는지 확인
 
 ### 12.6 리다이렉트
 
@@ -815,7 +818,7 @@ GitHub Pages 제약:
 - 템플릿 규칙
   - `data-pagefind-body`는 **개별 포스트 상세 템플릿에만** 사용합니다.
   - 홈/카테고리/태그/포맷/아카이브/검색/404/about 템플릿에는 `data-pagefind-body`를 넣지 않습니다.
-  - commentbox 영역에는 `data-pagefind-ignore`를 적용합니다.
+  - interactions 영역에는 `data-pagefind-ignore`를 적용합니다.
 - CLI 규칙
   - `--glob "posts/**/*.html"`로 **포스트 상세 HTML만** 인덱싱하도록 고정합니다.
   - 템플릿 실수로 목록 페이지에 표식이 들어가더라도 인덱싱 범위를 제한합니다.
@@ -906,7 +909,7 @@ canonical(정규 URL) 정책
 
 6. 개별 포스트(상세)
 
-- 제목/메타(날짜·카테고리·포맷 배지·태그) → 본문(임베드 포함) → 댓글(commentbox.io) 순서로 구성합니다.
+- 제목/메타(날짜·카테고리·포맷 배지·태그) → 본문(임베드 포함) → 상호작용(Supabase 조회수·좋아요·댓글) 순서로 구성합니다.
 - `link` 포맷은 본문 상단에 원문 링크(`external_url`)를 명확히 노출합니다.
 
 7. About(단일 페이지)

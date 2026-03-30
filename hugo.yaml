@@ -43,9 +43,11 @@ params:
   homeTitle: "minorupdates | anotherminor의 블로그"
   siteDescription: "anotherminor의 블로그"
   homeFullCount: 5
-  commentbox:
+  supabase:
     enabled: true
-    projectId: "5648809497460736-proj"
+    url: "https://tcfrrkwmnpwsatpxvlbx.supabase.co"
+    anonKey: "sb_publishable_aELbj44x30LbXZxq33GaOA_popqy-Rq"
+    edgeFunctionUrl: "https://tcfrrkwmnpwsatpxvlbx.supabase.co/functions/v1/delete-comment"
   socialEmbeds:
     fallback:
       loading: "소셜 임베드를 불러오는 중입니다."
