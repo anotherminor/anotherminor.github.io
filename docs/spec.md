@@ -1,4 +1,4 @@
-# anotherminor.github.io 통합 계획안
+# anotherminor.github.io 통합 명세서
 
 작성 목적: 이 문서는 블로그의 기획 원칙, 구현 설정, 운영 루틴, 검증 기준을 하나로 합친 단일 기준 문서(Single Source of Truth)입니다.
 
