@@ -96,6 +96,7 @@ html {
   word-break: keep-all;
   text-size-adjust: none;
   scrollbar-gutter: stable;
+  scrollbar-color: var(--accent) var(--bg);
 }
 
 body {
