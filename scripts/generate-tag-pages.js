@@ -38,13 +38,27 @@ const TAGS_DIR = path.join(ROOT, 'content', 'tags');
 // 1. 매핑 로드: 표시 이름 → slug
 const tagMap = JSON.parse(fs.readFileSync(MAP_PATH, 'utf8'));
 
-// 2. 역방향 맵: slug → 표시 이름
+// 2. 매핑 정규화
+const displayToSlug = {};
 const slugToDisplay = {};
-for (const [display, slug] of Object.entries(tagMap)) {
+const pendingSlugs = new Set();
+const TODO_PREFIX = '__TODO__ ';
+
+function addMapping(display, slug) {
+  displayToSlug[display] = slug;
   if (slug in slugToDisplay && slugToDisplay[slug] !== display) {
     process.stderr.write(`[경고] slug 충돌: "${slug}" — "${display}" vs "${slugToDisplay[slug]}"\n`);
   }
   slugToDisplay[slug] = display;
+}
+
+for (const [display, slug] of Object.entries(tagMap)) {
+  if (!slug || display.startsWith(TODO_PREFIX)) {
+    pendingSlugs.add(slug || display);
+    continue;
+  }
+
+  addMapping(display, slug);
 }
 
 // 3. 인라인 YAML 배열 파싱 (따옴표 내 쉼표 처리 포함)
@@ -97,9 +111,13 @@ for (const dir of fs.readdirSync(POSTS)) {
   for (const tag of parseTags(fm)) {
     // 표시 이름으로 조회 → slug 반환
     // 이미 slug라면 slugToDisplay에 존재 → 그대로 사용
-    const slug = tagMap[tag] ?? (tag in slugToDisplay ? tag : null);
+    const slug = displayToSlug[tag] ?? (tag in slugToDisplay ? tag : null);
     if (!slug) {
-      process.stderr.write(`[경고] 매핑 없는 태그: "${tag}" — tag-map.json에 추가 필요\n`);
+      if (pendingSlugs.has(tag)) {
+        process.stderr.write(`[경고] 매핑 대기 태그: "${tag}" — tag-map.json의 왼쪽 TODO 표시 이름 수정 필요\n`);
+      } else {
+        process.stderr.write(`[경고] 매핑 없는 태그: "${tag}" — tag-map.json에 추가 필요\n`);
+      }
       warned++;
     } else {
       usedSlugs.add(slug);
