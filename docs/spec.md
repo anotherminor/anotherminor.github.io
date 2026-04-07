@@ -444,7 +444,7 @@ public
 
 ### 7.5 글로벌 타이포그래피 (cap-height 시스템)
 
-본 블로그의 글로벌 타이포그래피는 tonsky.me의 cap-height 기반 스케일링 시스템을 이식한 것이다.
+본 블로그의 글로벌 타이포그래피는 tonsky.me의 cap-height 기반 타이포그래피 아이디어를 참고해, GothicA1과 현재 레이아웃에 맞게 자체 구현한 것이다. 원문 사이트의 스타일시트를 복제하지 않고, cap-height 기준으로 본문 크기와 보조 텍스트 스케일을 계산하는 방식만 적용한다.
 이 레이어는 `static/css/site.css`의 `:root` 변수와 `body` 선언에서 관리하며, 아래 규칙을 준수한다.
 
 핵심 변수 (`static/css/site.css` — `:root`)
@@ -482,7 +482,7 @@ public
 - 검색 UI (`.pagefind-ui`)
 - 댓글 (`.discussion-panel`)
 - 헤딩 (`h1`~`h6`, 각 clamp() 스케일 유지)
-- 코드블록 (`.prose-body code`, `.prose-body pre`)
+- 코드블록의 글자 크기는 본문 스케일을 상속하되, 배경·스크롤·모노스페이스 폰트 처리는 별도 유지
 - 아카이브 타임라인 요소
 
 검증 기준값
