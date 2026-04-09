@@ -1,18 +1,7 @@
 window.addEventListener('DOMContentLoaded', () => {
   const copyResetDelay = 2000;
   const threadsHeightBuffer = 30;
-  const imageTooltipOffset = 14;
-  const imageTooltipLongPressDelay = 450;
-  const imageTooltipLongPressMoveThreshold = 12;
   const copyResetTimers = new WeakMap();
-  let imageTooltipElement = null;
-  let imageTooltipImage = null;
-  let imageTooltipLongPressImage = null;
-  let imageTooltipLongPressTimer = 0;
-  let imageTooltipPointerId = null;
-  let imageTooltipPointerStartX = 0;
-  let imageTooltipPointerStartY = 0;
-  let imageTooltipSuppressClickUntil = 0;
 
   const isExternalHref = (href) => {
     if (!href || href.startsWith('#')) return false;
@@ -249,184 +238,21 @@ window.addEventListener('DOMContentLoaded', () => {
     button.disabled = false;
   };
 
-  const getImageTooltipText = (image) => {
-    if (!(image instanceof HTMLImageElement)) return '';
-    return (image.getAttribute('alt') || '').trim();
-  };
-
-  const getImageTooltipElement = () => {
-    if (imageTooltipElement instanceof HTMLElement) return imageTooltipElement;
-    if (!document.body) return null;
-
-    const tooltip = document.createElement('div');
-    tooltip.className = 'image-alt-tooltip';
-    tooltip.setAttribute('aria-hidden', 'true');
-    document.body.append(tooltip);
-    imageTooltipElement = tooltip;
-    return tooltip;
-  };
-
-  const positionImageTooltip = (tooltip, x, y) => {
-    const margin = 16;
-    const { innerWidth, innerHeight } = window;
-    const tooltipRect = tooltip.getBoundingClientRect();
-
-    let nextLeft = x - tooltipRect.width / 2;
-    nextLeft = Math.max(margin, Math.min(nextLeft, innerWidth - tooltipRect.width - margin));
-
-    let nextTop = y - tooltipRect.height - imageTooltipOffset;
-    if (nextTop < margin) {
-      nextTop = Math.min(y + imageTooltipOffset, innerHeight - tooltipRect.height - margin);
-    }
-
-    tooltip.style.left = `${Math.round(nextLeft)}px`;
-    tooltip.style.top = `${Math.round(Math.max(margin, nextTop))}px`;
-  };
-
-  const showImageTooltip = (image, point = null) => {
-    const text = getImageTooltipText(image);
-    const tooltip = getImageTooltipElement();
-    if (!text || !(tooltip instanceof HTMLElement) || !(image instanceof HTMLImageElement)) return;
-
-    tooltip.textContent = text;
-    tooltip.dataset.visible = 'true';
-    imageTooltipImage = image;
-
-    const rect = image.getBoundingClientRect();
-    const anchorX = point && Number.isFinite(point.x) ? point.x : rect.left + rect.width / 2;
-    const anchorY = point && Number.isFinite(point.y) ? point.y : rect.top;
-
-    positionImageTooltip(tooltip, anchorX, anchorY);
-  };
-
-  const hideImageTooltip = () => {
-    if (!(imageTooltipElement instanceof HTMLElement)) return;
-    imageTooltipElement.dataset.visible = 'false';
-    imageTooltipImage = null;
-  };
-
-  const clearImageTooltipLongPressTimer = () => {
-    if (!imageTooltipLongPressTimer) return;
-    window.clearTimeout(imageTooltipLongPressTimer);
-    imageTooltipLongPressTimer = 0;
-  };
-
-  const clearImageTooltipLongPressState = () => {
-    clearImageTooltipLongPressTimer();
-    imageTooltipPointerId = null;
-    imageTooltipPointerStartX = 0;
-    imageTooltipPointerStartY = 0;
-    imageTooltipLongPressImage = null;
-  };
-
-  const findTooltipImage = (target) => {
-    if (!(target instanceof Element)) return null;
-    const image = target.closest('.prose-body img');
-    if (!(image instanceof HTMLImageElement)) return null;
-    return getImageTooltipText(image) ? image : null;
-  };
-
   enhanceLinksIn(document);
   initializeRelativeTimes(document);
   initializeThreadsEmbeds(document);
   window.addEventListener('message', adjustThreadsIframeHeight);
   window.addEventListener('message', adjustInstagramIframeHeight);
-  window.addEventListener('scroll', hideImageTooltip, { passive: true });
-  window.addEventListener('resize', hideImageTooltip);
 
   document.addEventListener('click', (event) => {
     const target = event.target;
     if (!(target instanceof Element)) return;
-
-    if (Date.now() < imageTooltipSuppressClickUntil && findTooltipImage(target)) {
-      event.preventDefault();
-      imageTooltipSuppressClickUntil = 0;
-      return;
-    }
 
     const button = target.closest('[data-code-copy]');
     if (!(button instanceof HTMLButtonElement)) return;
 
     event.preventDefault();
     void handleCodeCopy(button);
-  });
-
-  document.addEventListener('mouseover', (event) => {
-    const image = findTooltipImage(event.target);
-    if (!image) return;
-
-    showImageTooltip(image);
-  });
-
-  document.addEventListener('mouseout', (event) => {
-    const image = findTooltipImage(event.target);
-    if (!image) return;
-
-    const related = event.relatedTarget;
-    if (related instanceof Node && image.contains(related)) return;
-    if (imageTooltipLongPressImage === image) return;
-    hideImageTooltip();
-  });
-
-  document.addEventListener('pointerdown', (event) => {
-    const image = findTooltipImage(event.target);
-    if (!image || event.pointerType === 'mouse') return;
-
-    clearImageTooltipLongPressState();
-    imageTooltipPointerId = event.pointerId;
-    imageTooltipPointerStartX = event.clientX;
-    imageTooltipPointerStartY = event.clientY;
-    imageTooltipLongPressImage = image;
-    imageTooltipLongPressTimer = window.setTimeout(() => {
-      if (!(imageTooltipLongPressImage instanceof HTMLImageElement)) return;
-      showImageTooltip(imageTooltipLongPressImage, {
-        x: event.clientX,
-        y: event.clientY,
-      });
-      imageTooltipSuppressClickUntil = Date.now() + 400;
-      clearImageTooltipLongPressTimer();
-    }, imageTooltipLongPressDelay);
-  });
-
-  document.addEventListener('pointermove', (event) => {
-    if (
-      imageTooltipPointerId === null ||
-      event.pointerId !== imageTooltipPointerId ||
-      !imageTooltipLongPressTimer
-    ) {
-      return;
-    }
-
-    const deltaX = event.clientX - imageTooltipPointerStartX;
-    const deltaY = event.clientY - imageTooltipPointerStartY;
-    const distance = Math.hypot(deltaX, deltaY);
-    if (distance < imageTooltipLongPressMoveThreshold) return;
-
-    clearImageTooltipLongPressState();
-  });
-
-  document.addEventListener('pointerup', (event) => {
-    if (imageTooltipPointerId === null || event.pointerId !== imageTooltipPointerId) return;
-
-    clearImageTooltipLongPressTimer();
-    if (imageTooltipLongPressImage) {
-      hideImageTooltip();
-    }
-    clearImageTooltipLongPressState();
-  });
-
-  document.addEventListener('pointercancel', (event) => {
-    if (imageTooltipPointerId === null || event.pointerId !== imageTooltipPointerId) return;
-
-    hideImageTooltip();
-    clearImageTooltipLongPressState();
-  });
-
-  document.addEventListener('contextmenu', (event) => {
-    const image = findTooltipImage(event.target);
-    if (!image || image !== imageTooltipLongPressImage) return;
-
-    event.preventDefault();
   });
 
   if (!document.body || typeof MutationObserver === 'undefined') return;
