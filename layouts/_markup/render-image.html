@@ -1,15 +1,32 @@
 {{- $src := .Destination -}}
+{{- $resource := false -}}
 {{- $isRemote := or (hasPrefix $src "http://") (hasPrefix $src "https://") -}}
 {{- if not $isRemote -}}
   {{- with .PageInner.Resources.GetMatch $src -}}
+    {{- $resource = . -}}
     {{- $src = .RelPermalink -}}
   {{- else -}}
     {{- with resources.Get (strings.TrimPrefix "/" $src) -}}
+      {{- $resource = . -}}
       {{- $src = .RelPermalink -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}
-<img src="{{ $src | safeURL }}"
-  {{- with .PlainText }} alt="{{ . }}"{{ end -}}
-  {{- with .Title }} title="{{ . }}"{{ else }}{{ with .PlainText }} title="{{ . }}"{{ end }}{{ end -}}
->
+{{- if .IsBlock -}}
+  <figure class="prose-media">
+    <img class="prose-media__image" src="{{ $src | safeURL }}"
+      {{- with .PlainText }} alt="{{ . }}"{{ else }} alt=""{{ end -}}
+      {{- with .Title }} title="{{ . }}"{{ end -}}
+      {{- with $resource }} width="{{ .Width }}" height="{{ .Height }}"{{ end -}}
+    >
+    {{- with .Title }}
+      <figcaption class="prose-media__caption">{{ . }}</figcaption>
+    {{- end }}
+  </figure>
+{{- else -}}
+  <img src="{{ $src | safeURL }}"
+    {{- with .PlainText }} alt="{{ . }}"{{ else }} alt=""{{ end -}}
+    {{- with .Title }} title="{{ . }}"{{ else }}{{ with .PlainText }} title="{{ . }}"{{ end }}{{ end -}}
+    {{- with $resource }} width="{{ .Width }}" height="{{ .Height }}"{{ end -}}
+  >
+{{- end -}}

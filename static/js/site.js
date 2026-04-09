@@ -44,6 +44,49 @@ window.addEventListener('DOMContentLoaded', () => {
     root.querySelectorAll('a[href]').forEach(enhanceLink);
   };
 
+  const hasMeaningfulNodeContent = (node) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return Boolean((node.textContent || '').trim());
+    }
+
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      return Boolean((node.textContent || '').trim());
+    }
+
+    return false;
+  };
+
+  const normalizeProseMedia = (root = document) => {
+    if (!(root instanceof Document || root instanceof Element)) return;
+
+    root.querySelectorAll('.prose-body p').forEach((paragraph) => {
+      if (!(paragraph instanceof HTMLParagraphElement)) return;
+
+      const nodes = Array.from(paragraph.childNodes);
+      const firstMeaningfulNode = nodes.find(hasMeaningfulNodeContent);
+      if (!(firstMeaningfulNode instanceof HTMLImageElement)) return;
+
+      const imageIndex = nodes.indexOf(firstMeaningfulNode);
+      if (nodes.slice(0, imageIndex).some(hasMeaningfulNodeContent)) return;
+
+      const captionNodes = nodes.slice(imageIndex + 1);
+      if (!captionNodes.some(hasMeaningfulNodeContent)) return;
+
+      const figure = document.createElement('figure');
+      figure.className = 'prose-media';
+
+      firstMeaningfulNode.classList.add('prose-media__image');
+      figure.append(firstMeaningfulNode);
+
+      const caption = document.createElement('figcaption');
+      caption.className = 'prose-media__caption';
+      captionNodes.forEach((node) => caption.append(node));
+      figure.append(caption);
+
+      paragraph.replaceWith(figure);
+    });
+  };
+
   const initializeThreadsEmbeds = (root = document) => {
     if (!(root instanceof Document || root instanceof Element)) return;
 
@@ -284,6 +327,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  normalizeProseMedia(document);
   enhanceLinksIn(document);
   initializeRelativeTimes(document);
   initializeThreadsEmbeds(document);
@@ -324,6 +368,7 @@ window.addEventListener('DOMContentLoaded', () => {
       addedNodes.forEach((node) => {
         if (!(node instanceof Element)) return;
 
+        normalizeProseMedia(node);
         enhanceLinksIn(node);
         initializeRelativeTimes(node);
         initializeThreadsEmbeds(node);
