@@ -4,6 +4,9 @@
   --gap: var(--cap-height);
   --font-smaller: calc(var(--cap-height) * 10 / 12 * var(--cap-ratio));
   --font-small: calc(var(--cap-height) * 11 / 12 * var(--cap-ratio));
+  --reading-line-height-body: 1.68;
+  --reading-line-height-relaxed: 1.7;
+  --reading-line-height-support: 1.58;
 
   /* 기준색 3종 (hugo.yaml params.colors.light.* 에서 주입됨) */
   /* --color-bg, --color-text, --color-accent */
@@ -40,7 +43,7 @@
   --eyebrow-tracking: 0;
   --eyebrow-line-height: 1.45;
   --eyebrow-gap: 0.5rem;
-  --title-entry:    clamp(1.5rem,  1.1rem + 1.5vw,   2rem);
+  --title-entry:    clamp(1.65rem,  1.21rem + 1.65vw,   2.2rem);
   --title-card:     clamp(1.1rem,  0.9rem + 1vw,     1.35rem);
   --title-prose-h2: clamp(1.2rem,  0.88rem + 1.1vw,  1.5rem);
   --title-prose-h3: clamp(1.0rem,  0.82rem + 0.7vw,  1.2rem);
@@ -445,7 +448,7 @@ h6 {
   margin-top: 0.5rem;
   max-width: 44rem;
   font-size: var(--font-small);
-  line-height: 1.7;
+  line-height: var(--reading-line-height-relaxed);
   letter-spacing: -0.02em;
   word-break: keep-all;
   overflow-wrap: break-word;
@@ -724,7 +727,7 @@ h6 {
   margin: 0.3rem 0 0;
   color: var(--text-soft);
   font-size: var(--font-small);
-  line-height: 1.55;
+  line-height: var(--reading-line-height-support);
   letter-spacing: -0.02em;
   transform: scaleX(var(--body-scale-x));
   transform-origin: left top;
@@ -804,7 +807,7 @@ h6 {
   margin: 0.5rem 0 0;
   color: var(--text-soft);
   font-size: var(--font-small);
-  line-height: 1.6;
+  line-height: var(--reading-line-height-support);
   letter-spacing: -0.02em;
   transform: scaleX(var(--body-scale-x));
   transform-origin: left top;
@@ -1170,7 +1173,7 @@ h6 {
 
 .prose-body {
   font-size: inherit;
-  line-height: 1.68;
+  line-height: var(--reading-line-height-body);
   color: var(--text);
 }
 
@@ -1206,7 +1209,7 @@ h6 {
   margin-top: 1.5rem;
   margin-bottom: 1.25rem;
   font-size: var(--font-smaller);
-  line-height: 1.55;
+  line-height: var(--reading-line-height-support);
   color: var(--text-faint);
   text-align: center;
 }
@@ -1270,7 +1273,7 @@ h6 {
 .entry-full .prose-body p:has(> img:first-child),
 .page-article .prose-body p:has(> img:first-child) {
   font-size: var(--font-smaller);
-  line-height: 1.55;
+  line-height: var(--reading-line-height-support);
   font-weight: 500;
   color: var(--text-faint);
 }
@@ -1504,7 +1507,7 @@ h6 {
   margin-top: 0.45rem;
   color: var(--text-faint);
   font-size: var(--font-smaller);
-  line-height: 1.55;
+  line-height: var(--reading-line-height-support);
   text-align: center;
   word-break: keep-all;
   overflow-wrap: break-word;
@@ -2059,7 +2062,7 @@ h6 {
   margin-top: 0.45rem;
   color: var(--text-soft) !important;
   font-size: var(--font-small) !important;
-  line-height: 1.55 !important;
+  line-height: var(--reading-line-height-support) !important;
   letter-spacing: -0.02em;
   transform: scaleX(var(--body-scale-x));
   transform-origin: left top;
@@ -2464,7 +2467,7 @@ h6 {
    ============================================== */
 @media (max-width: 900px) {
   :root {
-    --title-entry:    clamp(1.3rem,  0.95rem + 1.5vw, 1.6rem);
+    --title-entry:    clamp(1.43rem,  1.045rem + 1.65vw, 1.76rem);
     --title-prose-h2: clamp(1.05rem, 0.82rem + 0.9vw, 1.3rem);
     --title-prose-h3: clamp(0.92rem, 0.78rem + 0.55vw, 1.1rem);
   }
