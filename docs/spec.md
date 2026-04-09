@@ -363,11 +363,12 @@ Hugo의 내부 kind 수가 아니라 사용자 화면 유형 기준이다.
 
 - 본문에서는 URL 또는 영상 ID만 넘기는 한 줄 호출을 기본으로 한다.
 - 세로형(`youtube-shorts`, `tiktok`)은 shortcode 내부에서 9:16 포트레이트 래퍼를 적용한다.
-- 스크립트 기반 플랫폼(TikTok / Instagram / X / Threads)은 페이지당 스크립트를 1회만 로드한다.
+- Instagram / TikTok / Facebook은 `embed.js` 없이 직접 iframe을 구성한다. Instagram은 iframe이 보내는 `MEASURE` postMessage로 높이를 자동 조정한다.
+- 스크립트 기반 플랫폼(X / Threads)은 페이지당 스크립트를 1회만 로드한다.
 - 임베드 실패·지연 시 사용자 친화적 링크 폴백 문구를 출력한다.
 - 필요 시 raw HTML 임베드도 계속 허용한다 (예외 케이스 대응).
 - YouTube URL에 `t=` / `start=` / `end=`가 있으면 embed 재생 구간으로 반영한다.
-- Instagram 캐러셀은 `img_index=`로 슬라이드 번호를 지정한다 (예: `img_index=2` → 두 번째 슬라이드가 열린 상태로 렌더).
+- Instagram 캐러셀 embed는 항상 첫 슬라이드를 표시한다. `img_index=`는 Instagram embed iframe이 무시하므로 특정 슬라이드를 꽂아 렌더할 수 없다. 특정 슬라이드를 강조해야 하면 해당 이미지를 별도로 저장해 일반 이미지로 삽입한다.
 - Apple Music은 `Copy Embed Code`에서 얻은 공식 embed `src`(`https://embed.music.apple.com/...`)만 입력으로 사용하고, 일반 `music.apple.com/...` 공유 URL을 임의 변환하지 않는다.
 
 본문 접힘 UI가 필요할 때는 HTML 표준 `details` / `summary`를 직접 사용한다. 브라우저 기본 기능이므로 이식성을 해치지 않는다. 긴 부연 설명·보충 메모·스포일러 등 처음부터 보일 필요가 없는 내용에 한해 제한적으로 사용하고, 글의 핵심 문장을 숨기는 용도로 쓰지 않는다.
@@ -380,7 +381,7 @@ Hugo의 내부 kind 수가 아니라 사용자 화면 유형 기준이다.
 {{< youtube url="https://www.youtube.com/watch?v=..." start="90" end="122" >}}
 {{< youtube-shorts "https://www.youtube.com/shorts/..." >}}
 {{< tiktok "https://www.tiktok.com/@user/video/..." >}}
-{{< instagram "https://www.instagram.com/p/.../?img_index=2" >}}
+{{< instagram "https://www.instagram.com/p/..." >}}
 {{< twitter "https://twitter.com/.../status/..." >}}
 {{< threads "https://www.threads.net/@.../post/..." >}}
 {{< facebook "https://www.facebook.com/.../posts/..." >}}

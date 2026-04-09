@@ -43,6 +43,8 @@ params:
   homeTitle: "minorupdates | anotherminor의 블로그"
   siteDescription: "anotherminor의 블로그"
   homeFullCount: 5
+  errorPage:
+    notFoundTitle: "The new era begins..."
   supabase:
     enabled: true
     url: "https://tcfrrkwmnpwsatpxvlbx.supabase.co"
