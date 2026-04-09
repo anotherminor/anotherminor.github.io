@@ -1,6 +1,6 @@
 window.addEventListener('DOMContentLoaded', () => {
   const copyResetDelay = 2000;
-  const threadsHeightBuffer = 30;
+  const threadsHeightBuffer = 26;
   const copyResetTimers = new WeakMap();
 
   const isExternalHref = (href) => {
@@ -87,6 +87,7 @@ window.addEventListener('DOMContentLoaded', () => {
         if (wrap instanceof HTMLElement) {
           wrap.dataset.threadsReady = 'true';
         }
+        frame.style.setProperty('border-radius', '28px', 'important');
       });
   };
 
@@ -137,6 +138,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const params = embed.params && embed.params[0];
     const nextHeight = params && Number(params.height);
     if (!nextHeight || !Number.isFinite(nextHeight)) return;
+    const nextWidth = params && Number(params.width);
 
     document
       .querySelectorAll('.social-embed--twitter iframe')
@@ -144,6 +146,9 @@ window.addEventListener('DOMContentLoaded', () => {
         if (!(frame instanceof HTMLIFrameElement)) return;
         if (frame.contentWindow !== event.source) return;
         frame.style.height = `${nextHeight}px`;
+        if (nextWidth && Number.isFinite(nextWidth)) {
+          frame.style.width = `${nextWidth}px`;
+        }
       });
   };
 
@@ -229,6 +234,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
     button.classList.toggle('is-copied', isCopied);
     button.setAttribute('aria-label', nextLabel);
+    button.disabled = isCopied;
+    if (isCopied) {
+      button.style.color = 'var(--code-block-meta-color)';
+      button.blur();
+    } else {
+      button.style.removeProperty('color');
+    }
 
     if (status instanceof HTMLElement) {
       status.textContent = statusText;
@@ -237,6 +249,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const resetTimer = window.setTimeout(() => {
       button.classList.remove('is-copied');
       button.setAttribute('aria-label', '코드 복사');
+      button.disabled = false;
+      button.style.removeProperty('color');
       if (status instanceof HTMLElement) {
         status.textContent = '';
       }
@@ -265,7 +279,9 @@ window.addEventListener('DOMContentLoaded', () => {
       didCopy
     );
 
-    button.disabled = false;
+    if (!didCopy) {
+      button.disabled = false;
+    }
   };
 
   enhanceLinksIn(document);
@@ -295,6 +311,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
   if (!document.body || typeof MutationObserver === 'undefined') return;
 
+  const applyThreadsRadius = (node) => {
+    if (!(node instanceof Element)) return;
+    const frames = node instanceof HTMLIFrameElement && node.closest('.social-embed--threads')
+      ? [node]
+      : Array.from(node.querySelectorAll('.social-embed--threads iframe'));
+    frames.forEach((f) => f.style.setProperty('border-radius', '16px', 'important'));
+  };
+
   const observer = new MutationObserver((mutations) => {
     mutations.forEach(({ addedNodes }) => {
       addedNodes.forEach((node) => {
@@ -303,6 +327,7 @@ window.addEventListener('DOMContentLoaded', () => {
         enhanceLinksIn(node);
         initializeRelativeTimes(node);
         initializeThreadsEmbeds(node);
+        applyThreadsRadius(node);
       });
     });
   });

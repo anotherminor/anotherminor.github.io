@@ -51,6 +51,18 @@ tags:
 summary: "Renderer check"
 ```
 
+짧은 코드 블록만으로는 가로 스크롤이 정상적으로 작동하는지 확인하기 어렵기 때문에, 아래에는 일부러 길고 쓸모없는 테스트용 내용을 넣어 둔다. 실제 의미는 없고, 스크롤바와 긴 줄 처리만 보는 용도다.
+
+```json
+{"debug":"horizontal-scroll-smoke-test","note":"this_is_purposefully_long_and_verbose_so_that_the_code_block_needs_to_scroll_horizontally_even_on_a_reasonably_wide_desktop_viewport_without_wrapping_the_content","fakePayload":{"section":"prose-body","component":"code-block","status":"placeholder","items":["lorem-ipsum-alpha-sequence-0001","lorem-ipsum-beta-sequence-0002","lorem-ipsum-gamma-sequence-0003","lorem-ipsum-delta-sequence-0004","lorem-ipsum-epsilon-sequence-0005","lorem-ipsum-zeta-sequence-0006","lorem-ipsum-eta-sequence-0007","lorem-ipsum-theta-sequence-0008"],"trackingUrl":"https://example.com/testing/codeblock/horizontal/scroll/verification/with/an/absurdly/long/path/that/should/force/a/clear/overflow/condition/in/the/rendered/post/view"}}
+```
+
+조금 더 현실적인 예시도 하나 있어야 폭이 넓은 문자열과 반복되는 들여쓰기가 함께 어떻게 보이는지 확인할 수 있다. 아래 셸 예시는 일부러 옵션과 경로를 과장해 넣은 더미 명령이다.
+
+```bash
+./scripts/render-preview --source content/posts/20260222-0003/index.md --target public/preview/markdown-format-test/index.html --include-drafts=false --include-related-assets=true --copy-static-resources=true --generate-debug-snapshots=true --emit-layout-measurements=true --fake-flag-for-overflow-check=this-line-is-intentionally-too-long-to-fit-without-horizontal-scrolling
+```
+
 문단 중간에 흐름 전환이 필요할 때는 아래처럼 구분선을 사용하기도 한다. 테마에 따라 선이 너무 진하거나 너무 옅게 보일 수 있으니 함께 확인한다.
 
 ---
@@ -94,12 +106,6 @@ summary: "Renderer check"
 이 문단은 처음에는 접힌 상태로 숨겨져 있어야 한다. 제목 줄을 누르면 다시 나타나고, 한 번 더 누르면 다시 접힌다. 본문 안에서 이런 접힘 영역을 사용할 때 위아래 여백과 줄간격이 일반 문단 흐름과 크게 어긋나지 않는지도 함께 확인한다.
 
 </details>
-
-## 소셜 임베드
-
-소셜 임베드는 일반 마크다운 요소와 달리 외부 플랫폼의 iframe이나 스크립트에 기대므로, 본문 폭 안에서 자연스럽게 들어오는지와 위아래 여백이 과하지 않은지를 따로 확인할 필요가 있다. 이번에는 Apple Music용 `applemusic` shortcode가 의도한 형태로 렌더링되는지 함께 점검한다.
-
-{{< applemusic "https://embed.music.apple.com/kr/album/flowering/1887773334" >}}
 
 ## 마무리
 
