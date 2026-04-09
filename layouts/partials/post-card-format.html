@@ -9,7 +9,7 @@
     {{ if not $isLinkTerm }}
     <a class="badge badge--solid" href="{{ printf "formats/%s/" $term | relURL }}">{{ upper $term }}</a>
     {{ end }}
-    <time datetime="{{ $page.Date.Format `2006-01-02` }}">{{ $page.Date.Format "2006.01.02" }}</time>
+    <time data-relative-time datetime="{{ $page.Date.Format `2006-01-02T15:04:05Z07:00` }}">{{ $page.Date.Format "2006.01.02" }}</time>
     {{ with $page.GetTerms "categories" }}{{ with index . 0 }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}{{ end }}
   </div>
 
