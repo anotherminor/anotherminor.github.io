@@ -10,20 +10,31 @@
 {{- if and (in $url "index=") (not (in $url "img_index=")) -}}
   {{- $url = replaceRE `([?&])index=` `${1}img_index=` $url -}}
 {{- end -}}
+{{- $postType := "p" -}}
+{{- if in $url "/reel/" }}{{- $postType = "reel" -}}{{- end -}}
+{{- $igCode := replaceRE `^https?://(?:www\.)?instagram\.com/(?:p|reel)/([^/?&#]+).*$` "$1" $url -}}
+{{- $imgIndex := "" -}}
+{{- if in $url "img_index=" -}}
+  {{- $imgIndex = replaceRE `^.*[?&]img_index=(\d+).*$` "$1" $url -}}
+{{- end -}}
+{{- $embedSrc := printf "https://www.instagram.com/%s/%s/embed/captioned/" $postType $igCode -}}
+{{- if $imgIndex -}}
+  {{- $embedSrc = printf "%s?img_index=%s" $embedSrc $imgIndex -}}
+{{- end -}}
 {{- $caption := .Get "caption" -}}
 {{- $fallback := .Site.Params.socialEmbeds.fallback -}}
 {{- $openLabel := default "Instagram에서 게시물 열기" $fallback.instagramOpen -}}
-{{- $scriptKey := "social_embed_instagram_script" -}}
-{{- $needsScript := not (.Page.Scratch.Get $scriptKey) -}}
-{{- if $needsScript }}{{- .Page.Scratch.Set $scriptKey true -}}{{- end -}}
-<div class="social-embed social-embed--script social-embed--instagram">
+<div class="social-embed social-embed--instagram">
   <div class="social-embed__script-wrap">
-    <blockquote class="instagram-media" data-instgrm-permalink="{{ $url }}" data-instgrm-version="14" data-pagefind-ignore style="background:transparent; border:0; margin:0 auto; max-width:620px; width:100%;">
+    <iframe
+      src="{{ $embedSrc | safeURL }}"
+      loading="lazy"
+      allowtransparency="true"
+      allowfullscreen="true"
+      frameborder="0"
+      data-pagefind-ignore>
       <a href="{{ $url }}" target="_blank" rel="noopener noreferrer">{{ $openLabel }}</a>
-    </blockquote>
+    </iframe>
   </div>
   {{- with $caption }}<p class="embed-caption">{{ . | markdownify }}</p>{{ end -}}
 </div>
-{{- if $needsScript -}}
-<script async src="https://www.instagram.com/embed.js"></script>
-{{- end -}}

@@ -2290,29 +2290,16 @@ h6 {
   background: transparent;
 }
 
-.social-embed--tiktok .tiktok-embed,
 .social-embed--tiktok iframe {
   width: 100% !important;
   max-width: 360px !important;
   min-width: 325px !important;
+  min-height: 660px;
+  height: 740px;
   box-sizing: border-box;
+  border: 0;
+  display: block;
   background: transparent !important;
-}
-
-.social-embed--tiktok .tiktok-embed {
-  margin: 18px auto !important;
-  background: transparent !important;
-}
-
-.social-embed--tiktok .tiktok-embed > section {
-  background: transparent !important;
-}
-
-@media (max-width: 640px) {
-  .social-embed--tiktok .tiktok-embed {
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
 }
 
 .social-embed--portrait .social-embed__script-wrap {
@@ -2435,6 +2422,17 @@ h6 {
 
 .social-embed--instagram .social-embed__script-wrap {
   max-width: 620px;
+}
+
+.social-embed--instagram iframe {
+  width: 100%;
+  min-height: 540px;
+  height: 700px;
+  border: 0;
+  display: block;
+  overflow: hidden;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .social-embed--facebook iframe {
