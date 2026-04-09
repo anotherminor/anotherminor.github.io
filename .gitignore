@@ -5,3 +5,4 @@ resources/
 .hugo_build.lock
 content/posts/.obsidian/
 .codex/
+.claude/
