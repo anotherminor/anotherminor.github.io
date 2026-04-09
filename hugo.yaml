@@ -57,6 +57,7 @@ params:
       loading: "소셜 임베드를 불러오는 중입니다."
       twitterOpen: "X에서 게시물 열기"
       threadsOpen: "Threads에서 게시물 열기"
+      facebookOpen: "Facebook에서 게시물 열기"
       instagramOpen: "Instagram에서 게시물 열기"
       tiktokAccountFormat: "@%s 계정 열기"
     titles:

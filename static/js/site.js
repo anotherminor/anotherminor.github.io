@@ -1,6 +1,6 @@
 window.addEventListener('DOMContentLoaded', () => {
   const copyResetDelay = 2000;
-  const threadsHeightBuffer = 26;
+  const threadsHeightBuffer = 40;
   const copyResetTimers = new WeakMap();
 
   const isExternalHref = (href) => {
@@ -130,7 +130,7 @@ window.addEventListener('DOMContentLoaded', () => {
         if (wrap instanceof HTMLElement) {
           wrap.dataset.threadsReady = 'true';
         }
-        frame.style.setProperty('border-radius', '28px', 'important');
+        frame.style.setProperty('border-radius', '27px', 'important');
       });
   };
 
@@ -360,7 +360,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const frames = node instanceof HTMLIFrameElement && node.closest('.social-embed--threads')
       ? [node]
       : Array.from(node.querySelectorAll('.social-embed--threads iframe'));
-    frames.forEach((f) => f.style.setProperty('border-radius', '16px', 'important'));
+    frames.forEach((f) => f.style.setProperty('border-radius', '27px', 'important'));
   };
 
   const observer = new MutationObserver((mutations) => {

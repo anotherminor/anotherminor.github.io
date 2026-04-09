@@ -363,8 +363,9 @@ Hugo의 내부 kind 수가 아니라 사용자 화면 유형 기준이다.
 
 - 본문에서는 URL 또는 영상 ID만 넘기는 한 줄 호출을 기본으로 한다.
 - 세로형(`youtube-shorts`, `tiktok`)은 shortcode 내부에서 9:16 포트레이트 래퍼를 적용한다.
-- Instagram / TikTok / Facebook은 `embed.js` 없이 직접 iframe을 구성한다. Instagram은 iframe이 보내는 `MEASURE` postMessage로 높이를 자동 조정한다.
-- 스크립트 기반 플랫폼(X / Threads)은 페이지당 스크립트를 1회만 로드한다.
+- Instagram / TikTok / X는 직접 iframe을 구성한다. Instagram은 iframe이 보내는 `MEASURE` postMessage로 높이를 자동 조정한다.
+- Threads는 `blockquote.text-post-media`와 공식 `embed.js`를 사용하고, iframe 생성 후 postMessage로 높이를 자동 조정한다.
+- Facebook은 `fb-post + SDK`를 우선 시도하고, 실패 시 같은 블록 안의 직접 iframe fallback으로 내려간다.
 - 임베드 실패·지연 시 사용자 친화적 링크 폴백 문구를 출력한다.
 - 필요 시 raw HTML 임베드도 계속 허용한다 (예외 케이스 대응).
 - YouTube URL에 `t=` / `start=` / `end=`가 있으면 embed 재생 구간으로 반영한다.

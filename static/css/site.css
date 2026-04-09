@@ -1528,12 +1528,24 @@ h6 {
   border-radius: 0;
 }
 
+/* Inline code needs to reserve its visual width in normal flow.
+   transform-based inverse scaling looked cleaner on paper but caused line-start
+   overlap where the enlarged code box could cover following text. We keep zoom
+   here intentionally because it scales both paint and layout width together.
+   On engines without zoom support, falling back to the compressed body scale is
+   preferable to reintroducing text collision. */
 .post-detail .prose-body p code,
 .post-detail .prose-body li code {
   display: inline-block;
   vertical-align: baseline;
-  transform: scaleX(calc(1 / var(--body-scale-x)));
-  transform-origin: left center;
+  zoom: calc(1 / var(--body-scale-x));
+}
+
+@supports not (zoom: 1) {
+  .post-detail .prose-body p code,
+  .post-detail .prose-body li code {
+    transform: none;
+  }
 }
 
 .prose-body a {
@@ -2405,7 +2417,7 @@ h6 {
   width: calc(100% - 2px);
   min-width: 270px;
   border: none;
-  border-radius: 16px !important;
+  border-radius: 27px !important;
   display: block;
   background: transparent;
 }
@@ -2438,11 +2450,6 @@ h6 {
   margin: 0 auto;
 }
 
-.social-embed--facebook .social-embed__script-wrap {
-  display: flex;
-  justify-content: center;
-}
-
 .social-embed--twitter {
   display: flex;
   justify-content: center;
@@ -2473,12 +2480,31 @@ h6 {
   box-shadow: none;
 }
 
-.social-embed--facebook iframe {
+.social-embed--facebook .fb-post,
+.social-embed--facebook .fb-post > span,
+.social-embed--facebook .fb-post iframe,
+.social-embed--facebook .fb_iframe_widget,
+.social-embed--facebook .fb_iframe_widget > span,
+.social-embed--facebook .fb_iframe_widget iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.social-embed--facebook .social-embed__fallback-frame {
   width: 100%;
-  min-height: 440px;
+  min-height: 760px;
   border: 0;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 2px;
+  box-shadow: none;
+  background: var(--surface-strong);
+}
+
+.social-embed--facebook .fb_iframe_widget iframe,
+.social-embed--facebook .fb-post iframe {
+  border: 0;
+  overflow: hidden;
+  border-radius: 2px;
   box-shadow: none;
   background: var(--surface-strong);
 }

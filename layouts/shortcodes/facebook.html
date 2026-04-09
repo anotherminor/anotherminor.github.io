@@ -7,22 +7,114 @@
 {{- if not $url -}}
   {{- errorf "facebook shortcode requires a post url (%s)" .Position -}}
 {{- end -}}
-{{- $width := "500" -}}
+{{- $width := "680" -}}
 {{- if .IsNamedParams -}}
   {{- with .Get "width" }}{{ $width = printf "%v" . }}{{ end -}}
 {{- else -}}
   {{- with .Get 1 }}{{ $width = printf "%v" . }}{{ end -}}
 {{- end -}}
 {{- $caption := .Get "caption" -}}
-{{- $titles := .Site.Params.socialEmbeds.titles -}}
-{{- $title := default "Facebook 게시물" $titles.facebook -}}
+{{- $fallback := .Site.Params.socialEmbeds.fallback -}}
+{{- $loadingLabel := default "소셜 임베드를 불러오는 중입니다." $fallback.loading -}}
+{{- $openLabel := default "Facebook에서 게시물 열기" $fallback.facebookOpen -}}
+{{- $scriptKey := "social_embed_facebook_sdk" -}}
+{{- $needsScript := not (.Page.Scratch.Get $scriptKey) -}}
+{{- if $needsScript }}{{- .Page.Scratch.Set $scriptKey true -}}{{- end -}}
 <div class="social-embed social-embed--script social-embed--facebook">
   <div class="social-embed__script-wrap">
+    <div
+      class="fb-post"
+      data-href="{{ $url }}"
+      data-width="{{ $width }}"
+      data-show-text="true"
+      data-pagefind-ignore></div>
     <iframe
-      title="{{ $title }}"
+      class="social-embed__fallback-frame"
+      title="Facebook 게시물"
       loading="lazy"
       allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-      src="https://www.facebook.com/plugins/post.php?href={{ $url | urlquery }}&show_text=true&width={{ $width | safeURL }}"></iframe>
+      scrolling="no"
+      height="760"
+      src="https://www.facebook.com/plugins/post.php?href={{ $url | urlquery }}&show_text=true&width={{ $width | safeURL }}"
+      data-pagefind-ignore
+      hidden></iframe>
   </div>
+  <p class="social-embed__assist">{{ $loadingLabel }} <a href="{{ $url }}" target="_blank" rel="noopener noreferrer">{{ $openLabel }}</a></p>
   {{- with $caption }}<p class="embed-caption">{{ . | markdownify }}</p>{{ end -}}
 </div>
+<script>
+  (function() {
+    var embed = document.currentScript && document.currentScript.previousElementSibling;
+    if (!(embed instanceof HTMLElement)) return;
+
+    var wrap = embed.querySelector('.social-embed__script-wrap');
+    var assist = embed.querySelector('.social-embed__assist');
+    var fallbackFrame = embed.querySelector('.social-embed__fallback-frame');
+
+    function getSdkIframe() {
+      var frame = embed.querySelector('.fb_iframe_widget iframe, .fb_iframe_widget_fluid iframe, .fb-post iframe');
+      if (!(frame instanceof HTMLIFrameElement)) return null;
+      var rect = frame.getBoundingClientRect();
+      if (rect.width < 40 || rect.height < 40) return null;
+      return frame;
+    }
+
+    function syncState() {
+      if (!(assist instanceof HTMLElement) || !(fallbackFrame instanceof HTMLIFrameElement)) return;
+      var sdkFrame = getSdkIframe();
+      if (sdkFrame) {
+        assist.hidden = true;
+        fallbackFrame.hidden = true;
+        return;
+      }
+      assist.hidden = false;
+    }
+
+    function revealIframeFallback() {
+      if (!(assist instanceof HTMLElement) || !(fallbackFrame instanceof HTMLIFrameElement)) return;
+      if (getSdkIframe()) return;
+      fallbackFrame.hidden = false;
+      assist.hidden = true;
+    }
+
+    function parseSdkEmbed() {
+      if (!wrap || !window.FB || !window.FB.XFBML || typeof window.FB.XFBML.parse !== 'function') return;
+      window.FB.XFBML.parse(wrap);
+    }
+
+    syncState();
+
+    if (typeof MutationObserver !== 'undefined') {
+      var observer = new MutationObserver(syncState);
+      observer.observe(embed, { childList: true, subtree: true });
+    }
+
+    if (window.FB && window.FB.XFBML && typeof window.FB.XFBML.parse === 'function') {
+      parseSdkEmbed();
+    } else {
+      window.__minorupdatesFacebookQueue = window.__minorupdatesFacebookQueue || [];
+      window.__minorupdatesFacebookQueue.push(parseSdkEmbed);
+    }
+
+    window.setTimeout(revealIframeFallback, 1200);
+    window.setTimeout(revealIframeFallback, 2600);
+  })();
+</script>
+{{- if $needsScript -}}
+<div id="fb-root"></div>
+<script>
+  window.fbAsyncInit = (function(previousInit) {
+    return function() {
+      if (typeof previousInit === 'function') previousInit();
+      var queue = window.__minorupdatesFacebookQueue || [];
+      queue.forEach(function(run) {
+        try {
+          run();
+        } catch {}
+      });
+      window.__minorupdatesFacebookQueue = [];
+    };
+  })(window.fbAsyncInit);
+</script>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/ko_KR/sdk.js#xfbml=1&version=v18.0"></script>
+{{- end -}}

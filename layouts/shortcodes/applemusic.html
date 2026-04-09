@@ -16,7 +16,7 @@
 {{- if .IsNamedParams -}}
   {{- $title = default $title (.Get "title") -}}
 {{- end -}}
-{{- $height := "450px" -}}
+{{- $height := cond (or (in $src "/song/") (and (in $src "/album/") (in $src "?i="))) "150px" "450px" -}}
 {{- with .Get "height" -}}
   {{- $height = printf "%v" . -}}
 {{- end -}}
