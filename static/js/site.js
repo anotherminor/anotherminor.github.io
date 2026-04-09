@@ -275,6 +275,13 @@ window.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('message', adjustInstagramIframeHeight);
   window.addEventListener('message', adjustTwitterIframeHeight);
 
+  const twitterDarkMq = window.matchMedia('(prefers-color-scheme: dark)');
+  document.querySelectorAll('.social-embed--twitter iframe').forEach((frame) => {
+    const url = new URL(frame.src);
+    url.searchParams.set('theme', twitterDarkMq.matches ? 'dark' : 'light');
+    frame.src = url.toString();
+  });
+
   document.addEventListener('click', (event) => {
     const target = event.target;
     if (!(target instanceof Element)) return;

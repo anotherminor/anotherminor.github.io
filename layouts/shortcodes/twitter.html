@@ -12,7 +12,7 @@
 <div class="social-embed social-embed--twitter">
   {{- $origin := .Site.BaseURL | strings.TrimSuffix "/" -}}
   <iframe
-    src="https://platform.twitter.com/embed/Tweet.html?id={{ $tweetID }}&dnt=true&widgetId=tw-{{ $tweetID }}&origin={{ $origin | urlize }}"
+    src="https://platform.twitter.com/embed/Tweet.html?id={{ $tweetID }}&dnt=true&widgetId=tw-{{ $tweetID }}&origin={{ $origin | urlquery }}"
     title="X (Twitter) 게시물"
     allowfullscreen
     loading="lazy"
