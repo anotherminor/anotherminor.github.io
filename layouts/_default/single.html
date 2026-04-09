@@ -39,10 +39,19 @@
 {{ end }}
 
 {{ partial "interactions.html" . }}
+{{ else if $isAbout }}
+<article class="post-detail">
+  <header class="post-detail__header" data-pagefind-ignore>
+    <h1 class="post-detail__title">{{ .Title }}</h1>
+  </header>
+  <div class="post-detail__body prose-body">
+    {{ .Content }}
+  </div>
+</article>
 {{ else }}
 <article class="page-article">
-  <header class="page-hero {{ if eq .Section `about` }}page-hero--about{{ end }}" data-pagefind-ignore>
-    <p class="page-hero__eyebrow">{{ if $isAbout }}about{{ else }}page{{ end }}</p>
+  <header class="page-hero" data-pagefind-ignore>
+    <p class="page-hero__eyebrow">page</p>
     <h1 class="page-hero__title">{{ .Title }}</h1>
     {{ with .Params.summary }}<p class="page-hero__lede">{{ . }}</p>{{ end }}
   </header>

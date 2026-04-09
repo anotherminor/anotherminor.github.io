@@ -90,6 +90,33 @@ window.addEventListener('DOMContentLoaded', () => {
       });
   };
 
+  const adjustInstagramIframeHeight = (event) => {
+    if (event.origin !== 'https://www.instagram.com') return;
+
+    let payload = event.data;
+    if (typeof payload === 'string') {
+      try {
+        payload = JSON.parse(payload);
+      } catch {
+        return;
+      }
+    }
+
+    if (!payload || payload.type !== 'MEASURE') return;
+
+    const nextHeight = payload.details && Number(payload.details.height);
+    if (!nextHeight || !Number.isFinite(nextHeight)) return;
+
+    document
+      .querySelectorAll('.social-embed--instagram iframe')
+      .forEach((frame) => {
+        if (!(frame instanceof HTMLIFrameElement)) return;
+        if (frame.contentWindow !== event.source) return;
+
+        frame.style.height = `${nextHeight}px`;
+      });
+  };
+
   const copyWithFallback = async (text) => {
     if (navigator.clipboard?.writeText) {
       try {
@@ -174,6 +201,7 @@ window.addEventListener('DOMContentLoaded', () => {
   enhanceLinksIn(document);
   initializeThreadsEmbeds(document);
   window.addEventListener('message', adjustThreadsIframeHeight);
+  window.addEventListener('message', adjustInstagramIframeHeight);
 
   document.addEventListener('click', (event) => {
     const target = event.target;

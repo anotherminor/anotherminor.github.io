@@ -8,7 +8,6 @@
 {{ $classes := slice (printf "kind-%s" .Kind) }}
 {{ if .IsHome }}{{ $classes = $classes | append "page-home" }}{{ end }}
 {{ if eq .Kind "term" }}{{ $classes = $classes | append (printf "taxonomy-%s" (.Data.Plural | urlize)) }}{{ end }}
-{{ if and (eq .Kind "page") (eq .Section "about") }}{{ $classes = $classes | append "page-about" }}{{ end }}
 {{ if and (eq .Kind "page") (eq .Section "search") }}{{ $classes = $classes | append "page-search" }}{{ end }}
 {{ if and (eq .Kind "page") (eq .Section "archive") }}{{ $classes = $classes | append "page-archive" }}{{ end }}
 {{ if eq .Kind "404" }}{{ $classes = $classes | append "page-404" }}{{ end }}

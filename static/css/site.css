@@ -398,20 +398,6 @@ h6 {
   display: none;
 }
 
-.page-hero--about {
-  text-align: center;
-}
-
-.page-hero--about .page-hero__lede {
-  margin-inline: auto;
-  transform-origin: center top;
-}
-
-.page-hero--about .page-hero__title {
-  transform-origin: center top;
-}
-
-.page-hero--about::before,
 .page-hero--archive::before,
 .error-stage::before {
   display: none;
@@ -459,7 +445,6 @@ h6 {
 
 .page-archive .page-hero,
 .page-search .page-hero,
-.page-about .page-hero,
 .taxonomy-formats .page-hero {
   background: none;
 }
@@ -1590,15 +1575,6 @@ h6 {
   gap: 0.5rem;
 }
 
-.page-hero--about {
-  text-align: center;
-  margin-bottom: 1.35rem;
-}
-
-.page-hero--about .page-hero__title {
-  font-style: italic;
-}
-
 .page-article__body {
   margin-top: 2rem;
   padding: 1.25rem 1.35rem;
@@ -1606,30 +1582,6 @@ h6 {
   border-radius: 0;
   background: none;
   box-shadow: none;
-}
-
-.page-about .page-article__body {
-  max-width: 44rem;
-  margin-inline: auto;
-}
-
-.page-about .page-article__body blockquote {
-  border-left-width: 4px;
-  background:
-    linear-gradient(135deg, color-mix(in oklch, var(--accent) 7%, transparent) 0%, transparent 58%),
-    var(--bg-soft);
-  border-radius: 0;
-  padding: 0.8rem 1rem;
-}
-
-.page-about .page-article__body ul,
-.page-about .page-article__body ol {
-  display: grid;
-  gap: 0.35rem;
-}
-
-.page-about .page-article__body li::marker {
-  color: var(--accent-strong);
 }
 
 /* ── interactions (views · likes · comments) ── */
@@ -2427,7 +2379,6 @@ h6 {
 .social-embed--instagram iframe {
   width: 100%;
   min-height: 540px;
-  height: 700px;
   border: 0;
   display: block;
   overflow: hidden;
