@@ -56,6 +56,7 @@ params:
       instagramOpen: "Instagram에서 게시물 열기"
       tiktokAccountFormat: "@%s 계정 열기"
     titles:
+      applemusic: "Apple Music 플레이어"
       facebook: "Facebook 게시물"
       youtube: "YouTube 동영상"
       youtubeShorts: "YouTube Shorts"

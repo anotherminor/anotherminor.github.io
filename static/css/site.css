@@ -2445,6 +2445,20 @@ h6 {
   background: var(--surface-strong);
 }
 
+.social-embed--applemusic .social-embed__frame {
+  max-width: 660px;
+  aspect-ratio: auto;
+  background: transparent;
+}
+
+.social-embed--applemusic iframe {
+  width: 100%;
+  height: var(--applemusic-embed-height, 450px);
+  min-height: var(--applemusic-embed-height, 450px);
+  border: 0;
+  background: transparent;
+}
+
 /* ==============================================
    Responsive breakpoints
    ============================================== */

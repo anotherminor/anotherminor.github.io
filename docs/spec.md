@@ -5,7 +5,7 @@
 ## 1. 문서 목적 / 범위 / 독자
 
 - 목적: 초기 구축, 운영, 수정, 이주 시 기준이 되는 명세를 고정한다.
-- 범위: v1 구축 범위 + v1.1 후보(후속 개선 메모)까지 포함한다.
+- 범위: 현재 구축 범위와 후속 개선 메모까지 포함한다.
 - 독자: 본인, 에이전트, 외주 구현자(대화 로그 없이도 실행 가능해야 함).
 
 ## 2. 목표와 원칙
@@ -251,6 +251,27 @@ slug: "english-slug"
 `generate-tag-pages`는 `prebuild` 훅을 통해 Hugo 빌드 직전 자동 실행된다.
 로컬에서도 `npm run generate-tags`로 독립 실행 가능하다.
 
+**현재 검증 절차**
+
+1. `npm run generate-tags`
+   - `tag-map.json`이 잘못된 JSON이면 즉시 실패한다.
+   - 비-draft 포스트의 `tags`를 읽어 `표시 이름 ↔ slug` 매핑이 성립하는지 확인한다.
+   - 매핑 누락, `__TODO__` 대기 태그, slug 충돌은 stderr 경고로만 알리고 종료 코드는 0을 유지한다.
+   - 즉 현재 자동 차단이 되는 것은 JSON 파싱 오류 같은 치명 오류뿐이고, 대부분의 태그 번역 이상은 사람이 로그를 읽어 확인해야 한다.
+2. 필요 시 `npm run migrate-tags`
+   - 포스트 front matter에 한국어 표시 이름이 들어간 경우 slug로 일괄 변환하는 교정 도구다.
+   - 검증 도구가 아니라 수정 도구이므로, 정상 운영 루틴의 필수 단계는 아니다.
+3. `npm run validate:content`
+   - `tags`가 배열인지 같은 front matter 계약만 검사한다.
+   - 각 태그가 `tag-map.json`에 등록돼 있는지, `content/tags/<slug>/_index.md`가 생성 가능한지, `generate-tags` 경고가 있었는지까지는 검사하지 않는다.
+4. push 후 GitHub Actions
+   - 현재 배포 워크플로우는 `npm run generate-tags`와 Hugo 빌드만 자동 실행한다.
+   - 따라서 태그 번역 관련 자동 재검증은 존재하지만, 경고를 실패로 승격하는 품질 게이트는 아직 없다.
+
+**현재 누락된 자동 검증 범위**
+
+현재 운영 기준에서 빠져 있는 자동 검증은 세 가지다. 첫째, 매핑 누락이나 slug 충돌이 있어도 CI가 실패하지 않는다. 둘째, draft 포스트는 `generate-tags` 대상에서 제외되므로 발행 직전까지 태그 번역 문제가 숨어 있을 수 있다. 셋째, `validate-content.rb`는 태그 배열의 형태만 보며 태그 매핑 정합성은 보지 않는다. 따라서 태그를 수정한 글은 발행 전에 반드시 `npm run generate-tags` 로그를 직접 확인해야 한다.
+
 ### 5.7 콘텐츠 유효성 검사 (`validate-content.rb`)
 
 `scripts/validate-content.rb`는 `content/posts/` 하위 모든 `index.md`의 YAML 프론트매터를 검사하는 Ruby 스크립트다.
@@ -279,7 +300,7 @@ npm run validate:content
 
 **CI 연동**
 
-GitHub Actions 배포 워크플로우의 prebuild 단계에서 자동 실행된다. 검사 실패 시 빌드가 중단된다.
+현재 GitHub Actions 배포 워크플로우에는 연결돼 있지 않다. 즉 이 검사는 로컬 발행 루틴의 수동 점검 단계이며, 아직 CI 품질 게이트로 동작하지 않는다.
 
 ## 6. URL / 분류 / 페이지 정책
 
@@ -369,6 +390,7 @@ Hugo taxonomy 사용 시 기본적으로 taxonomy list(`/tags/`)와 term page(`/
 - `twitter`
 - `threads`
 - `facebook`
+- `applemusic`
 - `vimeo`
 
 작성 원칙:
@@ -379,7 +401,10 @@ Hugo taxonomy 사용 시 기본적으로 taxonomy list(`/tags/`)와 term page(`/
 - 임베드 실패/지연 시 사용자 친화적 링크 폴백 문구를 출력
 - 필요 시 raw HTML 임베드는 계속 허용(예외 케이스 대응)
 - YouTube URL에 `t=` `start=` `end=`가 있으면 shortcode가 이를 embed 재생 구간으로 반영
-- Instagram URL에 `index=`가 있으면 shortcode 내부에서 `img_index=`로 정규화해 전달
+- Instagram 캐러셀 게시물은 `img_index=`를 사용해 원하는 슬라이드 번호를 지정하며, 예를 들어 `img_index=2`면 두 번째 슬라이드를 연 상태로 embed가 렌더링되어야 한다
+- Apple Music은 Apple Music 웹의 `Copy Embed Code`에서 얻은 공식 embed `src`(`https://embed.music.apple.com/...`)만 shortcode 입력으로 사용하고, 일반 `music.apple.com/...` 공유 URL을 shortcode가 임의로 변환하지 않는다
+
+같은 raw HTML 허용 범위 안에서 본문 접힘 UI가 필요할 때는 HTML 표준 태그인 `details`와 `summary`를 직접 사용할 수 있다. 이 경우는 Hugo 전용 문법이 아니라 브라우저 기본 기능을 쓰는 것이므로 이식성을 크게 해치지 않는다. 다만 접힘은 긴 부연 설명, 보충 메모, 스포일러처럼 처음부터 모두 보일 필요가 없는 내용에 한해 제한적으로 사용하고, 글의 핵심 문장을 숨기는 용도로 남용하지 않는다.
 
 예시(본문):
 
@@ -389,10 +414,11 @@ Hugo taxonomy 사용 시 기본적으로 taxonomy list(`/tags/`)와 term page(`/
 {{< youtube url="https://www.youtube.com/watch?v=..." start="90" end="122" >}}
 {{< youtube-shorts "https://www.youtube.com/shorts/..." >}}
 {{< tiktok "https://www.tiktok.com/@user/video/..." >}}
-{{< instagram "https://www.instagram.com/p/.../?index=2" >}}
+{{< instagram "https://www.instagram.com/p/.../?img_index=2" >}}
 {{< twitter "https://twitter.com/.../status/..." >}}
 {{< threads "https://www.threads.net/@.../post/..." >}}
 {{< facebook "https://www.facebook.com/.../posts/..." >}}
+{{< applemusic "https://embed.music.apple.com/kr/album/...?...">}}
 {{< vimeo "https://vimeo.com/..." >}}
 ```
 
@@ -620,7 +646,7 @@ GitHub Pages 제약:
 3. 배포 후 이전/신규 URL 모두 확인 (alias HTML 동작 확인)
 4. 서버 측 301이 꼭 필요한 경우, 호스트/프록시 전략을 별도 검토
 
-### 9.3 후속 개선 (v1.1 후보)
+### 9.3 후속 개선 메모
 
 - Hugo `.Aliases` 기반 alias 운영 자동 점검(또는 향후 호스트 변경 시 리다이렉트 규칙 생성) 검토
 
@@ -633,14 +659,17 @@ GitHub Pages 제약:
 2. Obsidian 혹은 유사 노트 앱에서 `index.md` 작성
 3. `slug` 입력 (공개 URL용)
 4. 이미지가 있으면 `images/`에 저장하고 상대경로로 참조
-5. 로컬 미리보기 확인
-6. 로컬 콘텐츠 검증 실행 (`npm run validate:content`)
-7. 커밋/푸시 → GitHub Actions 배포 확인 → merge
+5. 태그를 추가하거나 수정했다면 `npm run generate-tags` 실행
+6. 출력 로그에서 매핑 누락/slug 충돌 경고가 없는지 확인
+7. 로컬 미리보기 확인
+8. 로컬 콘텐츠 검증 실행 (`npm run validate:content`)
+9. 커밋/푸시 → GitHub Actions 배포 확인 → merge
 
 ### 10.2 발행
 
 - `draft: false`로 변경 전/직후 로컬에서 `npm run validate:content`로 front matter 계약 위반 여부를 점검
-- 이후 merge → 자동 배포
+- 태그를 건드린 글이라면 같은 시점에 `npm run generate-tags`를 다시 실행해 경고 로그 유무를 확인
+- 이후 merge → GitHub Actions가 `npm run generate-tags`와 Hugo 빌드를 자동 재실행
 
 ### 10.3 수정/정정
 
@@ -695,12 +724,40 @@ GitHub Pages 제약:
 
 현재 본문 이미지의 표시 규칙은 실제 본문 컨테이너인 `.prose-body img`를 기준으로 고정한다. 이미지는 `width: auto`, `max-width: 100%`, `height: auto`를 사용해 원본 비율을 유지한 채 본문 폭을 넘지 않도록 표시한다. 따라서 가로로 긴 이미지는 필요할 때만 본문 폭 안으로 축소되고, 원본 폭이 더 작으면 억지로 늘리지 않는다. 세로로 긴 이미지는 `max-height: 480px` 제한을 적용해 화면을 과도하게 차지하지 않도록 한다. 이미지는 블록 요소로 가운데 정렬하며, 이미지 자체 여백은 `margin: 0 auto`로 두고 문단 간 세로 여백은 이미지 문단 규칙이 관리한다.
 
+### 10.7 본문 접힘(`details` / `summary`) 규칙
+
+기본 마크다운 문법에는 접기/펼치기 전용 문법이 없으므로, 본문에서 해당 UI가 필요하면 HTML의 `details`와 `summary` 태그를 사용한다. 이 규칙의 전제 조건은 `hugo.yaml`에서 raw HTML 렌더링이 허용되어 있어야 한다는 점이며, 현재 블로그 설정은 이를 충족한다.
+
+`details`는 접히고 펼쳐지는 전체 영역이고, `summary`는 사용자가 눌러 여닫는 제목 줄이다. 따라서 접힘 블록을 쓸 때는 `summary`를 반드시 첫 줄에 두고, 실제 숨길 문단은 그 아래에 일반 문단처럼 작성한다. 접힘 영역 안에도 일반 마크다운 문단을 쓸 수 있지만, 핵심 본문을 통째로 숨기기보다는 읽기 흐름을 방해하지 않는 보조 정보에만 사용하는 것을 원칙으로 한다.
+
+예를 들어 아래처럼 쓰면 제목 줄만 먼저 보이고, 클릭 시 숨겨둔 문단이 나타나야 한다.
+
+```md
+<details>
+<summary>숨겨둔 문단 열어보기</summary>
+
+이 문단은 처음에는 접혀 있다가 제목 줄을 누르면 펼쳐진다.
+
+</details>
+```
+
+이 패턴의 렌더링 전제는 다음과 같다.
+
+```html
+<details>
+  <summary>숨겨둔 문단 열어보기</summary>
+  <p>이 문단은 처음에는 접혀 있다가 제목 줄을 누르면 펼쳐진다.</p>
+</details>
+```
+
+작성자는 접힘 기능이 순수 마크다운이 아니라 HTML 삽입이라는 점을 이해해야 하며, `summary` 문구만 보고도 사용자가 안의 내용을 짐작할 수 있게 짧고 분명하게 써야 한다. 접힘 영역의 위아래 여백은 일반 문단 흐름을 크게 해치지 않아야 하며, 향후 CSS에서 별도 스타일을 추가하더라도 기본 동작은 브라우저 표준을 유지한다.
+
 ## 11. 리스크 가드레일
 
 ### 11.1 GitHub Pages / GitHub Actions 운영 리스크 (요약)
 
 - GitHub Actions 실행 시간/분량, GitHub Pages 배포 제약을 고려해야 함
-- v1에서는 순수 정적 사이트 + GitHub Pages 표준 배포를 유지
+- 현재 운영 기준은 순수 정적 사이트 + GitHub Pages 표준 배포를 유지하는 것이다.
 - 파일/미디어 증가 속도 관리 필요
 - 프로젝트 사이트 URL은 repo 경로(`/<repo>/`)를 포함하므로, 템플릿/자산 경로는 `baseURL`을 기준으로 생성해야 함
 
@@ -726,26 +783,33 @@ GitHub Pages 제약:
 
 ## 12. 테스트 / 검증 시나리오
 
-### 12.1 taxonomy disable + 빌드 로그 안정성
+### 12.1 태그 번역 검증
+
+- `scripts/tag-map.json`에 등록된 slug를 비-draft 포스트에 추가한 뒤 `npm run generate-tags` 실행 시, 해당 slug의 `content/tags/<slug>/_index.md`가 없으면 자동 생성되는지 확인
+- 포스트에 `tag-map.json`에 없는 태그를 넣었을 때 `generate-tags`가 경고를 출력하지만 종료 코드는 0으로 유지되는지 확인
+- `draft: true` 포스트의 태그는 `generate-tags` 수집 대상에서 제외되는지 확인
+- `npm run validate:content`는 `tags` 배열 타입 오류는 잡지만, 태그 매핑 누락은 잡지 않는지 확인
+
+### 12.2 taxonomy disable + 빌드 로그 안정성
 
 - `disableKinds: [taxonomy]` 적용 후 빌드 성공
 - `ignoreErrors: ["error-disable-taxonomy"]` 적용 상태에서 GitHub Actions 빌드 성공
 - `/categories/`, `/tags/`, `/formats/` 미생성 확인
 - `/categories/<term>/`, `/tags/<term>/`, `/formats/<term>/` 생성 유지 확인
 
-### 12.2 baseURL / canonical / 절대 URL
+### 12.3 baseURL / canonical / 절대 URL
 
 - 사용자 사이트 기본 배포 시 `https://anotherminor.github.io/` 기준 canonical/절대 URL 생성 확인
 - 커스텀 도메인 도입 후 `SITE_BASE_URL` 기준 canonical 생성값 확인
 - RSS/sitemap 절대 URL 정합성 확인
 
-### 12.3 Pagefind 검색 인덱싱
+### 12.4 Pagefind 검색 인덱싱
 
 - `public/posts/**/*.html`만 인덱싱되는지 확인
 - 로컬 검증 전 `public/` 잔여 산출물 정리(`--cleanDestinationDir` 포함 빌드) 상태 확인
 - 홈/카테고리/태그/아카이브가 검색 결과에 섞이지 않는지 확인
 
-### 12.4 이미지 캡션 빈 줄 규칙 검증
+### 12.5 이미지 캡션 빈 줄 규칙 검증
 
 - 이미지 다음 줄에 텍스트를 붙여 쓴 경우, 빌드 결과가 하나의 `<p>` 안에 이미지와 텍스트를 함께 포함하는지 확인
 - 위 패턴이 화면에서 작은 보조 텍스트 크기, 낮은 대비, 가운데 정렬의 캡션처럼 보이는지 확인
@@ -756,7 +820,14 @@ GitHub Pages 제약:
 - 동일 글이 목록/상세로 중복 검색되지 않는지 확인
 - interactions 댓글 내용이 검색 결과에 섞이지 않는지 확인
 
-### 12.5 상호작용(Supabase)
+### 12.6 본문 접힘(`details` / `summary`) 규칙 검증
+
+- `details`와 `summary`를 직접 입력한 본문이 빌드 후에도 태그 형태로 유지되는지 확인
+- 초기 렌더링에서 `summary` 문구만 먼저 보이고, 접힘 영역 본문은 기본적으로 닫힌 상태인지 확인
+- `summary`를 눌렀을 때 접힘 영역의 문단이 펼쳐지고 다시 눌렀을 때 정상적으로 접히는지 확인
+- 접힘 블록 전후의 문단 여백과 줄간격이 일반 본문 흐름을 과도하게 깨지 않는지 확인
+
+### 12.7 상호작용(Supabase)
 
 - 상호작용 바 렌더링 정상 동작 (`params.supabase.enabled`, `url`, `anonKey`, `edgeFunctionUrl` 설정 기준)
 - 조회수 RPC(`increment_views`) 호출 시 count가 생성 또는 증가하고 화면에 반영되는지 확인
@@ -765,23 +836,24 @@ GitHub Pages 제약:
 - 댓글 삭제 Edge Function이 비밀번호 검증 성공 시 삭제, 실패 시 403 메시지를 반환하는지 확인
 - 포스트 permalink 기준으로 조회수·좋아요·댓글이 분리되는지 확인
 
-### 12.6 리다이렉트
+### 12.8 리다이렉트
 
 - `aliases`만 추가 시 alias HTML 기반 이동 동작 확인
 - `slug` 변경 + `aliases` 추가 조합에서 이전 URL 이동 동작 확인
 - (선택) 커스텀 도메인/프록시 도입 시 서버 측 리다이렉트 정책 별도 검증
 
-### 12.7 빌드 재현성
+### 12.9 빌드 재현성
 
 - `npm ci` 후 빌드 성공
 - lockfile 유지 상태 재빌드 일관성 확인
 - GitHub Actions 배포 결과와 로컬 빌드 결과 핵심 동작 동일성 확인
 
-## 13. 후속 작업 (v1.1+)
+## 13. 후속 작업
 
 - Hugo `.Aliases` 기반 alias 점검 자동화 (또는 향후 호스트 전환 대비 리다이렉트 규칙 생성)
 - 이미지 처리 자동화(Hugo image processing / render hook)
-- ~~로컬 콘텐츠 검증 스크립트의 CI 품질 게이트 연동~~ → 완료 (5.7 참고)
+- 로컬 콘텐츠 검증 스크립트의 CI 품질 게이트 연동 (`npm run validate:content`)
+- 태그 매핑 누락/slug 충돌을 CI 실패로 승격하는 검증 추가
 - 검색 UI 커스터마이징 (필요 시)
 
 ## 14. 렌더링·검색·링크로그·페이지 설계 가이드
