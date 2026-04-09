@@ -51,8 +51,6 @@
   --hero-title-font: 700 var(--entry-title-size) / 1.5 "YesMyungjo", serif;
   --title-scale-x: 0.9;
   --title-scale-width: calc(100% / var(--title-scale-x));
-  --body-scale-x: 0.95;
-  --body-scale-width: calc(100% / var(--body-scale-x));
   --header-body-space: 1.5rem;
   --header-internal-gap: 0.5rem;
 }
@@ -252,9 +250,6 @@ h6 {
   font-size: 0.82rem;
   text-align: right;
   letter-spacing: -0.02em;
-  transform: scaleX(var(--body-scale-x));
-  transform-origin: right top;
-  width: calc(100% / var(--body-scale-x));
 }
 
 .site-nav {
@@ -428,19 +423,6 @@ h6 {
   transform: scaleX(var(--title-scale-x));
   transform-origin: left top;
   width: var(--title-scale-width);
-}
-
-.page-hero__lede,
-.entry-summary__snippet,
-.format-card__summary,
-.prose-body p,
-.prose-body li,
-.prose-body figcaption,
-.search-shell__lede,
-#search .pagefind-ui__result-excerpt {
-  transform: scaleX(var(--body-scale-x));
-  transform-origin: left top;
-  width: var(--body-scale-width);
 }
 
 .page-hero__title,
@@ -912,18 +894,11 @@ h6 {
   white-space: nowrap;
   color: inherit;
   text-decoration: none;
-  transform: scaleX(var(--title-scale-x));
-  transform-origin: left top;
   transition: color 180ms ease;
 }
 
 .archive-item__domain:hover {
   color: var(--accent-strong);
-}
-
-.archive-item--link .archive-item__title,
-.archive-item--link .archive-item__domain {
-  transform: none;
 }
 
 .archive-item__meta {
@@ -1263,49 +1238,6 @@ h6 {
   padding-left: 1.25rem;
 }
 
-.post-detail .prose-body li input[type="checkbox"] {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 0.9rem;
-  height: 0.9rem;
-  margin: 0 0.55rem 0 0;
-  border: 1px solid var(--text);
-  border-radius: 0;
-  background: var(--bg);
-  color: var(--bg);
-  display: inline-grid;
-  place-content: center;
-  vertical-align: middle;
-  opacity: 1;
-  position: relative;
-  top: -0.08em;
-  transform: scaleX(calc(1 / var(--body-scale-x)));
-  transform-origin: center;
-}
-
-.post-detail .prose-body li input[type="checkbox"]::before {
-  content: "";
-  width: 0.52rem;
-  height: 0.4rem;
-  clip-path: polygon(0 55%, 14% 40%, 39% 68%, 100% 6%, 100% 26%, 39% 88%);
-  box-shadow: inset 1rem 1rem currentColor;
-  transform: scale(0);
-  transform-origin: center;
-}
-
-.post-detail .prose-body li input[type="checkbox"]:checked {
-  background: var(--text);
-  border-color: var(--text);
-}
-
-.post-detail .prose-body li input[type="checkbox"]:checked::before {
-  transform: scale(1);
-}
-
-.post-detail .prose-body li input[type="checkbox"]:disabled {
-  opacity: 1;
-}
-
 .prose-body blockquote {
   margin: 0.9rem 0 1rem;
   padding: 0.85rem 1.15rem 0.85rem 1.25rem;
@@ -1528,26 +1460,6 @@ h6 {
   border-radius: 0;
 }
 
-/* Inline code needs to reserve its visual width in normal flow.
-   transform-based inverse scaling looked cleaner on paper but caused line-start
-   overlap where the enlarged code box could cover following text. We keep zoom
-   here intentionally because it scales both paint and layout width together.
-   On engines without zoom support, falling back to the compressed body scale is
-   preferable to reintroducing text collision. */
-.post-detail .prose-body p code,
-.post-detail .prose-body li code {
-  display: inline-block;
-  vertical-align: baseline;
-  zoom: calc(1 / var(--body-scale-x));
-}
-
-@supports not (zoom: 1) {
-  .post-detail .prose-body p code,
-  .post-detail .prose-body li code {
-    transform: none;
-  }
-}
-
 .prose-body a {
   overflow-wrap: anywhere;
 }
@@ -1676,7 +1588,7 @@ h6 {
 .interactions {
   position: relative;
   z-index: 2;
-  width: min(100%, calc(var(--content-width) * var(--body-scale-x)));
+  width: min(100%, var(--content-width));
   max-width: 100%;
   margin: 2.25rem 0 0;
   padding: 1rem 0 1.15rem;
@@ -1984,9 +1896,6 @@ h6 {
   font-size: var(--font-small);
   line-height: 1.7;
   letter-spacing: -0.02em;
-  transform: scaleX(var(--body-scale-x));
-  transform-origin: left top;
-  width: calc(100% / var(--body-scale-x));
 }
 
 .search-results-shell {
@@ -2562,7 +2471,6 @@ h6 {
 
   .site-brand__desc {
     text-align: left;
-    transform-origin: left top;
   }
 
   .site-brand {
@@ -2695,7 +2603,6 @@ h6 {
 
   .search-shell__lede {
     width: 100%;
-    transform: none;
   }
 
   #search .pagefind-ui__search-input {
@@ -2706,7 +2613,6 @@ h6 {
 
   #search .pagefind-ui__result-excerpt {
     width: 100%;
-    transform: none;
   }
 
   .interactions {
