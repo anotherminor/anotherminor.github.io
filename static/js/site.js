@@ -117,6 +117,36 @@ window.addEventListener('DOMContentLoaded', () => {
       });
   };
 
+  const adjustTwitterIframeHeight = (event) => {
+    if (event.origin !== 'https://platform.twitter.com') return;
+
+    let payload = event.data;
+    if (typeof payload === 'string') {
+      try {
+        payload = JSON.parse(payload);
+      } catch {
+        return;
+      }
+    }
+
+    if (!payload || typeof payload !== 'object') return;
+
+    const embed = payload['twttr.embed'];
+    if (!embed || embed.method !== 'twttr.private.resize') return;
+
+    const params = embed.params && embed.params[0];
+    const nextHeight = params && Number(params.height);
+    if (!nextHeight || !Number.isFinite(nextHeight)) return;
+
+    document
+      .querySelectorAll('.social-embed--twitter iframe')
+      .forEach((frame) => {
+        if (!(frame instanceof HTMLIFrameElement)) return;
+        if (frame.contentWindow !== event.source) return;
+        frame.style.height = `${nextHeight}px`;
+      });
+  };
+
   const copyWithFallback = async (text) => {
     if (navigator.clipboard?.writeText) {
       try {
@@ -243,6 +273,7 @@ window.addEventListener('DOMContentLoaded', () => {
   initializeThreadsEmbeds(document);
   window.addEventListener('message', adjustThreadsIframeHeight);
   window.addEventListener('message', adjustInstagramIframeHeight);
+  window.addEventListener('message', adjustTwitterIframeHeight);
 
   document.addEventListener('click', (event) => {
     const target = event.target;

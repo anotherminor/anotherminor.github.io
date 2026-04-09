@@ -8,19 +8,17 @@
   {{- errorf "twitter shortcode requires a tweet url (%s)" .Position -}}
 {{- end -}}
 {{- $caption := .Get "caption" -}}
-{{- $fallback := .Site.Params.socialEmbeds.fallback -}}
-{{- $openLabel := default "X에서 게시물 열기" $fallback.twitterOpen -}}
-{{- $scriptKey := "social_embed_twitter_script" -}}
-{{- $needsScript := not (.Page.Scratch.Get $scriptKey) -}}
-{{- if $needsScript }}{{- .Page.Scratch.Set $scriptKey true -}}{{- end -}}
-<div class="social-embed social-embed--script social-embed--twitter">
-  <div class="social-embed__script-wrap">
-    <blockquote class="twitter-tweet" data-pagefind-ignore>
-      <a href="{{ $url }}" rel="noopener noreferrer">{{ $openLabel }}</a>
-    </blockquote>
-  </div>
+{{- $tweetID := replaceRE `^https?://(?:twitter|x)\.com/[^/]+/status/([0-9]+).*$` "$1" $url -}}
+<div class="social-embed social-embed--twitter">
+  {{- $origin := .Site.BaseURL | strings.TrimSuffix "/" -}}
+  <iframe
+    src="https://platform.twitter.com/embed/Tweet.html?id={{ $tweetID }}&dnt=true&widgetId=tw-{{ $tweetID }}&origin={{ $origin | urlize }}"
+    title="X (Twitter) 게시물"
+    allowfullscreen
+    loading="lazy"
+    scrolling="no"
+    data-tweet-id="{{ $tweetID }}"
+    data-pagefind-ignore
+  ></iframe>
   {{- with $caption }}<p class="embed-caption">{{ . | markdownify }}</p>{{ end -}}
 </div>
-{{- if $needsScript -}}
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-{{- end -}}
