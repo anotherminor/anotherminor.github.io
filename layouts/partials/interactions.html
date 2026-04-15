@@ -80,8 +80,7 @@
     var h = {
       'apikey': KEY,
       'Authorization': 'Bearer ' + KEY,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=representation'
+      'Content-Type': 'application/json'
     };
     if (extra) for (var k in extra) h[k] = extra[k];
     return h;
@@ -148,8 +147,8 @@
     });
   }
 
-  async function hashPw(pw) {
-    var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+  async function hashPw(salt, pw) {
+    var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(salt + pw));
     return Array.from(new Uint8Array(buf)).map(function (b) {
       return b.toString(16).padStart(2, '0');
     }).join('');
@@ -286,7 +285,7 @@
   commentForm.addEventListener('submit', async function (e) {
     e.preventDefault();
     var name    = document.getElementById('c-name').value.trim();
-    var pw      = document.getElementById('c-pw').value.trim();
+    var pw      = document.getElementById('c-pw').value;
     var content = document.getElementById('c-body').value.trim();
     if (!name || !pw || !content) {
       alert('이름, 비밀번호, 댓글 내용을 모두 입력해주세요.');
@@ -295,13 +294,14 @@
 
     togglePending(commentSubmit, true);
     try {
-      var password_hash = await hashPw(pw);
+      var password_salt = crypto.randomUUID();
+      var password_hash = await hashPw(password_salt, pw);
       await request(
         'comments',
         {
           method: 'POST',
           headers: headers(),
-          body: JSON.stringify({ slug: SLUG, name: name, content: content, password_hash: password_hash })
+          body: JSON.stringify({ slug: SLUG, name: name, content: content, password_hash: password_hash, password_salt: password_salt })
         },
         '댓글 등록에 실패했습니다.'
       );
@@ -332,7 +332,7 @@
   });
 
   async function submitDelete() {
-    var pw = document.getElementById('del-pw').value.trim();
+    var pw = document.getElementById('del-pw').value;
     if (!pw) { alert('비밀번호를 입력해주세요.'); return; }
     if (!deletingId) { alert('삭제할 댓글을 다시 선택해주세요.'); return; }
     if (!EDGE) { alert('삭제 기능 URL이 설정되지 않았습니다.'); return; }

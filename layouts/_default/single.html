@@ -4,10 +4,10 @@
 {{ $isAbout := or (eq .Section "about") (eq .RelPermalink "/about/") }}
 
 {{ if $isPost }}
-<article class="post-detail" data-pagefind-body>
+<article class="post-detail">
   <header class="post-detail__header">
     <p class="post-detail__eyebrow" data-pagefind-ignore>entry</p>
-    <h1 class="post-detail__title" data-pagefind-meta="title" data-pagefind-weight="0.05" data-pagefind-ignore>
+    <h1 class="post-detail__title" data-pagefind-meta="title">
       {{ if $isLink }}
       <a href="{{ .Params.external_url }}" rel="noopener noreferrer">{{ .Title }}</a>
       {{ else }}
@@ -22,7 +22,7 @@
     {{ end }}
   </header>
 
-  <div class="post-detail__body prose-body">
+  <div class="post-detail__body prose-body" data-pagefind-body>
     {{ .Content }}
   </div>
 </article>

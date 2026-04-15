@@ -45,15 +45,8 @@ window.addEventListener('DOMContentLoaded', () => {
   };
 
   const hasMeaningfulNodeContent = (node) => {
-    if (node.nodeType === Node.TEXT_NODE) {
-      return Boolean((node.textContent || '').trim());
-    }
-
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      return Boolean((node.textContent || '').trim());
-    }
-
-    return false;
+    if (node.nodeType !== Node.TEXT_NODE && node.nodeType !== Node.ELEMENT_NODE) return false;
+    return Boolean((node.textContent || '').trim());
   };
 
   const normalizeProseMedia = (root = document) => {
@@ -262,7 +255,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const totalMinutes = Math.floor(diffMs / (60 * 1000));
       const hours = Math.floor(totalMinutes / 60);
       const minutes = totalMinutes % 60;
-      element.textContent = `${hours}시간 ${minutes}분 전`;
+      element.textContent = hours > 0 ? `${hours}시간 ${minutes}분 전` : `${minutes}분 전`;
     });
   };
 
@@ -336,11 +329,20 @@ window.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('message', adjustTwitterIframeHeight);
 
   const twitterDarkMq = window.matchMedia('(prefers-color-scheme: dark)');
-  document.querySelectorAll('.social-embed--twitter iframe').forEach((frame) => {
-    const url = new URL(frame.src);
-    url.searchParams.set('theme', twitterDarkMq.matches ? 'dark' : 'light');
-    frame.src = url.toString();
-  });
+
+  const applyTwitterTheme = (dark) => {
+    document.querySelectorAll('.social-embed--twitter iframe').forEach((frame) => {
+      if (!(frame instanceof HTMLIFrameElement) || !frame.src) return;
+      try {
+        const url = new URL(frame.src);
+        url.searchParams.set('theme', dark ? 'dark' : 'light');
+        frame.src = url.toString();
+      } catch { /* invalid src, skip */ }
+    });
+  };
+
+  applyTwitterTheme(twitterDarkMq.matches);
+  twitterDarkMq.addEventListener('change', (e) => applyTwitterTheme(e.matches));
 
   document.addEventListener('click', (event) => {
     const target = event.target;

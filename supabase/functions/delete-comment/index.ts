@@ -1,4 +1,3 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -14,7 +13,7 @@ function json(body: Record<string, unknown>, status = 200) {
   });
 }
 
-serve(async (req) => {
+Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   let payload: { id?: string; password?: string };
@@ -36,7 +35,7 @@ serve(async (req) => {
 
   const { data: comment, error: selectError } = await sb
     .from("comments")
-    .select("password_hash")
+    .select("password_hash, password_salt")
     .eq("id", id)
     .maybeSingle();
 
@@ -50,7 +49,7 @@ serve(async (req) => {
 
   // 비밀번호 해시 비교
   const encoder = new TextEncoder();
-  const data = encoder.encode(password);
+  const data = encoder.encode((comment.password_salt ?? "") + password);
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");

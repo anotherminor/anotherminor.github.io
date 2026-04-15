@@ -11,7 +11,7 @@
   {{ if not $hideCategory }}
     {{ with $page.GetTerms "categories" }}
       {{ with index . 0 }}
-        <a class="meta__item meta__item--category" data-pagefind-meta="category" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+        <a class="meta__item meta__item--category" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
       {{ end }}
     {{ end }}
   {{ end }}

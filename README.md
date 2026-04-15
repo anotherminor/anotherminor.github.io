@@ -77,7 +77,7 @@ BASE_URL="http://localhost:1313/" npm run build:pages
 
 ### 적용 순서
 
-1. Supabase SQL Editor에서 `supabase/migrations/20260330153000_interactions.sql` 실행 (테이블·RLS·RPC 생성)
+1. Supabase SQL Editor에서 `supabase/schema.sql` 실행 (테이블·RLS·RPC 생성)
 2. `supabase functions deploy delete-comment --project-ref <project-ref>` 실행
 3. `hugo.yaml`의 `params.supabase.url`, `anonKey`, `edgeFunctionUrl`이 실제 프로젝트 값과 일치하는지 확인
 
@@ -88,7 +88,7 @@ BASE_URL="http://localhost:1313/" npm run build:pages
 | 설정 | `hugo.yaml` `params.supabase` |
 | 렌더링 | `layouts/partials/interactions.html` |
 | 스타일 | `static/css/site.css` |
-| DB 스키마 | `supabase/migrations/20260330153000_interactions.sql` |
+| DB 스키마 | `supabase/schema.sql` |
 | 삭제 함수 | `supabase/functions/delete-comment/index.ts` |
 
 ## 배포 (GitHub Pages)

@@ -549,6 +549,53 @@ oklch(from var(--color-accent) calc(l + δ) c h / α)
 - `hugo.yaml`의 6개 기준색 외 색 값을 CSS에 직접 하드코딩하지 않는다.
 - 새 파생색 추가 시 반드시 `oklch(from var(--color-*) ...)` 공식을 따르고, 조정 δ값을 주석으로 명시한다.
 
+### 7.7 Supabase 설정 및 스키마 관리
+
+#### 설정 위치
+
+`hugo.yaml`의 `params.supabase`에서 관리한다.
+
+```yaml
+params:
+  supabase:
+    enabled: true
+    url: "https://<project-ref>.supabase.co"
+    anonKey: "<anon-key>"
+    edgeFunctionUrl: "https://<project-ref>.supabase.co/functions/v1/delete-comment"
+```
+
+`interactions.html` 파셜이 이 값을 HTML `data-*` 속성으로 주입한다. anon 키는 공개 설계(publishable key)이므로 소스에 포함해도 무방하다. 실제 접근 제어는 RLS 정책과 Edge Function 비밀번호 검증으로 처리한다.
+
+#### 스키마 관리
+
+DB 스키마는 `supabase/schema.sql` 단일 파일로 관리한다. 마이그레이션 파일 누적 방식을 사용하지 않으며, 파일은 항상 현재 DB의 최종 상태를 반영한다.
+
+**대시보드에서 스키마를 변경한 경우** 아래 명령으로 파일을 동기화한다.
+
+```bash
+supabase db dump -f supabase/schema.sql
+```
+
+변경 이력은 git history로 추적한다.
+
+#### 초기 적용 순서
+
+1. Supabase SQL Editor에서 `supabase/schema.sql` 실행 (테이블·RLS·RPC 생성)
+2. Edge Function 배포:
+   ```bash
+   supabase functions deploy delete-comment --project-ref <project-ref>
+   ```
+3. `hugo.yaml`의 `params.supabase` 값이 실제 프로젝트와 일치하는지 확인
+
+#### 관련 파일
+
+| 항목 | 경로 |
+|---|---|
+| Hugo 설정 | `hugo.yaml` `params.supabase` |
+| DB 스키마 | `supabase/schema.sql` |
+| 렌더링 파셜 | `layouts/partials/interactions.html` |
+| Edge Function | `supabase/functions/delete-comment/index.ts` |
+
 ## 8. 템플릿 규칙 (구현 가드레일)
 
 ### 8.1 검색 인덱싱 규칙 (이중 안전장치)

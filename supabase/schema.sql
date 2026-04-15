@@ -1,22 +1,23 @@
 create extension if not exists pgcrypto with schema extensions;
 
 create table if not exists public.page_views (
-  slug text primary key,
+  slug  text    primary key,
   count integer not null default 0
 );
 
 create table if not exists public.page_likes (
-  slug text primary key,
+  slug  text    primary key,
   count integer not null default 0
 );
 
 create table if not exists public.comments (
-  id uuid primary key default gen_random_uuid(),
-  slug text not null,
-  name text not null,
-  content text not null,
-  password_hash text not null,
-  created_at timestamptz not null default now()
+  id            uuid        primary key default gen_random_uuid(),
+  slug          text        not null,
+  name          text        not null check (char_length(name)    <= 20),
+  content       text        not null check (char_length(content) <= 500),
+  password_hash text        not null,
+  password_salt text        not null default '',
+  created_at    timestamptz not null default now()
 );
 
 create index if not exists comments_slug_created_at_idx
@@ -24,30 +25,18 @@ create index if not exists comments_slug_created_at_idx
 
 alter table public.page_views enable row level security;
 alter table public.page_likes enable row level security;
-alter table public.comments enable row level security;
+alter table public.comments  enable row level security;
 
 drop policy if exists "public read" on public.page_views;
-drop policy if exists "public update" on public.page_views;
-drop policy if exists "public insert" on public.page_views;
-create policy "public read" on public.page_views
-  for select
-  using (true);
+create policy "public read" on public.page_views for select using (true);
 
 drop policy if exists "public read" on public.page_likes;
-drop policy if exists "public update" on public.page_likes;
-drop policy if exists "public insert" on public.page_likes;
-create policy "public read" on public.page_likes
-  for select
-  using (true);
+create policy "public read" on public.page_likes for select using (true);
 
-drop policy if exists "public read" on public.comments;
+drop policy if exists "public read"   on public.comments;
 drop policy if exists "public insert" on public.comments;
-create policy "public read" on public.comments
-  for select
-  using (true);
-create policy "public insert" on public.comments
-  for insert
-  with check (true);
+create policy "public read"   on public.comments for select using (true);
+create policy "public insert" on public.comments for insert with check (true);
 
 create or replace function public.increment_views(page_slug text)
 returns integer
@@ -61,8 +50,7 @@ begin
   insert into public.page_views (slug, count)
   values (page_slug, 1)
   on conflict (slug)
-  do update
-    set count = public.page_views.count + 1
+  do update set count = public.page_views.count + 1
   returning count into new_count;
 
   return new_count;
@@ -81,8 +69,7 @@ begin
   insert into public.page_likes (slug, count)
   values (page_slug, greatest(0, delta))
   on conflict (slug)
-  do update
-    set count = greatest(0, public.page_likes.count + delta)
+  do update set count = greatest(0, public.page_likes.count + delta)
   returning count into new_count;
 
   return new_count;
