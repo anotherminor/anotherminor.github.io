@@ -98,5 +98,5 @@ npm run build:pages               # 프로덕션 빌드 + 검색 인덱싱
 - 시스템 구조 → `docs/architecture.md`
 - 디자인 원칙 → `.impeccable.md`
 - Supabase 위험 구역 → `supabase/CLAUDE.md`
-- 레이아웃 규칙 → `layouts/CLAUDE.md`
+- 레이아웃 규칙 → `.claude/layouts-guide.md`
 - 스크립트 동작 → `scripts/CLAUDE.md`
