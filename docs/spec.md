@@ -70,6 +70,7 @@
 | 상호작용 | Supabase (조회수·좋아요·댓글) |
 | 검색 | Pagefind |
 | 임베드 | 플랫폼 공식 embed HTML (작성 시에는 Hugo shortcode 래퍼 우선) |
+| Supabase 자동 일시정지 방지 | GitHub Actions (`keep-alive.yml`) |
 
 ### 3.1 저장소 공개 전략
 
@@ -596,6 +597,59 @@ supabase db dump -f supabase/schema.sql
 | 렌더링 파셜 | `layouts/partials/interactions.html` |
 | Edge Function | `supabase/functions/delete-comment/index.ts` |
 
+### 7.8 Supabase 자동 일시정지 방지 (keep-alive 워크플로우)
+
+Supabase 무료 플랜 프로젝트는 7일간 DB 활동이 없으면 자동 일시정지된다. 이를 방지하기 위해 GitHub Actions로 주기적 ping을 수행하며, 동시에 동일 워크플로우가 저장소에 작은 활동 파일을 커밋해 GitHub public 저장소 60일 비활성으로 인한 scheduled workflow 자동 비활성화도 함께 차단한다.
+
+**구현 위치**
+
+- 워크플로우 파일: `.github/workflows/keep-alive.yml`
+- Supabase DB 함수: `public.keep_alive()` (SQL Editor에서 1회 생성)
+- 활동 파일: 저장소 루트 `last-run.txt` (워크플로우가 자동 갱신·커밋)
+
+**Supabase RPC 정의**
+
+SQL Editor에서 1회 실행:
+
+```sql
+create or replace function public.keep_alive()
+returns int
+language sql
+stable
+as $$
+  select 1;
+$$;
+grant execute on function public.keep_alive() to anon;
+```
+
+**워크플로우 동작 요약**
+
+- 트리거: `schedule: "17 1 * * 1,4"` (UTC) — 매주 월·목 KST 10:17 + `workflow_dispatch` 수동 실행
+- Step 1 — Checkout (`actions/checkout@v4`, `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"` 설정)
+- Step 2 — `curl`로 `${SUPABASE_URL}/rest/v1/rpc/keep_alive` POST 호출 (`apikey`·`Authorization` 헤더에 `SUPABASE_ANON_KEY` 적용)
+- Step 3 — `last-run.txt`에 UTC 타임스탬프 기록 후 `github-actions[bot]` 명의로 자동 커밋·push (`|| exit 0`로 변경 없을 때 실패 방지)
+
+**필수 GitHub 설정**
+
+- Secrets (`Settings → Secrets and variables → Actions`)
+  - `SUPABASE_URL` — 예: `https://<project-ref>.supabase.co`
+  - `SUPABASE_ANON_KEY` — Supabase API 설정의 publishable key (구 anon key, 신규 분류명 publishable). secret key는 사용하지 않는다.
+- Workflow permissions (`Settings → Actions → General`)
+  - **Read and write permissions** 활성화 — Step 3의 자동 커밋 push에 필요
+
+**주기 산정 근거**
+
+- Supabase 7일 한도 대비 최대 간격 4일(목→월)로 충분한 안전 마진
+- 정각 회피(`xx:17`)로 GitHub Actions schedule 정각대 부하·드롭 위험 회피
+- GitHub schedule은 정시 실행 비보장이므로 빠듯한 일정 대신 주 2회 고정 요일 채택
+
+**금지 사항**
+
+- `secret key`(service_role 등 관리자 키)를 Secrets에 등록하지 않는다. publishable(anon) key만 사용한다.
+- workflow 로그에 `${{ secrets.* }}` 값을 echo·출력하지 않는다.
+- `keep_alive()` 함수의 정의를 무거운 쿼리로 변경하지 않는다 (활성 신호 외 목적 금지).
+- 60일 활동 회피용 `last-run.txt` 외에 별도 더미 파일·더미 커밋을 추가하지 않는다.
+
 ## 8. 템플릿 규칙 (구현 가드레일)
 
 ### 8.1 검색 인덱싱 규칙 (이중 안전장치)
@@ -809,6 +863,13 @@ supabase db dump -f supabase/schema.sql
 - 카테고리: 전문 렌더링 + 페이지네이션
 - 검색 인덱싱은 포스트 상세만 대상으로 제한
 
+### 11.5 Supabase 무료 플랜 / GitHub Actions 비활성 리스크
+
+- Supabase 무료 플랜은 7일 무활동 시 프로젝트 자동 일시정지된다. § 7.8의 keep-alive 워크플로우로 대응한다.
+- GitHub public 저장소는 60일 무활동 시 scheduled workflow가 자동 비활성화된다. keep-alive 워크플로우의 자동 커밋 스텝이 매 실행마다 저장소 활동을 발생시켜 이 카운터를 리셋한다.
+- Pro 플랜 전환 시 Supabase 측 일시정지 정책에서 자유로워지며, 그 시점에 § 7.8의 keep-alive 워크플로우 유지 여부를 재검토한다.
+- 워크플로우 실패 알림은 GitHub 계정 기본 메일 수신 설정으로 받는다. 장기 미수신 시 Actions 탭에서 직접 상태 점검.
+
 ## 12. 테스트 / 검증 시나리오
 
 ### 12.1 태그 번역 검증
@@ -876,6 +937,15 @@ supabase db dump -f supabase/schema.sql
 - lockfile 유지 상태 재빌드 일관성 확인.
 - GitHub Actions 배포 결과와 로컬 빌드 결과 핵심 동작 동일성 확인.
 
+### 12.10 Supabase keep-alive 워크플로우
+
+- `Run workflow` 수동 실행 시 모든 스텝이 ✅로 완료되는지 확인.
+- Supabase Dashboard → Logs에서 `rpc/keep_alive` 호출이 200으로 기록되는지 확인.
+- 저장소 루트에 `last-run.txt`가 생성·갱신되고, 커밋 히스토리에 `chore: keep-alive ping`이 기록되는지 확인.
+- Secrets 미설정 또는 오타 시 Step 2가 실패하는지 확인 (정상 가드 동작).
+- Workflow permissions가 read-only일 때 Step 3 push가 실패하는지 확인 (운영 시 read/write 유지).
+- 정기 실행(`schedule`) 트리거가 월·목 중 1회 이상 실제 실행 로그를 남기는지 주기적으로 확인.
+
 ## 13. 후속 작업
 
 - Hugo `.Aliases` 기반 alias 점검 자동화 (또는 향후 호스트 전환 대비 리다이렉트 규칙 생성)
@@ -883,6 +953,7 @@ supabase db dump -f supabase/schema.sql
 - 로컬 콘텐츠 검증 스크립트의 CI 품질 게이트 연동 (`npm run validate:content`)
 - 태그 매핑 누락·slug 충돌을 CI 실패로 승격하는 검증 추가
 - 검색 UI 커스터마이징 (필요 시)
+- Pro 플랜 전환 시 § 7.8 keep-alive 워크플로우 유지 여부 재검토
 
 ## 14. 렌더링·검색·링크로그·페이지 설계 가이드
 
@@ -1037,6 +1108,7 @@ supabase db dump -f supabase/schema.sql
 - `package.json`: `pagefind` 버전 핀 + `build:pages` 스크립트 일치 유지
 - `.github/workflows/deploy-github-pages.yml`: 배포 워크플로우와 문서 설명 일치 유지
 - 템플릿 링크 생성: 배포 `baseURL`(프로젝트 사이트 서브경로·루트·커스텀 도메인)을 보존하도록 `absURL` / `.Permalink` 사용
+- `.github/workflows/keep-alive.yml`: § 7.8 명세와 일치 유지 (cron, RPC 엔드포인트, env 설정, Secrets 이름)
 
 ## 부록 B. 참고 문서 (운영 시 확인)
 

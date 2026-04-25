@@ -1,0 +1,19 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/validate-on-content-edit.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/generate-tags-on-tagmap-edit.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

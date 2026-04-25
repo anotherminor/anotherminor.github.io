@@ -23,6 +23,7 @@ Hugo 기반의 정적 저널링 블로그.
 | CI/CD | GitHub Actions |
 | Search | Pagefind |
 | Interactions | Supabase (views, likes, comments, delete Edge Function) |
+| Keep-Alive | GitHub Actions (`.github/workflows/keep-alive.yml`) |
 
 ## 새 글 작성
 
@@ -90,6 +91,21 @@ BASE_URL="http://localhost:1313/" npm run build:pages
 | 스타일 | `static/css/site.css` |
 | DB 스키마 | `supabase/schema.sql` |
 | 삭제 함수 | `supabase/functions/delete-comment/index.ts` |
+
+## Supabase 자동 일시정지 방지
+
+Supabase 무료 플랜은 7일간 DB 활동이 없으면 프로젝트가 자동 일시정지된다. `.github/workflows/keep-alive.yml`이 매주 월·목(KST 10:17) Supabase의 `keep_alive()` RPC를 호출해 활성 상태를 유지하고, 같은 실행에서 `last-run.txt`를 자동 커밋해 public 저장소 60일 비활성으로 인한 워크플로우 자동 비활성화도 함께 차단한다.
+
+### 적용 순서
+
+1. Supabase SQL Editor에서 `keep_alive()` 함수 생성 (상세 SQL은 `docs/spec.md` § 7.8 참조)
+2. GitHub 저장소 → Settings → Secrets and variables → Actions에 두 개 등록
+   - `SUPABASE_URL`
+   - `SUPABASE_ANON_KEY` (Supabase API 설정의 publishable key)
+3. 저장소 → Settings → Actions → General → Workflow permissions를 **Read and write permissions**로 설정
+4. Actions 탭에서 `Supabase Keep Alive` → `Run workflow` 1회 수동 실행 후 모든 스텝 ✅, `last-run.txt` 생성, 커밋 기록 확인
+
+상세 명세·검증 항목·금지 사항은 `docs/spec.md` § 7.8, § 11.5, § 12.10 참조.
 
 ## 배포 (GitHub Pages)
 
