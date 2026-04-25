@@ -4,6 +4,8 @@ title: "minorupdates"
 defaultContentLanguage: "ko"
 enableRobotsTXT: true
 summaryLength: 160
+ignoreFiles:
+  - "CLAUDE\\.md$"
 
 permalinks:
   posts: /posts/:year/:month/:slug/
