@@ -142,7 +142,9 @@ a:hover {
 
 a:focus-visible,
 button:focus-visible,
-input:focus-visible {
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
   outline: 2px solid var(--accent-strong);
   outline-offset: 3px;
   box-shadow: 0 0 0 0.35rem var(--accent-soft);
@@ -2299,7 +2301,6 @@ h6 {
 .social-embed--threads .social-embed__script-wrap > iframe {
   background: transparent !important;
 }
-
 
 .social-embed--threads .social-embed__script-wrap > iframe {
   border: 0 !important;

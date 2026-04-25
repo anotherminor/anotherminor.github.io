@@ -6,3 +6,10 @@ resources/
 content/posts/.obsidian/
 .codex/
 .claude/
+CLAUDE.md
+docs/architecture.md
+docs/decisions/
+docs/runbooks/
+supabase/CLAUDE.md
+layouts/CLAUDE.md
+scripts/CLAUDE.md
