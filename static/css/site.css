@@ -1687,7 +1687,7 @@ h6 {
   background: color-mix(in oklch, var(--surface) 96%, var(--bg));
   color: var(--text);
   font: inherit;
-  font-size: 0.9rem;
+  font-size: 1rem; /* iOS Safari 자동 줌 차단 (≥16px) */
 }
 
 .comment-form input::placeholder,
@@ -1830,7 +1830,7 @@ h6 {
   background: color-mix(in oklch, var(--surface) 96%, var(--bg));
   color: var(--text);
   font: inherit;
-  font-size: 0.9rem;
+  font-size: 1rem; /* iOS Safari 자동 줌 차단 (≥16px) */
 }
 
 .del-modal__input:focus {
