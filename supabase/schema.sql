@@ -80,3 +80,19 @@ revoke all on function public.increment_views(text) from public;
 revoke all on function public.toggle_like(text, integer) from public;
 grant execute on function public.increment_views(text) to anon, authenticated;
 grant execute on function public.toggle_like(text, integer) to anon, authenticated;
+
+-- ============================================================
+-- Data API 권한 (Supabase 2026 정책 대비)
+-- 2026-10-30 이후, 기존 프로젝트에서도 신규 public 테이블은 명시적 GRANT
+-- 없이는 Data API(REST/GraphQL/supabase-js)로 접근 불가.
+-- 기존 테이블의 권한은 이 변경으로 회수되지 않지만, 이 파일을 새 환경에
+-- 적용하거나 새 테이블을 추가할 때를 대비해 명시한다.
+-- 멱등 연산이므로 운영 DB에 재실행해도 안전.
+-- ============================================================
+
+grant select         on public.page_views to anon, authenticated;
+grant select         on public.page_likes to anon, authenticated;
+grant select, insert on public.comments   to anon, authenticated;
+
+-- service_role: Edge Function(delete-comment)이 댓글 삭제 시 사용
+grant all on public.page_views, public.page_likes, public.comments to service_role;

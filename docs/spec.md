@@ -588,6 +588,29 @@ supabase db dump -f supabase/schema.sql
    ```
 3. `hugo.yaml`의 `params.supabase` 값이 실제 프로젝트와 일치하는지 확인
 
+#### Data API 권한 정책 (2026-10-30~)
+
+Supabase의 기본 동작이 변경되어, 2026년 10월 30일부터 기존 프로젝트에서도 신규로 생성하는 `public` 스키마 테이블은 명시적 `GRANT` 없이는 Data API(REST/GraphQL/supabase-js)에서 접근 불가하다. 이미 존재하는 테이블의 권한은 이 변경으로 회수되지 않으므로 현재 운영 중인 `page_views`·`page_likes`·`comments`는 영향받지 않는다.
+
+**규칙**
+
+- `schema.sql`에 새 테이블을 추가할 때는 `create table` 인근에 다음 형식의 `GRANT`를 함께 작성한다.
+  ```sql
+  grant select on public.<table> to anon, authenticated;          -- 읽기 전용
+  grant select, insert on public.<table> to anon, authenticated;  -- 익명 쓰기 허용 시
+  grant all on public.<table> to service_role;                    -- Edge Function용
+  ```
+- RPC 함수의 `grant execute …`는 기존 컨벤션 그대로 유지한다 (테이블 GRANT와 별개).
+- 권한 누락 시 PostgREST는 `42501` 오류를 반환하며, 응답 메시지에 정확한 GRANT 문이 포함된다 — 그대로 SQL Editor에서 실행하면 해결.
+- 운영 DB의 현재 권한 상태는 Supabase 대시보드의 **Security Advisor** 또는 다음 SQL로 확인한다.
+  ```sql
+  select grantee, table_name, privilege_type
+  from information_schema.role_table_grants
+  where table_schema = 'public'
+    and grantee in ('anon', 'authenticated', 'service_role')
+  order by table_name, grantee, privilege_type;
+  ```
+
 #### 관련 파일
 
 | 항목 | 경로 |
