@@ -18,6 +18,7 @@
       {{- with .PlainText }} alt="{{ . }}"{{ else }} alt=""{{ end -}}
       {{- with .Title }} title="{{ . }}"{{ end -}}
       {{- with $resource }} width="{{ .Width }}" height="{{ .Height }}"{{ end -}}
+      loading="lazy" decoding="async"
     >
     {{- with .Title }}
       <figcaption class="prose-media__caption">{{ . }}</figcaption>
@@ -28,5 +29,6 @@
     {{- with .PlainText }} alt="{{ . }}"{{ else }} alt=""{{ end -}}
     {{- with .Title }} title="{{ . }}"{{ else }}{{ with .PlainText }} title="{{ . }}"{{ end }}{{ end -}}
     {{- with $resource }} width="{{ .Width }}" height="{{ .Height }}"{{ end -}}
+    loading="lazy" decoding="async"
   >
 {{- end -}}

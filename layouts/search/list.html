@@ -10,5 +10,8 @@
 
 {{ define "extra_scripts" }}
   <script src="{{ "pagefind/pagefind-ui.js" | relURL }}" defer></script>
-  <script src="{{ "js/search-init.js" | relURL }}" defer></script>
+  {{- with resources.Get "js/search-init.js" }}
+    {{- $searchScript := . | minify | fingerprint }}
+    <script src="{{ $searchScript.RelPermalink }}" integrity="{{ $searchScript.Data.Integrity }}" crossorigin="anonymous" defer></script>
+  {{- end }}
 {{ end }}

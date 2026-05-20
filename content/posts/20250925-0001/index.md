@@ -7,7 +7,7 @@ categories:
   - rambling
 tags: []
 ---
-![팔걸이가 뽑힌 의자](images/chair.jpg)
+![팔걸이가 뽑힌 의자](images/chair.webp)
 
 좆같은 팔걸이를 새로 바꾼 의자에서도 떼어버렸다. 도저히 성가셔서 견딜 수가 없었다.
 

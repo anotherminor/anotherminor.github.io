@@ -2,7 +2,17 @@
 node_modules/
 public/
 resources/
+resources/_gen/
 .hugo_build.lock
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.tmp
+*.log
+tmp/
+.tmp/
+local/
 content/posts/.obsidian/
 .codex/
 .claude/settings.local.json

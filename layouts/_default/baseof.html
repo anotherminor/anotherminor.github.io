@@ -66,7 +66,10 @@
     </footer>
   </div>
 
-  <script src="{{ "js/site.js" | relURL }}?v={{ now.Unix }}" defer></script>
+  {{- with resources.Get "js/site.js" }}
+    {{- $siteScript := . | minify | fingerprint }}
+    <script src="{{ $siteScript.RelPermalink }}" integrity="{{ $siteScript.Data.Integrity }}" crossorigin="anonymous" defer></script>
+  {{- end }}
   {{ block "extra_scripts" . }}{{ end }}
 </body>
 

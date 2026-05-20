@@ -44,9 +44,6 @@
 @font-face { font-family: 'YesMyungjo'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_13@1.0/YESMyoungjo-Bold.woff') format('woff'); font-weight: 700; font-display: swap; }
 @font-face { font-family: 'MonoplexNerd'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_Monoplex-nerd@1.0/MonoplexKRNerd-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
 </style>
-<link rel="preload" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2205@1.0/GothicA1-Regular.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2205@1.0/GothicA1-Medium.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_13@1.0/YESMyoungjo-Regular.woff" as="font" type="font/woff" crossorigin>
 {{- $c := site.Params.colors }}
 <style>
   :root {
@@ -62,7 +59,10 @@
     }
   }
 </style>
-<link rel="stylesheet" href="{{ "css/site.css" | relURL }}?v={{ now.Unix }}">
+{{- with resources.Get "css/site.css" }}
+  {{- $style := . | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}" crossorigin="anonymous">
+{{- end }}
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="{{ $c.light.bg }}">
 <meta name="theme-color" content="{{ $c.dark.bg }}" media="(prefers-color-scheme: dark)">
