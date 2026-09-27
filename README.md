@@ -94,11 +94,11 @@ BASE_URL="http://localhost:1313/" npm run build:pages
 
 ## Supabase 자동 일시정지 방지
 
-Supabase 무료 플랜은 7일간 DB 활동이 없으면 프로젝트가 자동 일시정지된다. `.github/workflows/keep-alive.yml`이 매주 월·목(KST 10:17) Supabase의 `keep_alive()` RPC를 호출해 활성 상태를 유지하고, 같은 실행에서 `last-run.txt`를 자동 커밋해 public 저장소 60일 비활성으로 인한 워크플로우 자동 비활성화도 함께 차단한다.
+Supabase 무료 플랜은 7일간 DB 활동이 없으면 프로젝트가 자동 일시정지된다. `.github/workflows/keep-alive.yml`이 매주 월·목(KST 10:17) Supabase의 `keep_alive()` RPC를 호출해 활성 상태를 유지하고, 같은 실행에서 `last-run.txt`를 자동 커밋해 public 저장소 60일 비활성으로 인한 워크플로우 자동 비활성화도 함께 차단한다. `keep_alive()`는 전용 `keep_alive_state` 테이블에 실제 upsert를 발생시키는 방식이다(2026-09-27부터, 경위는 `docs/decisions/004-keep-alive-real-io.md` 참조).
 
 ### 적용 순서
 
-1. Supabase SQL Editor에서 `keep_alive()` 함수 생성 (상세 SQL은 `docs/spec.md` § 7.8 참조)
+1. Supabase SQL Editor에서 `supabase/schema.sql` 실행 (`keep_alive()`·`keep_alive_state` 포함, 상세는 `docs/spec.md` § 7.8 참조)
 2. GitHub 저장소 → Settings → Secrets and variables → Actions에 두 개 등록
    - `SUPABASE_URL`
    - `SUPABASE_ANON_KEY` (Supabase API 설정의 publishable key)

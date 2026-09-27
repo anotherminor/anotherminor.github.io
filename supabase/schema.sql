@@ -96,3 +96,46 @@ grant select, insert on public.comments   to anon, authenticated;
 
 -- service_role: Edge Function(delete-comment)이 댓글 삭제 시 사용
 grant all on public.page_views, public.page_likes, public.comments to service_role;
+
+-- ============================================================
+-- Keep-Alive (Supabase 무료 플랜 자동 일시정지 방지)
+-- 기존 select-1 no-op(2026-06-19 최초 도입)은 2026-06-19 / 08-19 / 09-27
+-- 세 차례 반복해서 Supabase의 "sufficient activity" 감지 기준을 통과하지
+-- 못함이 확인되어, 실제 INSERT/UPDATE(WAL 발생)를 일으키는 방식으로 교체
+-- (2026-09-27). 전용 싱글턴 테이블에만 기록하며 조회수·좋아요 등 실사용
+-- 데이터와는 분리한다. Data API로는 노출하지 않는다(RLS 활성 + 정책 없음,
+-- anon 테이블 GRANT 없음) — SECURITY DEFINER 함수를 통해서만 갱신된다.
+-- 상세 배경: docs/decisions/004-keep-alive-real-io.md, docs/spec.md § 7.8
+-- ============================================================
+
+create table if not exists public.keep_alive_state (
+  id         boolean     primary key default true,
+  last_ping  timestamptz not null default now(),
+  constraint keep_alive_state_singleton check (id)
+);
+
+alter table public.keep_alive_state enable row level security;
+-- 의도적으로 RLS 정책 없음 + anon 테이블 GRANT 없음:
+-- Data API(REST/GraphQL/supabase-js)로는 직접 접근 불가.
+-- keep_alive() 함수(SECURITY DEFINER)를 통해서만 갱신된다.
+
+create or replace function public.keep_alive()
+returns timestamptz
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  pinged_at timestamptz;
+begin
+  insert into public.keep_alive_state (id, last_ping)
+  values (true, now())
+  on conflict (id) do update set last_ping = excluded.last_ping
+  returning last_ping into pinged_at;
+
+  return pinged_at;
+end;
+$$;
+
+revoke all on function public.keep_alive() from public;
+grant execute on function public.keep_alive() to anon;

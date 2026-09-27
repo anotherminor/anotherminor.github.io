@@ -81,7 +81,7 @@ cover: "images/cover.webp"       # 권장
 - `supabase/schema.sql`은 프로덕션 DB와 직결 — 반드시 supabase/CLAUDE.md 읽고 작업
 - slug 변경 금지 (이미 배포된 글)
 - `last-run.txt`를 직접 편집·삭제하지 않는다 (keep-alive 워크플로우 전용)
-- `keep_alive()` RPC를 무거운 쿼리로 변경하지 않는다 (활성 신호 외 목적 금지)
+- `keep_alive()` RPC는 `keep_alive_state` 싱글턴 테이블에만 쓴다 (실사용 데이터 테이블에 쓰거나 활성 신호 외 목적으로 재활용 금지, `docs/decisions/004-keep-alive-real-io.md` 참조)
 
 ## 주요 커맨드
 

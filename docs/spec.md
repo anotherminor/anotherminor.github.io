@@ -627,23 +627,49 @@ Supabase 무료 플랜 프로젝트는 7일간 DB 활동이 없으면 자동 일
 **구현 위치**
 
 - 워크플로우 파일: `.github/workflows/keep-alive.yml`
-- Supabase DB 함수: `public.keep_alive()` (SQL Editor에서 1회 생성)
+- Supabase DB 함수/테이블: `public.keep_alive()`, `public.keep_alive_state` (`supabase/schema.sql`에 포함, 프로덕션엔 마이그레이션으로 적용됨)
 - 활동 파일: 저장소 루트 `last-run.txt` (워크플로우가 자동 갱신·커밋)
 
-**Supabase RPC 정의**
+**히스토리: select-1 no-op의 실패 (2026-09-27 교체)**
 
-SQL Editor에서 1회 실행:
+최초 구현은 `select 1`만 반환하는 no-op 함수였다. 2026-06-19, 08-19, 09-27 세 차례에 걸쳐 GitHub Actions 실행 기록(커밋 히스토리)상 워크플로우와 RPC 호출 자체는 한 번도 끊긴 적이 없었음에도 Supabase의 "sufficient activity" 자동 일시정지 경고 메일이 반복 수신되었다. 실제 테이블 I/O가 없는 상수 반환 호출은 Supabase의 활동 감지 기준에 반영되지 않는 것으로 판단해, 아래의 실제 INSERT/UPDATE(WAL 발생) 방식으로 교체했다. 상세 경위는 `docs/decisions/004-keep-alive-real-io.md` 참조.
+
+**Supabase RPC 정의 (현재, `supabase/schema.sql`에 포함)**
 
 ```sql
+create table if not exists public.keep_alive_state (
+  id         boolean     primary key default true,
+  last_ping  timestamptz not null default now(),
+  constraint keep_alive_state_singleton check (id)
+);
+
+alter table public.keep_alive_state enable row level security;
+-- 의도적으로 RLS 정책 없음 + anon 테이블 GRANT 없음:
+-- Data API로는 직접 접근 불가, keep_alive() 함수를 통해서만 갱신된다.
+
 create or replace function public.keep_alive()
-returns int
-language sql
-stable
+returns timestamptz
+language plpgsql
+security definer
+set search_path = public
 as $$
-  select 1;
+declare
+  pinged_at timestamptz;
+begin
+  insert into public.keep_alive_state (id, last_ping)
+  values (true, now())
+  on conflict (id) do update set last_ping = excluded.last_ping
+  returning last_ping into pinged_at;
+
+  return pinged_at;
+end;
 $$;
+
+revoke all on function public.keep_alive() from public;
 grant execute on function public.keep_alive() to anon;
 ```
+
+조회수·좋아요 등 실사용 데이터 테이블과는 분리된 전용 싱글턴 테이블에만 기록하므로 사이트 통계에 영향을 주지 않는다. GitHub Actions 쪽 호출부(`POST /rest/v1/rpc/keep_alive`, 응답 바디 미검사)는 변경 없이 그대로 동작한다.
 
 **워크플로우 동작 요약**
 
@@ -670,7 +696,7 @@ grant execute on function public.keep_alive() to anon;
 
 - `secret key`(service_role 등 관리자 키)를 Secrets에 등록하지 않는다. publishable(anon) key만 사용한다.
 - workflow 로그에 `${{ secrets.* }}` 값을 echo·출력하지 않는다.
-- `keep_alive()` 함수의 정의를 무거운 쿼리로 변경하지 않는다 (활성 신호 외 목적 금지).
+- `keep_alive()`는 `keep_alive_state` 싱글턴 테이블 외의 실사용 데이터 테이블(`page_views`/`page_likes`/`comments`)에 쓰지 않는다. 활성 신호 목적 외로 재활용하지 않는다.
 - 60일 활동 회피용 `last-run.txt` 외에 별도 더미 파일·더미 커밋을 추가하지 않는다.
 
 ## 8. 템플릿 규칙 (구현 가드레일)
@@ -890,6 +916,7 @@ grant execute on function public.keep_alive() to anon;
 
 - Supabase 무료 플랜은 7일 무활동 시 프로젝트 자동 일시정지된다. § 7.8의 keep-alive 워크플로우로 대응한다.
 - GitHub public 저장소는 60일 무활동 시 scheduled workflow가 자동 비활성화된다. keep-alive 워크플로우의 자동 커밋 스텝이 매 실행마다 저장소 활동을 발생시켜 이 카운터를 리셋한다.
+- **주의**: 워크플로우·RPC 호출 자체가 정상 실행되고 있어도, 호출된 RPC가 실제 테이블 I/O를 발생시키지 않으면(과거의 `select 1` no-op 사례) Supabase의 활동 감지 기준을 통과하지 못해 일시정지 경고 메일이 반복될 수 있다. "워크플로우가 성공했다"와 "Supabase가 활동으로 인정했다"는 별개로 확인해야 한다. 2026-09-27부터 § 7.8의 실제 I/O 방식으로 교체해 대응 중이며, 재발 시 `docs/decisions/004-keep-alive-real-io.md`를 갱신한다.
 - Pro 플랜 전환 시 Supabase 측 일시정지 정책에서 자유로워지며, 그 시점에 § 7.8의 keep-alive 워크플로우 유지 여부를 재검토한다.
 - 워크플로우 실패 알림은 GitHub 계정 기본 메일 수신 설정으로 받는다. 장기 미수신 시 Actions 탭에서 직접 상태 점검.
 
@@ -964,6 +991,7 @@ grant execute on function public.keep_alive() to anon;
 
 - `Run workflow` 수동 실행 시 모든 스텝이 ✅로 완료되는지 확인.
 - Supabase Dashboard → Logs에서 `rpc/keep_alive` 호출이 200으로 기록되는지 확인.
+- SQL Editor에서 `select * from public.keep_alive_state;`로 `last_ping`이 방금 실행 시각으로 갱신됐는지 확인 (워크플로우 성공 ≠ Supabase가 활동으로 인정 — 실제 갱신 여부까지 확인해야 § 11.5의 재발을 조기에 잡을 수 있다).
 - 저장소 루트에 `last-run.txt`가 생성·갱신되고, 커밋 히스토리에 `chore: keep-alive ping`이 기록되는지 확인.
 - Secrets 미설정 또는 오타 시 Step 2가 실패하는지 확인 (정상 가드 동작).
 - Workflow permissions가 read-only일 때 Step 3 push가 실패하는지 확인 (운영 시 read/write 유지).

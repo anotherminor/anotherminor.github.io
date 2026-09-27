@@ -15,20 +15,21 @@
 ### 테이블
 
 ```sql
-post_views    -- 포스트별 조회수 (slug PK)
-post_likes    -- 포스트별 좋아요 (slug PK)
-post_comments -- 댓글 (id, slug, author, body, password_hash, created_at)
+page_views       -- 포스트별 조회수 (slug PK)
+page_likes       -- 포스트별 좋아요 (slug PK)
+comments         -- 댓글 (id, slug, name, content, password_hash, created_at)
+keep_alive_state -- keep-alive 전용 싱글턴 테이블 (id=true 고정, last_ping timestamptz)
 ```
 
 ### RPC 함수
 
 ```sql
-increment_view(post_slug text)   -- 조회수 원자적 증가
-toggle_like(post_slug text)      -- 좋아요 토글 (반환: 현재 상태)
-keep_alive()                     -- 활성 신호용 no-op (GitHub Actions가 주 2회 호출)
+increment_views(page_slug text)               -- 조회수 원자적 증가
+toggle_like(page_slug text, delta integer)    -- 좋아요 토글 (반환: 현재 count)
+keep_alive()                                  -- 활성 신호 (GitHub Actions가 주 2회 호출)
 ```
 
-`keep_alive()`는 `select 1;`만 반환하는 stable 함수다. Supabase 무료 플랜의 7일 무활동 자동 일시정지를 차단하기 위한 신호이며, `.github/workflows/keep-alive.yml`이 호출 주체. 정의를 무거운 쿼리로 바꾸거나 다른 목적으로 재활용하지 않는다. 상세 명세: `docs/spec.md` § 7.8.
+`keep_alive()`는 `keep_alive_state`에 `(id: true, last_ping: now())`를 upsert하는 SECURITY DEFINER 함수다(2026-09-27부터, 이전엔 `select 1`만 반환하는 no-op이었으나 3차례 반복된 자동 일시정지 경고로 실제 I/O 발생 방식으로 교체됨 — 경위는 `docs/decisions/004-keep-alive-real-io.md`). `.github/workflows/keep-alive.yml`이 호출 주체. `keep_alive_state` 외의 실사용 데이터 테이블(`page_views`/`page_likes`/`comments`)에 쓰거나 활성 신호 외 목적으로 재활용하지 않는다. 상세 명세: `docs/spec.md` § 7.8.
 
 ### RLS 정책 요약
 
@@ -70,6 +71,7 @@ keep_alive()                     -- 활성 신호용 no-op (GitHub Actions가 �
    grant all on public.<table> to service_role;                    -- Edge Function용
    ```
    상세 운영 규칙: `docs/spec.md` § 7.7.
+   예외: `keep_alive_state`는 의도적으로 anon GRANT를 전혀 주지 않는다 — Data API로 노출할 필요가 없는 내부 전용 테이블이며, `keep_alive()`(SECURITY DEFINER)를 통해서만 갱신된다.
 
 ## 연결 설정 위치
 
